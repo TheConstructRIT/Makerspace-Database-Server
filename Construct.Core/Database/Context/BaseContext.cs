@@ -8,7 +8,7 @@ using Nexus.Logging.Entry;
 
 namespace Construct.Core.Database.Context
 {
-    public class BaseContext : DbContext, IAsyncDisposable
+    public abstract class BaseContext : DbContext, IAsyncDisposable
     {
         /// <summary>
         /// Users in the database.

@@ -1,5 +1,6 @@
 using System;
 using Construct.Core.Configuration;
+using Construct.Core.Database.Context;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -21,6 +22,20 @@ namespace Construct.Core.Server
             // Load the configuration.
             ConstructConfiguration.LoadDefaultAsync().Wait();
             Log.SetMinimumLogLevel(ConstructConfiguration.Configuration.Logging?.ConsoleLevel ?? LogLevel.Information);
+            
+            // Ensure the database is up to date.
+            try
+            {
+                Log.Info("Ensuring database is up to date.");
+                using var context = new ConstructContext();
+                context.EnsureUpToDateAsync().Wait();
+            }
+            catch (Exception e)
+            {
+                Log.Critical("Failed to ensure database is up to date.");
+                Log.Critical(e);
+                Environment.Exit(-1);
+            }
             
             // Get the port.
             if (!ConstructConfiguration.Configuration.Ports.ContainsKey(identifier))
