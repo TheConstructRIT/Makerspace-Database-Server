@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
 using Nexus.Logging;
+using Nexus.Logging.Attribute;
 using Nexus.Logging.Output;
 
 namespace Construct.Core
@@ -10,7 +11,12 @@ namespace Construct.Core
         /// <summary>
         /// Logger used for logging messages.
         /// </summary>
-        private static Logger _logger;
+        public static Logger Logger { get; set; }
+
+        /// <summary>
+        /// Minimum log level for the console output.
+        /// </summary>
+        private static LogLevel _minimumConsoleLogLevel = LogLevel.Information;
 
         /// <summary>
         /// Initializes the logger.
@@ -18,17 +24,19 @@ namespace Construct.Core
         /// <param name="identifier">Identifier to use with the logger.</param>
         public static void Initialize(string identifier)
         {
+            if (Logger != null) return;
+            
             // Set up the console output.
             var consoleLogger = new ConsoleOutput()
             {
                 IncludeDate = true,
-                MinimumLevel = LogLevel.Information,
+                MinimumLevel = _minimumConsoleLogLevel,
                 AdditionalLogInfo = new List<string>() { identifier },
                 NamespaceWhitelist = new List<string>() { "Construct." },
             };
             
             // Set up the logging.
-            _logger = new Logger()
+            Logger = new Logger()
             {
                 Outputs = new List<IOutput>() { consoleLogger }
             };
@@ -40,7 +48,11 @@ namespace Construct.Core
         /// <param name="level">Minimum log level to use.</param>
         public static void SetMinimumLogLevel(LogLevel level)
         {
-            foreach (var output in _logger.Outputs)
+            _minimumConsoleLogLevel = level;
+            
+            // Set the log levels of existing loggers.
+            if (Logger == null) return;
+            foreach (var output in Logger.Outputs)
             {
                 if (output is not QueuedOutput queuedOutput) continue;
                 queuedOutput.MinimumLevel = level;
@@ -51,36 +63,42 @@ namespace Construct.Core
         /// Outputs a Trace message.
         /// </summary>
         /// <param name="entry">Entry to output.</param>
-        public static void Trace(object entry) => _logger.Log(entry, LogLevel.Trace);
+        [LogTraceIgnore]
+        public static void Trace(object entry) => Logger.Log(entry, LogLevel.Trace);
 
         /// <summary>
         /// Outputs a Debug message.
         /// </summary>
         /// <param name="entry">Entry to output.</param>
-        public static void Debug(object entry) => _logger.Log(entry, LogLevel.Debug);
+        [LogTraceIgnore]
+        public static void Debug(object entry) => Logger.Log(entry, LogLevel.Debug);
 
         /// <summary>
         /// Outputs an Info message.
         /// </summary>
         /// <param name="entry">Entry to output.</param>
-        public static void Info(object entry) => _logger.Log(entry, LogLevel.Information);
+        [LogTraceIgnore]
+        public static void Info(object entry) => Logger.Log(entry, LogLevel.Information);
 
         /// <summary>
         /// Outputs a Warn message.
         /// </summary>
         /// <param name="entry">Entry to output.</param>
-        public static void Warn(object entry) => _logger.Log(entry, LogLevel.Warning);
+        [LogTraceIgnore]
+        public static void Warn(object entry) => Logger.Log(entry, LogLevel.Warning);
 
         /// <summary>
         /// Outputs a Error message.
         /// </summary>
         /// <param name="entry">Entry to output.</param>
-        public static void Error(object entry) => _logger.Log(entry, LogLevel.Error);
+        [LogTraceIgnore]
+        public static void Error(object entry) => Logger.Log(entry, LogLevel.Error);
 
         /// <summary>
         /// Outputs a Critical message.
         /// </summary>
         /// <param name="entry">Entry to output.</param>
-        public static void Critical(object entry) => _logger.Log(entry, LogLevel.Critical);
+        [LogTraceIgnore]
+        public static void Critical(object entry) => Logger.Log(entry, LogLevel.Critical);
     }
 }
