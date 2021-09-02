@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using Construct.Core.Attribute;
@@ -26,6 +27,7 @@ namespace Construct.Core.Server
                 // Ignore the method if there are no paths specified.
                 var pathAttributes = method.GetCustomAttributes<PathAttribute>().ToList();
                 if (pathAttributes.Count == 0) continue;
+                Log.Trace("Found " + pathAttributes.Count + " Path attributes for " + method.ReflectedType?.Name + "." + method.Name);
                 
                 // Add the method for all the paths.
                 foreach (var pathAttribute in pathAttributes)
@@ -62,6 +64,7 @@ namespace Construct.Core.Server
         public void ConfigureServices(IServiceCollection services)
         {
             // Add MVC for controllers and add the assemblies for controllers.
+            Log.Trace("Setting up ASP.NET Core MVC and assemblies.");
             var mvc = services.AddMvc(options =>
             {
                 options.EnableEndpointRouting = false;
@@ -83,21 +86,30 @@ namespace Construct.Core.Server
             // Set up developer exceptions when in development.
             if (environment.IsDevelopment())
             {
+                Log.Trace("Enabling exception pages for developing.");
                 app.UseDeveloperExceptionPage();
             }
 
             // Add the MVC controllers.
             app.UseMvc(routes =>
             {
-                foreach (var (path, handlerMethod) in GetRequestHandlerMethods())
+                var handlers = GetRequestHandlerMethods();
+                Log.Debug("Registering " + handlers.Count + " API request handlers.");
+                foreach (var (path, handlerMethod) in handlers)
                 {
                     // Get the base controller name.
                     var controllerType = handlerMethod.ReflectedType;
+                    var fullControllerNamespace = controllerType?.Namespace ?? "";
                     var fullControllerName = controllerType?.Name ?? "";
-                    if (!fullControllerName.EndsWith("Controller")) continue;
+                    if (!fullControllerName.EndsWith("Controller"))
+                    {
+                        Log.Warn("Controller class must end in Controller (can't register): " + fullControllerNamespace + "." + fullControllerName);
+                        continue;
+                    }
                     var controllerName = fullControllerName.Substring(0, fullControllerName.LastIndexOf("Controller", StringComparison.Ordinal));
                     
                     // Add the route.
+                    Log.Debug("Registering " + path + " with handler " + fullControllerNamespace + "." + controllerName + "." + handlerMethod.Name);
                     routes.MapRoute(fullControllerName + "_" + handlerMethod.Name, path,
                         new {controller = controllerName, action = handlerMethod.Name});
                 }
