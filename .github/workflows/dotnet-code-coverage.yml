@@ -1,0 +1,25 @@
+name: .NET Code Coverage
+
+# Triggers the pipeline on any git push or pull request being created.
+on: [push, pull_request]
+
+jobs:
+  build:
+    # Run on Ubuntu
+    runs-on: ubuntu-latest
+
+    steps:
+    # Pull the code.
+    - name: Checkout Repositories and Submodules
+      uses: actions/checkout@v2
+      with:
+        submodules: recursive
+    # Set up .NET 5.
+    - name: Set Up .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 5.0.x
+    # Run the tests with code coverage.
+    - name: Test with Code Coverage
+      run: dotnet test /p:CollectCoverage=true /p:CoverletOutput=TestResults/ /p:CoverletOutputFormat=lcov
+    # TODO: Upload results somewhere
