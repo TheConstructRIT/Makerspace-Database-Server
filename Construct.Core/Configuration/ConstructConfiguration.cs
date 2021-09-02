@@ -78,7 +78,7 @@ namespace Construct.Core.Configuration
             // Write the default configuration if none exists.
             if (!File.Exists(fileLocation))
             {
-                Log.Warn("Configuration file " + fileLocation + " not found. Writing default.");
+                Log.Warn($"Configuration file {fileLocation} not found. Writing default.");
                 var defaultConfiguration = JsonConvert.SerializeObject(new ConstructConfiguration(),
                     new JsonSerializerSettings()
                     {

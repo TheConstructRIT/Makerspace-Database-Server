@@ -40,7 +40,7 @@ namespace Construct.Core.Server
             // Get the port.
             if (!ConstructConfiguration.Configuration.Ports.ContainsKey(identifier))
             {
-                Log.Critical("Port not defined for " + identifier);
+                Log.Critical($"Port not defined for {identifier}");
                 Environment.Exit(-1);
             }
             var port = ConstructConfiguration.Configuration.Ports[identifier];
@@ -52,12 +52,12 @@ namespace Construct.Core.Server
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>()
-                        .UseUrls("http://*:" + port);
+                        .UseUrls($"http://*:{port}");
                 })
                 .Build();
             
             // Start the server.
-            Log.Info("Starting server on port " + port + ".");
+            Log.Info($"Starting server on port {port}.");
             host.Run();
         }
     }

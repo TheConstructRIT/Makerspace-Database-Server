@@ -27,7 +27,7 @@ namespace Construct.Core.Server
                 // Ignore the method if there are no paths specified.
                 var pathAttributes = method.GetCustomAttributes<PathAttribute>().ToList();
                 if (pathAttributes.Count == 0) continue;
-                Log.Trace("Found " + pathAttributes.Count + " Path attributes for " + method.ReflectedType?.Name + "." + method.Name);
+                Log.Trace($"Found {pathAttributes.Count} Path attributes for {method.ReflectedType?.Name}.{method.Name}");
                 
                 // Add the method for all the paths.
                 foreach (var pathAttribute in pathAttributes)
@@ -93,7 +93,7 @@ namespace Construct.Core.Server
             app.UseMvc(routes =>
             {
                 var handlers = GetRequestHandlerMethods();
-                Log.Debug("Registering " + handlers.Count + " API request handlers.");
+                Log.Debug($"Registering {handlers.Count} API request handlers.");
                 foreach (var (path, handlerMethod) in handlers)
                 {
                     // Get the base controller name.
@@ -102,14 +102,14 @@ namespace Construct.Core.Server
                     var fullControllerName = controllerType?.Name ?? "";
                     if (!fullControllerName.EndsWith("Controller"))
                     {
-                        Log.Warn("Controller class must end in Controller (can't register): " + fullControllerNamespace + "." + fullControllerName);
+                        Log.Warn($"Controller class must end in Controller (can't register): {fullControllerNamespace}.{fullControllerName}");
                         continue;
                     }
                     var controllerName = fullControllerName.Substring(0, fullControllerName.LastIndexOf("Controller", StringComparison.Ordinal));
                     
                     // Add the route.
-                    Log.Debug("Registering " + path + " with handler " + fullControllerNamespace + "." + controllerName + "." + handlerMethod.Name);
-                    routes.MapRoute(fullControllerName + "_" + handlerMethod.Name, path,
+                    Log.Debug($"Registering {path} with handler {fullControllerNamespace}.{controllerName}.{handlerMethod.Name}");
+                    routes.MapRoute( $"{fullControllerName}_{handlerMethod.Name}", path,
                         new {controller = controllerName, action = handlerMethod.Name});
                 }
             });
