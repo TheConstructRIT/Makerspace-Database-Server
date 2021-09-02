@@ -75,7 +75,6 @@ namespace Construct.Core.Server
             }
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         /// <summary>
         /// Configures the application and HTTP request handling. 
         /// </summary>
