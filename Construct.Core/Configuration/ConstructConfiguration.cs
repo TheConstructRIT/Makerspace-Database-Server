@@ -61,6 +61,14 @@ namespace Construct.Core.Configuration
         public Logging Logging { get; set; } = new Logging();
 
         /// <summary>
+        /// Ports used by the services.
+        /// </summary>
+        public Dictionary<string, int> Ports = new Dictionary<string, int>()
+        {
+            { "User", 8001 },
+        };
+
+        /// <summary>
         /// Loads a configuration.
         /// </summary>
         /// <param name="fileLocation">Location of the configuration.</param>

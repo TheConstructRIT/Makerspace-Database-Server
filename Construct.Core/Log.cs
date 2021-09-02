@@ -76,5 +76,11 @@ namespace Construct.Core
         /// </summary>
         /// <param name="entry">Entry to output.</param>
         public static void Error(object entry) => _logger.Log(entry, LogLevel.Error);
+
+        /// <summary>
+        /// Outputs a Critical message.
+        /// </summary>
+        /// <param name="entry">Entry to output.</param>
+        public static void Critical(object entry) => _logger.Log(entry, LogLevel.Critical);
     }
 }

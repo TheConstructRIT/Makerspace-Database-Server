@@ -1,3 +1,4 @@
+using System;
 using Construct.Core.Configuration;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
@@ -19,17 +20,29 @@ namespace Construct.Core.Server
             
             // Load the configuration.
             ConstructConfiguration.LoadDefaultAsync().Wait();
-            Log.SetMinimumLogLevel(ConstructConfiguration.Configuration.Logging.ConsoleLevel);
+            Log.SetMinimumLogLevel(ConstructConfiguration.Configuration.Logging?.ConsoleLevel ?? LogLevel.Information);
+            
+            // Get the port.
+            if (!ConstructConfiguration.Configuration.Ports.ContainsKey(identifier))
+            {
+                Log.Critical("Port not defined for " + identifier);
+                Environment.Exit(-1);
+            }
+            var port = ConstructConfiguration.Configuration.Ports[identifier];
             
             // Build the app.
             Log.Debug("Preparing server.");
             var host = Host.CreateDefaultBuilder(args)
                 .ConfigureLogging(logging => logging.ClearProviders())
-                .ConfigureWebHostDefaults(webBuilder => { webBuilder.UseStartup<Startup>(); })
+                .ConfigureWebHostDefaults(webBuilder =>
+                {
+                    webBuilder.UseStartup<Startup>()
+                        .UseUrls("http://*:" + port);
+                })
                 .Build();
             
             // Start the server.
-            Log.Info("Starting server.");
+            Log.Info("Starting server on port " + port + ".");
             host.Run();
         }
     }
