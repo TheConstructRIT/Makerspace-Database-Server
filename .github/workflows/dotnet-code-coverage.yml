@@ -21,5 +21,5 @@ jobs:
         dotnet-version: 5.0.x
     # Run the tests with code coverage.
     - name: Test with Code Coverage
-      run: dotnet test /p:CollectCoverage=true /p:CoverletOutput=TestResults/ /p:CoverletOutputFormat=lcov
+      run: dotnet test /p:CollectCoverage=true /p:CoverletOutput=../TestResults/ /p:CoverletOutputFormat=lcov /p:MergeWith=../TestResults/coverlet.info
     # TODO: Upload results somewhere
