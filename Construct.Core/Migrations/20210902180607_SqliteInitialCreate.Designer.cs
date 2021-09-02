@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Construct.Core.Migrations
 {
     [DbContext(typeof(SqliteContext))]
-    [Migration("20210902032046_SqliteInitialCreate")]
+    [Migration("20210902180607_SqliteInitialCreate")]
     partial class SqliteInitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -20,6 +20,10 @@ namespace Construct.Core.Migrations
 
             modelBuilder.Entity("Construct.Core.Database.Model.PrintLog", b =>
                 {
+                    b.Property<long>("Key")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("BillTo")
                         .HasColumnType("TEXT");
 
@@ -31,7 +35,6 @@ namespace Construct.Core.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("MaterialName")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<bool>("Owed")
@@ -41,11 +44,12 @@ namespace Construct.Core.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("UserHashedId")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<float>("WeightGrams")
                         .HasColumnType("REAL");
+
+                    b.HasKey("Key");
 
                     b.HasIndex("MaterialName");
 
@@ -93,6 +97,10 @@ namespace Construct.Core.Migrations
 
             modelBuilder.Entity("Construct.Core.Database.Model.VisitLog", b =>
                 {
+                    b.Property<long>("Key")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("Source")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -101,8 +109,9 @@ namespace Construct.Core.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("UserHashedId")
-                        .IsRequired()
                         .HasColumnType("TEXT");
+
+                    b.HasKey("Key");
 
                     b.HasIndex("UserHashedId");
 
@@ -113,15 +122,11 @@ namespace Construct.Core.Migrations
                 {
                     b.HasOne("Construct.Core.Database.Model.PrintMaterial", "Material")
                         .WithMany()
-                        .HasForeignKey("MaterialName")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("MaterialName");
 
                     b.HasOne("Construct.Core.Database.Model.User", "User")
                         .WithMany()
-                        .HasForeignKey("UserHashedId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UserHashedId");
 
                     b.Navigation("Material");
 
@@ -132,9 +137,7 @@ namespace Construct.Core.Migrations
                 {
                     b.HasOne("Construct.Core.Database.Model.User", "User")
                         .WithMany()
-                        .HasForeignKey("UserHashedId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UserHashedId");
 
                     b.Navigation("User");
                 });

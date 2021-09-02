@@ -38,10 +38,12 @@ namespace Construct.Core.Migrations
                 name: "PrintLog",
                 columns: table => new
                 {
-                    UserHashedId = table.Column<string>(type: "TEXT", nullable: false),
+                    Key = table.Column<long>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    UserHashedId = table.Column<string>(type: "TEXT", nullable: true),
                     Time = table.Column<DateTime>(type: "TEXT", nullable: false),
                     FileName = table.Column<string>(type: "TEXT", nullable: false),
-                    MaterialName = table.Column<string>(type: "TEXT", nullable: false),
+                    MaterialName = table.Column<string>(type: "TEXT", nullable: true),
                     WeightGrams = table.Column<float>(type: "REAL", nullable: false),
                     BillTo = table.Column<string>(type: "TEXT", nullable: true),
                     Cost = table.Column<float>(type: "REAL", nullable: false),
@@ -49,36 +51,40 @@ namespace Construct.Core.Migrations
                 },
                 constraints: table =>
                 {
+                    table.PrimaryKey("PK_PrintLog", x => x.Key);
                     table.ForeignKey(
                         name: "FK_PrintLog_PrintMaterials_MaterialName",
                         column: x => x.MaterialName,
                         principalTable: "PrintMaterials",
                         principalColumn: "Name",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_PrintLog_Users_UserHashedId",
                         column: x => x.UserHashedId,
                         principalTable: "Users",
                         principalColumn: "HashedId",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
                 name: "VisitLogs",
                 columns: table => new
                 {
-                    UserHashedId = table.Column<string>(type: "TEXT", nullable: false),
+                    Key = table.Column<long>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    UserHashedId = table.Column<string>(type: "TEXT", nullable: true),
                     Source = table.Column<string>(type: "TEXT", nullable: false),
                     Time = table.Column<DateTime>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
+                    table.PrimaryKey("PK_VisitLogs", x => x.Key);
                     table.ForeignKey(
                         name: "FK_VisitLogs_Users_UserHashedId",
                         column: x => x.UserHashedId,
                         principalTable: "Users",
                         principalColumn: "HashedId",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(

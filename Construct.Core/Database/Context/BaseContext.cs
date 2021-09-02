@@ -44,10 +44,6 @@ namespace Construct.Core.Database.Context
         /// <param name="builder">Builder for model creating.</param>
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            // Disable keys for logs (no unique key constraints).
-            builder.Entity<PrintLog>().HasNoKey();
-            builder.Entity<VisitLog>().HasNoKey();
-            
             // Set up storing the list of properties.
             builder.Entity<User>().Property(p => p.Permissions)
                 .HasConversion(

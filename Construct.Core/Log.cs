@@ -58,47 +58,57 @@ namespace Construct.Core
                 queuedOutput.MinimumLevel = level;
             }
         }
+
+        /// <summary>
+        /// Outputs a message.
+        /// </summary>
+        /// <param name="entry">Entry to output.</param>
+        /// <param name="level">Log level to output with.</param>
+        public static void LogMessage(object entry, LogLevel level)
+        {
+            Logger?.Log(entry, level);
+        }
         
         /// <summary>
         /// Outputs a Trace message.
         /// </summary>
         /// <param name="entry">Entry to output.</param>
         [LogTraceIgnore]
-        public static void Trace(object entry) => Logger.Log(entry, LogLevel.Trace);
+        public static void Trace(object entry) => LogMessage(entry, LogLevel.Trace);
 
         /// <summary>
         /// Outputs a Debug message.
         /// </summary>
         /// <param name="entry">Entry to output.</param>
         [LogTraceIgnore]
-        public static void Debug(object entry) => Logger.Log(entry, LogLevel.Debug);
+        public static void Debug(object entry) => LogMessage(entry, LogLevel.Debug);
 
         /// <summary>
         /// Outputs an Info message.
         /// </summary>
         /// <param name="entry">Entry to output.</param>
         [LogTraceIgnore]
-        public static void Info(object entry) => Logger.Log(entry, LogLevel.Information);
+        public static void Info(object entry) => LogMessage(entry, LogLevel.Information);
 
         /// <summary>
         /// Outputs a Warn message.
         /// </summary>
         /// <param name="entry">Entry to output.</param>
         [LogTraceIgnore]
-        public static void Warn(object entry) => Logger.Log(entry, LogLevel.Warning);
+        public static void Warn(object entry) => LogMessage(entry, LogLevel.Warning);
 
         /// <summary>
         /// Outputs a Error message.
         /// </summary>
         /// <param name="entry">Entry to output.</param>
         [LogTraceIgnore]
-        public static void Error(object entry) => Logger.Log(entry, LogLevel.Error);
+        public static void Error(object entry) => LogMessage(entry, LogLevel.Error);
 
         /// <summary>
         /// Outputs a Critical message.
         /// </summary>
         /// <param name="entry">Entry to output.</param>
         [LogTraceIgnore]
-        public static void Critical(object entry) => Logger.Log(entry, LogLevel.Critical);
+        public static void Critical(object entry) => LogMessage(entry, LogLevel.Critical);
     }
 }

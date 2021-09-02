@@ -6,6 +6,12 @@ namespace Construct.Core.Database.Model
     public class PrintLog
     {
         /// <summary>
+        /// Primary key used by Entity Framework. Not intended to be used for anything else.
+        /// </summary>
+        [Key]
+        public long Key { get; set; }
+        
+        /// <summary>
         /// User who printed.
         /// </summary>
         [Required]

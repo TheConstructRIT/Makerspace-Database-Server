@@ -6,9 +6,14 @@ namespace Construct.Core.Database.Model
     public class VisitLog
     {
         /// <summary>
-        /// User who visited.
+        /// Primary key used by Entity Framework. Not intended to be used for anything else.
         /// </summary>
         [Key]
+        public long Key { get; set; }
+        
+        /// <summary>
+        /// User who visited.
+        /// </summary>
         [Required]
         public User User { get; set; }
         
