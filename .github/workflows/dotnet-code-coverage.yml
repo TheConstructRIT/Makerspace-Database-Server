@@ -1,4 +1,4 @@
-name: .NET Code Coverage
+name: Build
 
 # Triggers the pipeline on any git push or pull request being created.
 on: [push, pull_request]
