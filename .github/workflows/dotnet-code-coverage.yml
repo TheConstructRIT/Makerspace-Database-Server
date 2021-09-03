@@ -26,7 +26,7 @@ jobs:
         cmd: install
     # Set up LCOV merge tool.
     - name: Set Up LCOV merge tool
-      run: yarn add lcov-result-merger
+      run: sudo yarn add lcov-result-merger
     # Run the tests with code coverage.
     - name: Test with Code Coverage
       run: dotnet test /p:CollectCoverage=true /p:CoverletOutput=TestResults/ /p:CoverletOutputFormat=lcov
