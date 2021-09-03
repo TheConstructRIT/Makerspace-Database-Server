@@ -21,10 +21,10 @@ jobs:
         dotnet-version: 5.0.x
     # Run the tests with code coverage.
     - name: Test with Code Coverage
-      run: dotnet test /p:CollectCoverage=true /p:CoverletOutput=../TestResults/ /p:CoverletOutputFormat=lcov /p:MergeWith=../TestResults/coverlet.info
+      run: dotnet test /p:CollectCoverage=true /p:CoverletOutput=../TestResults/ /p:CoverletOutputFormat=json /p:MergeWith=../TestResults/coverage.json
     # Upload the code coverage report.
     - name: Publish coverage report to coveralls.io   
       uses: coverallsapp/github-action@master   
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }} 
-        path-to-lcov: TestResults/coverage.info 
+        path-to-lcov: TestResults/coverage.json 
