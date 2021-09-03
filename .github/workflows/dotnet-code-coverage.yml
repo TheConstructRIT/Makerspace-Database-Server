@@ -19,12 +19,23 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 5.0.x
+    # Set up NPM (for LCOV merging, coveralls.io does not accept JSON inputs and MergeWith for dotnet test doesn't work for lcov).
+    - name: Set Up Yarn
+      uses: borales/actions-yarn@v2.3.0
+      with:
+        cmd: install
+    # Set up LCOV merge tool.
+    - name: Set Up LCOV merge tool
+      run: yarn add lcov-result-merger
     # Run the tests with code coverage.
     - name: Test with Code Coverage
-      run: dotnet test /p:CollectCoverage=true /p:CoverletOutput=../TestResults/ /p:CoverletOutputFormat=json /p:MergeWith=../TestResults/coverage.json
+      run: dotnet test /p:CollectCoverage=true /p:CoverletOutput=TestResults/ /p:CoverletOutputFormat=lcov
+    # Merge the LCOV files.
+    - name: Merge LCOV files
+      run: ./node_modules/.bin/lcov-result-merger '*/TestResults/coverage.info' 'coverage.info'
     # Upload the code coverage report.
     - name: Publish coverage report to coveralls.io   
       uses: coverallsapp/github-action@master   
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }} 
-        path-to-lcov: TestResults/coverage.json 
+        path-to-lcov: TestResults/coverage.info 
