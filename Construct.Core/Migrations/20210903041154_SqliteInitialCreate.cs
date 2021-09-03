@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Construct.Core.Migrations
 {
+    [ExcludeFromCodeCoverage]
     public partial class SqliteInitialCreate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
