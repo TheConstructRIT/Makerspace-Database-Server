@@ -34,5 +34,15 @@ namespace Construct.Core.Database.Model
         /// Sign up time of the user.
         /// </summary>
         public DateTime? SignUpTime { get; set; }
+        
+        /// <summary>
+        /// Print logs for the user.
+        /// </summary>
+        public List<PrintLog> PrintLogs { get; set; }
+        
+        /// <summary>
+        /// Visit logs for the user.
+        /// </summary>
+        public List<PrintLog> VisitLogs { get; set; }
     }
 }
