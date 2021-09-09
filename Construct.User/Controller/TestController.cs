@@ -22,7 +22,6 @@ namespace Construct.User.Controller
                 HashedId = "test",
                 Name = "John Doe",
                 Email = "test@email.com",
-                Permissions = new List<string>() { "Test" },
                 SignUpTime = DateTime.Now,
             });
             context.SaveChanges();

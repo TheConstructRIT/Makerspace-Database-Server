@@ -28,7 +28,7 @@ namespace Construct.Core.Database.Model
         /// <summary>
         /// Permissions of the user.
         /// </summary>
-        public List<string> Permissions { get; set; }
+        public List<Permission> Permissions { get; set; }
         
         /// <summary>
         /// Sign up time of the user.

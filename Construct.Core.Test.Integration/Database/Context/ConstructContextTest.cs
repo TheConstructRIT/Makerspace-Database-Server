@@ -31,8 +31,20 @@ namespace Construct.Core.Test.Integration.Database.Context
                 HashedId = "test",
                 Name = "Test User",
                 Email = "test@test.com",
-                Permissions = new List<string>() { "Permission1", "Permission2" },
                 SignUpTime = startTime,
+            };
+            user.Permissions = new List<Permission>()
+            {
+                new Permission()
+                {
+                    User = user,
+                    Name = "Permission 1"
+                },
+                new Permission()
+                {
+                    User = user,
+                    Name = "Permission 2"
+                },
             };
             context.Users.Add(user);
             context.VisitLogs.Add(new VisitLog()
@@ -45,13 +57,17 @@ namespace Construct.Core.Test.Integration.Database.Context
             
             // Create a new context and check the stored user is correct.
             await using var readContext = new ConstructContext();
-            var visitLog = readContext.VisitLogs.Include(c => c.User).First(log => log.User.HashedId == "test");
+            var visitLog = readContext.VisitLogs.Include(c => c.User)
+                .ThenInclude(c => c.Permissions)
+                .First(log => log.User.HashedId == "test");
             Assert.AreEqual("Test System", visitLog.Source);
             Assert.AreEqual(startTime, visitLog.Time);
             Assert.AreEqual("test", visitLog.User.HashedId);
             Assert.AreEqual("Test User", visitLog.User.Name);
             Assert.AreEqual("test@test.com", visitLog.User.Email);
-            Assert.AreEqual(new List<string>() { "Permission1", "Permission2" }, visitLog.User.Permissions);
+            Assert.AreEqual(2, visitLog.User.Permissions.Count);
+            Assert.AreEqual("Permission 1", visitLog.User.Permissions[0].Name);
+            Assert.AreEqual("Permission 2", visitLog.User.Permissions[1].Name);
             Assert.AreEqual(startTime, visitLog.User.SignUpTime);
         }
     }

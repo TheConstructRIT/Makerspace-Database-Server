@@ -14,6 +14,11 @@ namespace Construct.Core.Database.Context
         public DbSet<User> Users => this.WrappedContext.Users;
 
         /// <summary>
+        /// Permissions in the database.
+        /// </summary>
+        public DbSet<Permission> Permissions => this.WrappedContext.Permissions;
+
+        /// <summary>
         /// Visit logs in the database.
         /// </summary>
         public DbSet<VisitLog> VisitLogs => this.WrappedContext.VisitLogs;

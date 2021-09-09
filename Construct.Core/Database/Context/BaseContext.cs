@@ -14,6 +14,11 @@ namespace Construct.Core.Database.Context
         /// Users in the database.
         /// </summary>
         public DbSet<User> Users { get; set; }
+        
+        /// <summary>
+        /// Permissions in the database.
+        /// </summary>
+        public DbSet<Permission> Permissions { get; set; }
 
         /// <summary>
         /// Visit logs in the database.
@@ -36,19 +41,6 @@ namespace Construct.Core.Database.Context
         public async Task EnsureUpToDateAsync()
         {
             await Database.MigrateAsync().ConfigureAwait(false);
-        }
-        
-        /// <summary>
-        /// Sets up model creating.
-        /// </summary>
-        /// <param name="builder">Builder for model creating.</param>
-        protected override void OnModelCreating(ModelBuilder builder)
-        {
-            // Set up storing the list of properties.
-            builder.Entity<User>().Property(p => p.Permissions)
-                .HasConversion(
-                    v => JsonConvert.SerializeObject(v),
-                    v => JsonConvert.DeserializeObject<List<string>>(v));
         }
         
         /// <summary>
