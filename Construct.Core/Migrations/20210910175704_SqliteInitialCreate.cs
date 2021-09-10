@@ -28,7 +28,6 @@ namespace Construct.Core.Migrations
                     HashedId = table.Column<string>(type: "TEXT", nullable: false),
                     Name = table.Column<string>(type: "TEXT", nullable: false),
                     Email = table.Column<string>(type: "TEXT", nullable: false),
-                    Permissions = table.Column<string>(type: "TEXT", nullable: true),
                     SignUpTime = table.Column<DateTime>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
@@ -37,12 +36,34 @@ namespace Construct.Core.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Permissions",
+                columns: table => new
+                {
+                    Key = table.Column<long>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    UserHashedId = table.Column<string>(type: "TEXT", nullable: false),
+                    Name = table.Column<string>(type: "TEXT", nullable: false),
+                    StartTime = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    EndTime = table.Column<DateTime>(type: "TEXT", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Permissions", x => x.Key);
+                    table.ForeignKey(
+                        name: "FK_Permissions_Users_UserHashedId",
+                        column: x => x.UserHashedId,
+                        principalTable: "Users",
+                        principalColumn: "HashedId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "PrintLog",
                 columns: table => new
                 {
                     Key = table.Column<long>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    UserHashedId = table.Column<string>(type: "TEXT", nullable: true),
+                    UserHashedId = table.Column<string>(type: "TEXT", nullable: false),
                     Time = table.Column<DateTime>(type: "TEXT", nullable: false),
                     FileName = table.Column<string>(type: "TEXT", nullable: false),
                     MaterialName = table.Column<string>(type: "TEXT", nullable: true),
@@ -65,6 +86,27 @@ namespace Construct.Core.Migrations
                         column: x => x.UserHashedId,
                         principalTable: "Users",
                         principalColumn: "HashedId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Students",
+                columns: table => new
+                {
+                    Key = table.Column<long>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    UserHashedId = table.Column<string>(type: "TEXT", nullable: true),
+                    College = table.Column<string>(type: "TEXT", nullable: true),
+                    Year = table.Column<string>(type: "TEXT", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Students", x => x.Key);
+                    table.ForeignKey(
+                        name: "FK_Students_Users_UserHashedId",
+                        column: x => x.UserHashedId,
+                        principalTable: "Users",
+                        principalColumn: "HashedId",
                         onDelete: ReferentialAction.Restrict);
                 });
 
@@ -74,7 +116,7 @@ namespace Construct.Core.Migrations
                 {
                     Key = table.Column<long>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    UserHashedId = table.Column<string>(type: "TEXT", nullable: true),
+                    UserHashedId = table.Column<string>(type: "TEXT", nullable: false),
                     Source = table.Column<string>(type: "TEXT", nullable: false),
                     Time = table.Column<DateTime>(type: "TEXT", nullable: false)
                 },
@@ -86,8 +128,13 @@ namespace Construct.Core.Migrations
                         column: x => x.UserHashedId,
                         principalTable: "Users",
                         principalColumn: "HashedId",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Permissions_UserHashedId",
+                table: "Permissions",
+                column: "UserHashedId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PrintLog_MaterialName",
@@ -100,6 +147,11 @@ namespace Construct.Core.Migrations
                 column: "UserHashedId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Students_UserHashedId",
+                table: "Students",
+                column: "UserHashedId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_VisitLogs_UserHashedId",
                 table: "VisitLogs",
                 column: "UserHashedId");
@@ -108,7 +160,13 @@ namespace Construct.Core.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "Permissions");
+
+            migrationBuilder.DropTable(
                 name: "PrintLog");
+
+            migrationBuilder.DropTable(
+                name: "Students");
 
             migrationBuilder.DropTable(
                 name: "VisitLogs");

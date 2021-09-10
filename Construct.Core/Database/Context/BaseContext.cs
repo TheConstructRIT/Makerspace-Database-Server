@@ -19,6 +19,11 @@ namespace Construct.Core.Database.Context
         /// Permissions in the database.
         /// </summary>
         public DbSet<Permission> Permissions { get; set; }
+        
+        /// <summary>
+        /// Student information in the database.
+        /// </summary>
+        public DbSet<Student> Students { get; set; }
 
         /// <summary>
         /// Visit logs in the database.

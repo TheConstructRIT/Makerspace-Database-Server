@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Construct.Core.Migrations
 {
     [DbContext(typeof(SqliteContext))]
-    [Migration("20210903041154_SqliteInitialCreate")]
+    [Migration("20210910175704_SqliteInitialCreate")]
     partial class SqliteInitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -17,6 +17,33 @@ namespace Construct.Core.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "5.0.9");
+
+            modelBuilder.Entity("Construct.Core.Database.Model.Permission", b =>
+                {
+                    b.Property<long>("Key")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime?>("EndTime")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("StartTime")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("UserHashedId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Key");
+
+                    b.HasIndex("UserHashedId");
+
+                    b.ToTable("Permissions");
+                });
 
             modelBuilder.Entity("Construct.Core.Database.Model.PrintLog", b =>
                 {
@@ -44,6 +71,7 @@ namespace Construct.Core.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("UserHashedId")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<float>("WeightGrams")
@@ -71,6 +99,28 @@ namespace Construct.Core.Migrations
                     b.ToTable("PrintMaterials");
                 });
 
+            modelBuilder.Entity("Construct.Core.Database.Model.Student", b =>
+                {
+                    b.Property<long>("Key")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("College")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("UserHashedId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Year")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Key");
+
+                    b.HasIndex("UserHashedId");
+
+                    b.ToTable("Students");
+                });
+
             modelBuilder.Entity("Construct.Core.Database.Model.User", b =>
                 {
                     b.Property<string>("HashedId")
@@ -82,9 +132,6 @@ namespace Construct.Core.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Permissions")
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime?>("SignUpTime")
@@ -109,6 +156,7 @@ namespace Construct.Core.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("UserHashedId")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("Key");
@@ -118,6 +166,17 @@ namespace Construct.Core.Migrations
                     b.ToTable("VisitLogs");
                 });
 
+            modelBuilder.Entity("Construct.Core.Database.Model.Permission", b =>
+                {
+                    b.HasOne("Construct.Core.Database.Model.User", "User")
+                        .WithMany("Permissions")
+                        .HasForeignKey("UserHashedId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Construct.Core.Database.Model.PrintLog", b =>
                 {
                     b.HasOne("Construct.Core.Database.Model.PrintMaterial", "Material")
@@ -125,10 +184,21 @@ namespace Construct.Core.Migrations
                         .HasForeignKey("MaterialName");
 
                     b.HasOne("Construct.Core.Database.Model.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserHashedId");
+                        .WithMany("PrintLogs")
+                        .HasForeignKey("UserHashedId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Material");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Construct.Core.Database.Model.Student", b =>
+                {
+                    b.HasOne("Construct.Core.Database.Model.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserHashedId");
 
                     b.Navigation("User");
                 });
@@ -136,10 +206,21 @@ namespace Construct.Core.Migrations
             modelBuilder.Entity("Construct.Core.Database.Model.VisitLog", b =>
                 {
                     b.HasOne("Construct.Core.Database.Model.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserHashedId");
+                        .WithMany("VisitLogs")
+                        .HasForeignKey("UserHashedId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Construct.Core.Database.Model.User", b =>
+                {
+                    b.Navigation("Permissions");
+
+                    b.Navigation("PrintLogs");
+
+                    b.Navigation("VisitLogs");
                 });
 #pragma warning restore 612, 618
         }

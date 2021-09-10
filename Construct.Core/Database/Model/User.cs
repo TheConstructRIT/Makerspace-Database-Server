@@ -43,6 +43,6 @@ namespace Construct.Core.Database.Model
         /// <summary>
         /// Visit logs for the user.
         /// </summary>
-        public List<PrintLog> VisitLogs { get; set; }
+        public List<VisitLog> VisitLogs { get; set; }
     }
 }
