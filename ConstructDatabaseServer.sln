@@ -8,6 +8,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Construct.Core.Test", "Cons
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Construct.Core.Test.Integration", "Construct.Core.Test.Integration\Construct.Core.Test.Integration.csproj", "{3C112C14-7B3F-41F3-93AE-936D03A59B0A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Construct.User.Test.Integration", "Construct.User.Test.Integration\Construct.User.Test.Integration.csproj", "{A144B92E-95E5-44A6-B433-A2F302911EAE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +32,9 @@ Global
 		{3C112C14-7B3F-41F3-93AE-936D03A59B0A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3C112C14-7B3F-41F3-93AE-936D03A59B0A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3C112C14-7B3F-41F3-93AE-936D03A59B0A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A144B92E-95E5-44A6-B433-A2F302911EAE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A144B92E-95E5-44A6-B433-A2F302911EAE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A144B92E-95E5-44A6-B433-A2F302911EAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A144B92E-95E5-44A6-B433-A2F302911EAE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
