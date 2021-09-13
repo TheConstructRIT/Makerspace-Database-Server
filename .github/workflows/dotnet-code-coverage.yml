@@ -29,7 +29,7 @@ jobs:
       run: sudo yarn add lcov-result-merger
     # Run the tests with code coverage.
     - name: Test with Code Coverage
-      run: dotnet test /p:CollectCoverage=true /p:CoverletOutput=TestResults/ /p:CoverletOutputFormat=lcov /p:Exclude="[Construct.Core.Test.*]*"
+      run: dotnet test /p:CollectCoverage=true /p:CoverletOutput=TestResults/ /p:CoverletOutputFormat=lcov /p:Exclude="[*.Test]*"
     # Merge the LCOV files.
     - name: Merge LCOV files
       run: ./node_modules/.bin/lcov-result-merger '*/TestResults/coverage.info' 'coverage.info'
