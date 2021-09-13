@@ -35,6 +35,17 @@ namespace Construct.Core.Test.Integration.Base
         }
 
         /// <summary>
+        /// Adds data to the test database.
+        /// </summary>
+        /// <param name="addData">Action used to add data.</param>
+        public void AddData(Action<ConstructContext> addData)
+        {
+            using var context = new ConstructContext();
+            addData(context);
+            context.SaveChanges();
+        }
+
+        /// <summary>
         /// Tears down the test by clearing the test database.
         /// </summary>
         [TearDown]
