@@ -16,13 +16,19 @@ namespace Construct.User.Test.Integration.Controllers
         /// <summary>
         /// Controller under test.
         /// </summary>
-        private readonly UserController _userController = new UserController()
+        private UserController _userController;
+
+        [SetUp]
+        public void SetUpController()
         {
-            ControllerContext = new ControllerContext()
+            this._userController = new UserController()
             {
-                HttpContext = new DefaultHttpContext()
-            }
-        };
+                ControllerContext = new ControllerContext()
+                {
+                    HttpContext = new DefaultHttpContext()
+                }
+            };
+        }
         
         /// <summary>
         /// Tests the /user/get endpoint with the user not found.
