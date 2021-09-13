@@ -17,7 +17,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Construct.Core.Test.Integration\Construct.Core.Test.Integration.csproj" />
+      <ProjectReference Include="..\Construct.Core.Test\Construct.Core.Test.csproj" />
       <ProjectReference Include="..\Construct.User\Construct.User.csproj" />
     </ItemGroup>
 

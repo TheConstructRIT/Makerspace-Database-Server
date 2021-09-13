@@ -4,7 +4,7 @@ using Construct.Core.Configuration;
 using Construct.Core.Database.Context;
 using NUnit.Framework;
 
-namespace Construct.Core.Test.Integration.Base
+namespace Construct.Core.Test.Functional.Base
 {
     public class BaseSqliteTest
     {

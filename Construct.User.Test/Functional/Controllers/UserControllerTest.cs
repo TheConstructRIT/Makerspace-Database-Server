@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using Construct.Core.Data.Response;
 using Construct.Core.Database.Model;
-using Construct.Core.Test.Integration.Base;
+using Construct.Core.Test.Functional.Base;
 using Construct.User.Controllers;
 using Construct.User.Data.Response;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NUnit.Framework;
 
-namespace Construct.User.Test.Integration.Controllers
+namespace Construct.User.Test.Functional.Controllers
 {
     public class UserControllerTest : BaseSqliteTest
     {

@@ -9,7 +9,7 @@ using Construct.Core.Database.Model;
 using Microsoft.EntityFrameworkCore;
 using NUnit.Framework;
 
-namespace Construct.Core.Test.Integration.Database.Context
+namespace Construct.Core.Test.Functional.Database.Context
 {
     public class ConstructContextCommonTest
     {
