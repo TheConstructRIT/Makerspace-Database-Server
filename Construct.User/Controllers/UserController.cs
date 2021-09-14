@@ -4,6 +4,8 @@ using System.Threading.Tasks;
 using Construct.Core.Attribute;
 using Construct.Core.Data.Response;
 using Construct.Core.Database.Context;
+using Construct.Core.Database.Model;
+using Construct.User.Data.Request;
 using Construct.User.Data.Response;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -13,7 +15,7 @@ namespace Construct.User.Controllers
     public class UserController : Controller
     {
         /// <summary>
-        /// Test request handler to be replaced later.
+        /// Fetches information about an existing user.
         /// </summary>
         /// <param name="hashedId">Hashed id of the user.</param>
         [HttpGet]
@@ -50,22 +52,69 @@ namespace Construct.User.Controllers
         }
         
         /// <summary>
-        /// Test request handler to be replaced later.
+        /// Registers a new user in the system.
         /// </summary>
-        [HttpGet]
-        [Path("/user/test")]
-        public ActionResult<string> Test()
+        /// <param name="request">User information sent to register.</param>
+        [HttpPost]
+        [Path("/user/register")]
+        public async Task<ActionResult<IResponse>> Register([FromBody] RegisterUserRequest request)
         {
-            using var context = new ConstructContext();
-            context.Users.Add(new Core.Database.Model.User()
+            // Return an error if a field is invalid.
+            if (string.IsNullOrEmpty(request.HashedId))
             {
-                HashedId = "test",
-                Name = "John Doe",
-                Email = "test@email.com",
+                Response.StatusCode = 400;
+                return new GenericStatusResponse("missing-hashed-id");
+            }
+            if (string.IsNullOrEmpty(request.Name))
+            {
+                Response.StatusCode = 400;
+                return new GenericStatusResponse("missing-name");
+            }
+            if (string.IsNullOrEmpty(request.Email))
+            {
+                Response.StatusCode = 400;
+                return new GenericStatusResponse("missing-email");
+            }
+            if (string.IsNullOrEmpty(request.College))
+            {
+                Response.StatusCode = 400;
+                return new GenericStatusResponse("missing-college");
+            }
+            if (string.IsNullOrEmpty(request.Year))
+            {
+                Response.StatusCode = 400;
+                return new GenericStatusResponse("missing-year");
+            }
+            
+            // Correct the email and return if it is invalid.
+            // TODO: Implement; requires configuration
+            
+            // Return if the user already exists.
+            await using var context = new ConstructContext();
+            if (await context.Users.FirstOrDefaultAsync(user => user.HashedId == request.HashedId) != null)
+            {
+                Response.StatusCode = 409;
+                return new GenericStatusResponse("duplicate-user");
+            }
+            
+            // Add the user and return success.
+            var user = new Core.Database.Model.User()
+            {
+                HashedId = request.HashedId,
+                Name = request.Name,
+                Email = request.Email,
                 SignUpTime = DateTime.Now,
-            });
-            context.SaveChanges();
-            return context.Users.First().Email;
+            };
+            var student = new Student()
+            {
+                User = user,
+                College = request.College,
+                Year = request.Year,
+            };
+            context.Users.Add(user);
+            context.Students.Add(student);
+            await context.SaveChangesAsync();
+            return new BaseSuccessResponse();
         }
     }
 }

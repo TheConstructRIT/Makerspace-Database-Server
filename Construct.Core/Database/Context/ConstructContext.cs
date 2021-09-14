@@ -12,6 +12,11 @@ namespace Construct.Core.Database.Context
         /// Users in the database.
         /// </summary>
         public DbSet<User> Users => this.WrappedContext.Users;
+        
+        /// <summary>
+        /// Students in the database.
+        /// </summary>
+        public DbSet<Student> Students => this.WrappedContext.Students;
 
         /// <summary>
         /// Permissions in the database.
