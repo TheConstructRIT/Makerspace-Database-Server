@@ -107,6 +107,10 @@ namespace Construct.Core.Test.Functional.Database.Context
             {
                 File.Delete(TestDatabaseLocation);
             }
+            if (File.Exists("database.sqlite"))
+            {
+                File.Delete("database.sqlite");
+            }
         }
         
         /// <summary>
@@ -116,6 +120,45 @@ namespace Construct.Core.Test.Functional.Database.Context
         public async Task TestContext()
         {
             await TestContextAsync();
+        }
+        
+        /// <summary>
+        /// Tests writing and reading data with no source defined.
+        /// </summary>
+        [Test]
+        public async Task TestContextSourceNull()
+        {
+            ConstructConfiguration.Configuration.Database.Source = null;
+            await TestContextAsync();
+        }
+    }
+    
+    public class ConstructContextInvalidTest : ConstructContextCommonTest
+    {
+        /// <summary>
+        /// Tests writing and reading data with a null provider.
+        /// </summary>
+        [Test]
+        public void TestContextNullProvider()
+        {
+            ConstructConfiguration.Configuration.Database.Provider = null;
+            Assert.AreEqual(typeof(InvalidOperationException), Assert.Throws<AggregateException>(() =>
+            {
+                TestContextAsync().Wait();
+            }).GetBaseException().GetType());
+        }
+        
+        /// <summary>
+        /// Tests writing and reading data with an invalid provider.
+        /// </summary>
+        [Test]
+        public void TestContextInvalidProvider()
+        {
+            ConstructConfiguration.Configuration.Database.Provider = "Invalid";
+            Assert.AreEqual(typeof(InvalidOperationException), Assert.Throws<AggregateException>(() =>
+            {
+                TestContextAsync().Wait();
+            }).GetBaseException().GetType());
         }
     }
 }
