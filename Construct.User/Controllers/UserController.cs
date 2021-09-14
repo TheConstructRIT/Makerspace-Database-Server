@@ -27,7 +27,7 @@ namespace Construct.User.Controllers
         {
             // Get the user.
             await using var context = new ConstructContext();
-            var user = await context.Users.Include(user => user.PrintLogs)
+            var user = await context.Users.Include(user => user.PrintLogs).Include(user => user.Permissions)
                 .FirstOrDefaultAsync(user => user.HashedId == hashedId);
             
             // Return not found if the user doesn't exist.
@@ -51,6 +51,7 @@ namespace Construct.User.Controllers
                 Name = user.Name,
                 Email = user.Email,
                 OwedPrintBalance = owedPrintBalance,
+                Permissions = user.Permissions.Where(permission => permission.IsActive()).Select(permission => permission.Name).ToList(),
             };
         }
         

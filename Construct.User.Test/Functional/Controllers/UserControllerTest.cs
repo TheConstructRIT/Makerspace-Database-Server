@@ -79,6 +79,7 @@ namespace Construct.User.Test.Functional.Controllers
             Assert.AreEqual("Test Name", userResponse.Name);
             Assert.AreEqual("test@email", userResponse.Email);
             Assert.AreEqual(0, userResponse.OwedPrintBalance);
+            Assert.AreEqual(0, userResponse.Permissions.Count);
         }
         
         /// <summary>
@@ -149,6 +150,7 @@ namespace Construct.User.Test.Functional.Controllers
             Assert.AreEqual("Test Name", userResponse.Name);
             Assert.AreEqual("test@email", userResponse.Email);
             Assert.AreEqual(0, userResponse.OwedPrintBalance);
+            Assert.AreEqual(0, userResponse.Permissions.Count);
         }
         
         /// <summary>
@@ -219,6 +221,63 @@ namespace Construct.User.Test.Functional.Controllers
             Assert.AreEqual("Test Name", userResponse.Name);
             Assert.AreEqual("test@email", userResponse.Email);
             Assert.That(Math.Abs(userResponse.OwedPrintBalance - 0.5) < 0.001);
+            Assert.AreEqual(0, userResponse.Permissions.Count);
+        }
+        
+        /// <summary>
+        /// Tests the /user/get endpoint with a user with permissions.
+        /// </summary>
+        [Test]
+        public void TestGetPermissions()
+        {
+            // Add the user.
+            this.AddData((context) =>
+            {
+                context.Users.Add(new Core.Database.Model.User()
+                {
+                    HashedId = "test_hash",
+                    Name = "Test Name",
+                    Email = "test@email",
+                    SignUpTime = DateTime.Now,
+                    Permissions = new List<Permission>()
+                    {
+                        new Permission()
+                        {
+                            Name = "Active1",
+                        },
+                        new Permission()
+                        {
+                            Name = "Active2",
+                            StartTime = DateTime.Now.AddSeconds(-10),
+                        },
+                        new Permission()
+                        {
+                            Name = "Active3",
+                            EndTime = DateTime.Now.AddSeconds(10),
+                        },
+                        new Permission()
+                        {
+                            Name = "Expired1",
+                            StartTime = DateTime.Now.AddSeconds(10),
+                        },
+                        new Permission()
+                        {
+                            Name = "Expired2",
+                            EndTime = DateTime.Now.AddSeconds(-10),
+                        },
+                    }
+                });
+            });
+            
+            // Run a request and make sure it returned a not found request.
+            var response = _userController.Get("test_hash").Result.Value;
+            Assert.AreEqual(200, this._userController.Response.StatusCode);
+            var userResponse = (GetUserResponse) response;
+            Assert.AreEqual("success", userResponse.Status);
+            Assert.AreEqual("Test Name", userResponse.Name);
+            Assert.AreEqual("test@email", userResponse.Email);
+            Assert.AreEqual(0, userResponse.OwedPrintBalance);
+            Assert.AreEqual(new List<string>() { "Active1", "Active2", "Active3" }, userResponse.Permissions);
         }
 
         /// <summary>

@@ -1,4 +1,5 @@
-﻿using Construct.Core.Data.Response;
+﻿using System.Collections.Generic;
+using Construct.Core.Data.Response;
 
 namespace Construct.User.Data.Response
 {
@@ -18,5 +19,10 @@ namespace Construct.User.Data.Response
         /// Owed print balance of the user.
         /// </summary>
         public double OwedPrintBalance { get; set; }
+        
+        /// <summary>
+        /// Owed print balance of the user.
+        /// </summary>
+        public List<string> Permissions { get; set; }
     }
 }
