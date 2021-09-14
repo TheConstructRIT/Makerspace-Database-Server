@@ -343,12 +343,23 @@ namespace Construct.User.Test.Functional.Controllers
             Assert.AreEqual("test_hash", student.User.HashedId);
             Assert.AreEqual("Test Name", student.User.Name);
             Assert.AreEqual("test@email", student.User.Email);
-            Assert.That(student.User.SignUpTime.HasValue && ((DateTimeOffset) student.User.SignUpTime).ToUnixTimeSeconds() + 1 > DateTimeOffset.Now.ToUnixTimeSeconds());
+            Assert.That(student.User.SignUpTime.HasValue && ((DateTimeOffset) student.User.SignUpTime).ToUnixTimeSeconds() + 10 > DateTimeOffset.Now.ToUnixTimeSeconds());
             
             // Re-send the request and check it was rejected.
             response = this._userController.Register(request).Result.Value;
             Assert.AreEqual(409, this._userController.Response.StatusCode);
             Assert.AreEqual("duplicate-user", response.Status);
+            
+            // Register another email and check the Student entries have different keys.
+            this._userController.Response.StatusCode = 200;
+            request.HashedId += "_2";
+            response = this._userController.Register(request).Result.Value;
+            Assert.AreEqual(200, this._userController.Response.StatusCode);
+            Assert.AreEqual("success", response.Status);
+
+            var students = context.Students.ToList();
+            Assert.AreEqual(2, students.Count);
+            Assert.AreNotEqual(students[0].Key, students[1].Key);
         }
     }
 }
