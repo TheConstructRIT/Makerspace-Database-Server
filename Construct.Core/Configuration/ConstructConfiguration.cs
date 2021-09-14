@@ -38,6 +38,19 @@ namespace Construct.Core.Configuration
         public string Password { get; set; }
     }
     
+    public class Email
+    {
+        /// <summary>
+        /// Emails that are valid for users.
+        /// </summary>
+        public List<string> ValidEmails { get; set; }= new List<string>();
+
+        /// <summary>
+        /// Changes to make to emails to make them valid.
+        /// </summary>
+        public Dictionary<string, string> EmailCorrections { get; set; } = new Dictionary<string, string>();
+    }
+    
     public class ConstructConfiguration
     {
         /// <summary>
@@ -59,6 +72,11 @@ namespace Construct.Core.Configuration
         /// Logging configuration of the application.
         /// </summary>
         public Logging Logging { get; set; } = new Logging();
+
+        /// <summary>
+        /// Email configuration of the application.
+        /// </summary>
+        public Email Email { get; set; } = new Email();
 
         /// <summary>
         /// Ports used by the services.

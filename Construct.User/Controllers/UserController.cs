@@ -1,10 +1,13 @@
 using System;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Construct.Core.Attribute;
+using Construct.Core.Configuration;
 using Construct.Core.Data.Response;
 using Construct.Core.Database.Context;
 using Construct.Core.Database.Model;
+using Construct.User.Data.Correction;
 using Construct.User.Data.Request;
 using Construct.User.Data.Response;
 using Microsoft.AspNetCore.Mvc;
@@ -87,7 +90,20 @@ namespace Construct.User.Controllers
             }
             
             // Correct the email and return if it is invalid.
-            // TODO: Implement; requires configuration
+            var emailCorrection = new EmailCorrection()
+            {
+                ValidEmails = ConstructConfiguration.Configuration.Email.ValidEmails,
+                Corrections = ConstructConfiguration.Configuration.Email.EmailCorrections,
+            };
+            try
+            {
+                request.Email = emailCorrection.CorrectEmail(request.Email);
+            }
+            catch (InvalidDataException)
+            {
+                Response.StatusCode = 400;
+                return new GenericStatusResponse("invalid-email");
+            }
             
             // Return if the user already exists.
             await using var context = new ConstructContext();

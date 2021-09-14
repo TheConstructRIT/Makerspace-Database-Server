@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Construct.Core.Configuration;
 using Construct.Core.Data.Response;
 using Construct.Core.Database.Context;
 using Construct.Core.Database.Model;
@@ -22,9 +23,14 @@ namespace Construct.User.Test.Functional.Controllers
         /// </summary>
         private UserController _userController;
 
+        /// <summary>
+        /// Sets up the controller.
+        /// </summary>
         [SetUp]
         public void SetUpController()
         {
+            ConstructConfiguration.Configuration.Email.ValidEmails = new List<string>() { "@email" };
+            ConstructConfiguration.Configuration.Email.EmailCorrections = new Dictionary<string, string>() { {"@test.email", "@email"} };
             this._userController = new UserController()
             {
                 ControllerContext = new ControllerContext()
@@ -301,7 +307,11 @@ namespace Construct.User.Test.Functional.Controllers
             request.Year = "Test Year";
             
             // Test invalid emails.
-            // TODO: Not implemented.
+            request.Email = "test@invalid-email";
+            this._userController.Response.StatusCode = 200;
+            response = this._userController.Register(request).Result.Value;
+            Assert.AreEqual(400, this._userController.Response.StatusCode);
+            Assert.AreEqual("invalid-email", response.Status);
         }
 
         /// <summary>
@@ -315,7 +325,7 @@ namespace Construct.User.Test.Functional.Controllers
             {
                 HashedId = "test_hash",
                 Name = "Test Name",
-                Email = "test@email",
+                Email = "test@test.email",
                 College = "Test School",
                 Year = "Test Year",
             };
