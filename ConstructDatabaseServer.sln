@@ -12,6 +12,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Construct.Swipe", "Construc
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Construct.Swipe.Test", "Construct.Swipe.Test\Construct.Swipe.Test.csproj", "{B77539C7-B601-446B-8DE7-49977AB83F1E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Construct.Combined", "Construct.Combined\Construct.Combined.csproj", "{8A51A66B-79FC-4169-AE6D-7943DE215E37}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -42,5 +44,9 @@ Global
 		{B77539C7-B601-446B-8DE7-49977AB83F1E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B77539C7-B601-446B-8DE7-49977AB83F1E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B77539C7-B601-446B-8DE7-49977AB83F1E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8A51A66B-79FC-4169-AE6D-7943DE215E37}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8A51A66B-79FC-4169-AE6D-7943DE215E37}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8A51A66B-79FC-4169-AE6D-7943DE215E37}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8A51A66B-79FC-4169-AE6D-7943DE215E37}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
