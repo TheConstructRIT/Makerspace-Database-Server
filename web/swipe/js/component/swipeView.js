@@ -33,7 +33,7 @@ class SwipeView extends React.Component {
             if (buffer[10] != "=") return;
             if (buffer[15] != "?") return;
             var id = buffer.match(/(\d+)/)[0];
-            this.handleId(id);
+            this.handleId(sha256(id));
           }, false);
 
         // Wrap the methods.
@@ -74,67 +74,56 @@ class SwipeView extends React.Component {
         // Send the information request.
         let swipeView = this;
         $.ajax({
-            url: "/name?" + $.param({
-                universityId: id,
+            url: "/user/get?" + $.param({
+                hashedId: id,
             }),
             cache: false,
-            success: function(result) {
-                result = JSON.parse(result);
-                if (result.result == "success" && result.name != null) {
+            success: function(userResult) {
+                if (userResult.status == "success" && userResult.name != null) {
                     // Add the swipe log.
                     $.ajax({
                         type: "POST",
-                        url: "/appendswipelog?" + $.param({
-                            "universityId": id,
+                        url: "/swipe/add",
+                        data: JSON.stringify({ 
+                            hashedId: id,
+                            source: "MainLab",
                         }),
-                        data: "",
+                        contentType: "application/json; charset=utf-8",
+                        dataType: "json",
                         cache: false,
-                        success: function(data){
-                            // Store the name and get the balance.
-                            swipeView.state.currentName = result.name;
-                            $.ajax({
-                                url: "/userbalance?" + $.param({
-                                    universityId: id,
-                                }),
-                                cache: false,
-                                success: function(result) {
-                                    result = JSON.parse(result);
-                                    if (result.result == "success") {
-                                        // Store the balance and display the result.
-                                        swipeView.state.currentBalance = result.balance;
-                                        if (swipeView.state.currentBalance != null && swipeView.state.currentBalance > 0) {
-                                            swipeView.setStatusThenReset("displayUser", 4);
-                                        } else {
-                                            swipeView.setStatusThenReset("displayUser", 2);
-                                        }
-                                    } else {
-                                        // Display an error occured.
-                                        swipeView.setStatusThenReset("error", 4);
-                                    }
-                                },
-                                error: function() {
-                                    // Display an error occured.
-                                    swipeView.setStatusThenReset("error", 4);
-                                }
-                            });
+                        success: function() {
+                            // Store the name and balance and display the result.
+                            swipeView.state.currentName = userResult.name;
+                            swipeView.state.currentBalance = userResult.owedPrintBalance;
+                            if (swipeView.state.currentBalance != null && swipeView.state.currentBalance > 0) {
+                                swipeView.setStatusThenReset("displayUser", 4);
+                            } else {
+                                swipeView.setStatusThenReset("displayUser", 2);
+                            }
                         },
-                        error: function(data) {
+                        error: function() {
                             // Display an error occured.
                             swipeView.setStatusThenReset("error", 4);
                         }
                     });
                 } else {
+                    // Display an error occured.
+                    // HTTP 404 is returned if the user doesn't exist.
+                    swipeView.setStatusThenReset("error", 4);
+                }
+            },
+            error: function(xhr) {
+                if (xhr.status == 404 && xhr.responseJSON != null && xhr.responseJSON.status == "not-found") {
                     // Prompt the form.
                     staticApp.state.currentId = id;
                     swipeView.setStatusThenReset("form", 2);
                     setTimeout(function() {
                         staticApp.setVisibleView("form");
                     }, 1000);
+                } else {
+                    // Display an error occured.
+                    swipeView.setStatusThenReset("error", 4);
                 }
-            },
-            error: function() {
-                // Display an error occured.
-                swipeView.setStatusThenReset("error", 4);
             }
         });
     }
