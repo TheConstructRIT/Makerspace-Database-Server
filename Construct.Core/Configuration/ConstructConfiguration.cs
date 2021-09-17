@@ -84,6 +84,7 @@ namespace Construct.Core.Configuration
         public Dictionary<string, int> Ports = new Dictionary<string, int>()
         {
             { "User", 8001 },
+            { "Swipe", 8001 },
         };
 
         /// <summary>

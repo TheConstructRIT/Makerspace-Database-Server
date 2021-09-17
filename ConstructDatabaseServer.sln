@@ -8,6 +8,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Construct.Core.Test", "Cons
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Construct.User.Test", "Construct.User.Test\Construct.User.Test.csproj", "{A144B92E-95E5-44A6-B433-A2F302911EAE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Construct.Swipe", "Construct.Swipe\Construct.Swipe.csproj", "{A027807A-3452-4E13-95AD-D7B5E97A3AB7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +32,9 @@ Global
 		{A144B92E-95E5-44A6-B433-A2F302911EAE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A144B92E-95E5-44A6-B433-A2F302911EAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A144B92E-95E5-44A6-B433-A2F302911EAE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A027807A-3452-4E13-95AD-D7B5E97A3AB7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A027807A-3452-4E13-95AD-D7B5E97A3AB7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A027807A-3452-4E13-95AD-D7B5E97A3AB7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A027807A-3452-4E13-95AD-D7B5E97A3AB7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

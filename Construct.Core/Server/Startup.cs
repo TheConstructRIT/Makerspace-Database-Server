@@ -1,12 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using Construct.Core.Attribute;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 
 namespace Construct.Core.Server
@@ -86,7 +88,19 @@ namespace Construct.Core.Server
             if (environment.IsDevelopment())
             {
                 Log.Trace("Enabling exception pages for developing.");
-                app.UseDeveloperExceptionPage();
+            }
+            app.UseDeveloperExceptionPage();
+
+            // Set up the static files.
+            var staticFiles = Path.GetFullPath("web");
+            if (Directory.Exists(staticFiles))
+            {
+                Log.Debug($"Setting up static files at {staticFiles}.");
+                app.UseStaticFiles(new StaticFileOptions
+                {
+                    FileProvider = new PhysicalFileProvider(staticFiles),
+                    RequestPath = "",
+                });
             }
 
             // Add the MVC controllers.
@@ -113,6 +127,29 @@ namespace Construct.Core.Server
                         new {controller = controllerName, action = handlerMethod.Name});
                 }
             });
+
+            // Set up returning index.html for paths.
+            // Done after the MVC setup so that controllers can handle requests first.
+            if (Directory.Exists(staticFiles))
+            {
+                app.Use(async (context, next) =>
+                {
+                    // Get the index.html for the path.
+                    var path = context.Request.Path.ToString().Substring(1);
+                    var indexHtml = Path.Combine(staticFiles, path, "index.html");
+                    
+                    // Send the file if it is found.
+                    if (File.Exists(indexHtml))
+                    {
+                        context.Response.Headers.Add("Content-Type", "text/html");
+                        await context.Response.Body.WriteAsync(await File.ReadAllBytesAsync(indexHtml));
+                        return;
+                    }
+                    
+                    // Continue to the next route.
+                    await next.Invoke();
+                });
+            }
         }
     }
 }

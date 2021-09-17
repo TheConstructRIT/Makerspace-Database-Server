@@ -1,0 +1,121 @@
+/*
+ * Generic
+ */
+span,div {
+    font-family: Nunito, Arial, Helvetica, sans-serif;
+    font-weight: bold;
+    color: #FFFFFF;
+}
+
+input,select,option {
+    font-family: Nunito, Arial, Helvetica, sans-serif;
+}
+
+.Beveled {
+    border-radius: 0.1cm;
+}
+
+div {
+    margin: 0px;
+}
+
+html,body,div#root {
+    width: 100%;
+    height: 100%;
+    margin: 0px;
+}
+
+div.View {
+    background-color: #F27326;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    transition-duration: 500ms;
+}
+
+/*
+ * Swipe Window
+ */
+span.SwipeText,span.SignUpFormText {
+    position: absolute;
+    left: 0px;
+    width: 100%;
+    text-align: center;
+}
+
+img.SwipeLogo {
+    position: absolute;
+    top: 60px;
+    width: 500px;
+    height: 500px;
+    left: calc(50% - 250px)
+}
+
+/*
+ * Sign-up Form
+ */
+input.SignUpTextBox {
+    position: absolute;
+    left: calc(50% - 150px);
+    width: 300px;
+    border-radius: 2px;
+    font-size: 18px;
+}
+
+select.SignUpDropDown {
+    position: absolute;
+    left: calc(50% - 125px);
+    width: 250px;
+    border-radius: 2px;
+    font-size: 18px;
+}
+
+button.SignUpButton {
+    position: absolute;
+    left: calc(50% - 60px);
+    width: 120px;
+    border-radius: 4px;
+    font-size: 18px;
+}
+
+/*
+ * Focus Block
+ */
+div.FocusBlock {
+    position: fixed;
+    left: 0px;
+    top: 0px;
+    height: 100%;
+    width: 100%;
+    z-index: 100;
+    transition-duration: 250ms;
+}
+
+div.FocusBlockOpague {
+    background-color: rgba(0, 0, 0, 0.75);
+}
+
+
+div.FocusBlockTransparent {
+    background-color: rgba(0, 0, 0, 0);
+    visibility: hidden;
+}
+
+span.FocusBlockText {
+    width: 100%;
+    position: fixed;
+    bottom: 20px;
+    text-align: center;
+    z-index: 101;
+    font-size: 24px;
+    transition-duration: 250ms;
+}
+
+span.FocusBlockTextOpague { 
+    color: rgba(255, 255, 255, 1);
+}
+
+span.FocusBlockTextTransparent { 
+    color: rgba(255, 255, 255, 0);
+    visibility: hidden;
+}
