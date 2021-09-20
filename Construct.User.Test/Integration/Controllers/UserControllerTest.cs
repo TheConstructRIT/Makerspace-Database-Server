@@ -16,6 +16,7 @@ namespace Construct.User.Test.Integration.Controllers
         public void SetUpProgram()
         {
             this.StartProgram<Program>();
+            this.WaitForApp("User");
         }
         
         /// <summary>
