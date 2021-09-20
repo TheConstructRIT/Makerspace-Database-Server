@@ -1,6 +1,6 @@
 namespace Construct.Swipe.Data.Request
 {
-    public class AddBody
+    public class AddRequest
     {
         /// <summary>
         /// Hashed id of the user.
