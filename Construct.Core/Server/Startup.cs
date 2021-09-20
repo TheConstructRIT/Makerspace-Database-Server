@@ -15,6 +15,11 @@ namespace Construct.Core.Server
     public class Startup
     {
         /// <summary>
+        /// LifeTime of the application.
+        /// </summary>
+        public static IHostApplicationLifetime LifeTime { get; private set; }
+        
+        /// <summary>
         /// Returns the request handler methods in given type.
         /// The returned list of pairs is the path and method for the handler.
         /// </summary>
@@ -81,8 +86,12 @@ namespace Construct.Core.Server
         /// </summary>
         /// <param name="app">App to configure.</param>
         /// <param name="environment">Environment to configure.</param>
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment environment)
+        /// <param name="lifeTime">Application lifetime of the app.</param>
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment environment, IHostApplicationLifetime lifeTime)
         {
+            // Store the application lifetime.
+            LifeTime = lifeTime;
+            
             // Set up developer exceptions when in development.
             if (environment.IsDevelopment())
             {

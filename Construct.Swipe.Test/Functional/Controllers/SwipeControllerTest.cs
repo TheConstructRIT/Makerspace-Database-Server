@@ -1,8 +1,7 @@
 using System;
 using System.Linq;
+using Construct.Base.Test.Functional.Base;
 using Construct.Core.Database.Context;
-using Construct.Core.Database.Model;
-using Construct.Core.Test.Functional.Base;
 using Construct.Swipe.Controllers;
 using Construct.Swipe.Data.Request;
 using Microsoft.AspNetCore.Http;

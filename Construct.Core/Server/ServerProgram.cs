@@ -10,6 +10,12 @@ namespace Construct.Core.Server
     public class ServerProgram
     {
         /// <summary>
+        /// Host of the application.
+        /// Only intended to be accessed by tests.
+        /// </summary>
+        public static IHost ProgramHost { get; private set; }
+        
+        /// <summary>
         /// Runs the server program.
         /// </summary>
         /// <param name="args">Arguments from the command line.</param>
@@ -59,6 +65,15 @@ namespace Construct.Core.Server
             // Start the server.
             Log.Info($"Starting server on port {port}.");
             host.Run();
+        }
+
+        /// <summary>
+        /// Stops the host.
+        /// </summary>
+        public static void Stop()
+        {
+            Log.Info("Stopping application.");
+            Startup.LifeTime.StopApplication();
         }
     }
 }

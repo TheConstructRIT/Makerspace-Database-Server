@@ -5,7 +5,7 @@ using Construct.Core.Configuration;
 using Construct.Core.Data.Response;
 using Construct.Core.Database.Context;
 using Construct.Core.Database.Model;
-using Construct.Core.Test.Functional.Base;
+using Construct.Base.Test.Functional.Base;
 using Construct.User.Controllers;
 using Construct.User.Data.Request;
 using Construct.User.Data.Response;

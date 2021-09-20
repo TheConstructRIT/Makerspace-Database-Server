@@ -89,6 +89,19 @@ namespace Construct.Core.Configuration
         };
 
         /// <summary>
+        /// Saves the configuration.
+        /// </summary>
+        /// <param name="fileLocation">Location of the configuration.</param>
+        public async Task SaveAsync(string fileLocation = FileLocation)
+        {
+            if (File.Exists(fileLocation))
+            {
+                File.Delete(fileLocation);
+            }
+            await File.WriteAllTextAsync(FileLocation, JsonConvert.SerializeObject(this));
+        }
+
+        /// <summary>
         /// Loads a configuration.
         /// </summary>
         /// <param name="fileLocation">Location of the configuration.</param>
