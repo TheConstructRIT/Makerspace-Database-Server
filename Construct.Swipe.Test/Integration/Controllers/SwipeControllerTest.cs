@@ -49,7 +49,7 @@ namespace Construct.Swipe.Test.Integration.Controllers
             var (addResponse, addResponseCode) = this.Post<GenericStatusResponse>("Swipe", "/swipe/add", addRequest);
             Assert.AreEqual(HttpStatusCode.OK, addResponseCode);
             Assert.AreEqual("success",addResponse.Status);
-            this.Post<GenericStatusResponse>("Swipe", "/swipe/add", addRequest);
+            (addResponse, addResponseCode) = this.Post<GenericStatusResponse>("Swipe", "/swipe/add", addRequest);
             Assert.AreEqual(HttpStatusCode.OK, addResponseCode);
             Assert.AreEqual("success",addResponse.Status);
             
