@@ -53,7 +53,7 @@ namespace Construct.Base.Test.Integration.Base
                     this.Get<string>(name, "/");
                     break;
                 }
-                catch (SocketException)
+                catch (AggregateException)
                 {
                     // Let the loop run again until a socket exception doesn't happen.
                 }
