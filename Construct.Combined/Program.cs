@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Construct.Compatibility.Controllers;
 using Construct.Core.Server;
 using Construct.Swipe.Controllers;
 using Construct.User.Controllers;
@@ -23,6 +24,8 @@ namespace Construct.Combined
                 typeof(UserController),
                 // Construct.Swipe reference
                 typeof(SwipeController),
+                // Construct.Compatibility reference
+                typeof(CompatibilityController),
             };
             
             // Start the app.

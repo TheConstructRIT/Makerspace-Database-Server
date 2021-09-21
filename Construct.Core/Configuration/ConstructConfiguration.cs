@@ -86,6 +86,7 @@ namespace Construct.Core.Configuration
             { "Combined", 8000 },
             { "User", 8001 },
             { "Swipe", 8002 },
+            { "Compatibility", 8003 },
         };
 
         /// <summary>
