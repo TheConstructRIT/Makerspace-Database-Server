@@ -18,7 +18,7 @@ namespace Construct.Swipe.Controllers
         /// <param name="request">Swipe information sent to add.</param>
         [HttpPost]
         [Path("/swipe/add")]
-        public async Task<ActionResult<IResponse>> Add([FromBody] AddBody request)
+        public async Task<ActionResult<IResponse>> Add([FromBody] AddRequest request)
         {
             // Return an error if a field is invalid.
             if (string.IsNullOrEmpty(request.HashedId))

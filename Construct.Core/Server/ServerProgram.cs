@@ -11,12 +11,6 @@ namespace Construct.Core.Server
     public class ServerProgram
     {
         /// <summary>
-        /// Host of the application.
-        /// Only intended to be accessed by tests.
-        /// </summary>
-        public static IHost ProgramHost { get; private set; }
-        
-        /// <summary>
         /// Runs the server program.
         /// </summary>
         /// <param name="args">Arguments from the command line.</param>

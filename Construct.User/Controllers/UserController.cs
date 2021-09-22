@@ -117,7 +117,7 @@ namespace Construct.User.Controllers
             // Add the user and return success.
             var user = new Core.Database.Model.User()
             {
-                HashedId = request.HashedId,
+                HashedId = request.HashedId.ToLower(),
                 Name = request.Name,
                 Email = request.Email,
                 SignUpTime = DateTime.Now,

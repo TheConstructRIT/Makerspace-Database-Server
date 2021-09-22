@@ -51,7 +51,7 @@ namespace Construct.Swipe.Test.Functional.Controllers
             });
             
             // Create the request.
-            var request = new AddBody()
+            var request = new AddRequest()
             {
                 HashedId = "test_hash",
                 Source = "test_source"
@@ -78,7 +78,7 @@ namespace Construct.Swipe.Test.Functional.Controllers
         public void TestAddErrors()
         {
             // Create the base response.
-            var request = new AddBody()
+            var request = new AddRequest()
             {
                 HashedId = "test_hash",
                 Source = "test_source"

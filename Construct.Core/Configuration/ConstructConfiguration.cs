@@ -67,26 +67,27 @@ namespace Construct.Core.Configuration
         /// <summary>
         /// Database configuration of the application.
         /// </summary>
-        public Database Database { get; set; } = new Database();
+        public Database Database { get; } = new Database();
 
         /// <summary>
         /// Logging configuration of the application.
         /// </summary>
-        public Logging Logging { get; set; } = new Logging();
+        public Logging Logging { get; } = new Logging();
 
         /// <summary>
         /// Email configuration of the application.
         /// </summary>
-        public Email Email { get; set; } = new Email();
+        public Email Email { get; } = new Email();
 
         /// <summary>
         /// Ports used by the services.
         /// </summary>
-        public Dictionary<string, int> Ports = new Dictionary<string, int>()
+        public Dictionary<string, int> Ports { get; } = new Dictionary<string, int>()
         {
             { "Combined", 8000 },
             { "User", 8001 },
             { "Swipe", 8002 },
+            { "Compatibility", 8003 },
         };
 
         /// <summary>
@@ -99,7 +100,13 @@ namespace Construct.Core.Configuration
             {
                 File.Delete(fileLocation);
             }
-            await File.WriteAllTextAsync(FileLocation, JsonConvert.SerializeObject(this));
+            var defaultConfiguration = JsonConvert.SerializeObject(this,
+                new JsonSerializerSettings()
+                {
+                    Formatting = Formatting.Indented,
+                    Converters = new List<JsonConverter>() { new StringEnumConverter() },
+                });
+            await File.WriteAllTextAsync(fileLocation, defaultConfiguration);
         }
 
         /// <summary>
@@ -113,13 +120,7 @@ namespace Construct.Core.Configuration
             if (!File.Exists(fileLocation))
             {
                 Log.Warn($"Configuration file {fileLocation} not found. Writing default.");
-                var defaultConfiguration = JsonConvert.SerializeObject(new ConstructConfiguration(),
-                    new JsonSerializerSettings()
-                    {
-                        Formatting = Formatting.Indented,
-                        Converters = new List<JsonConverter>() { new StringEnumConverter() },
-                    });
-                await File.WriteAllTextAsync(fileLocation, defaultConfiguration);
+                await new ConstructConfiguration().SaveAsync();
             }
             
             // Read and return the configuration.

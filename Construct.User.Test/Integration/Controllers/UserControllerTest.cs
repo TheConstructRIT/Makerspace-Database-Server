@@ -16,13 +16,14 @@ namespace Construct.User.Test.Integration.Controllers
         public void SetUpProgram()
         {
             this.StartProgram<Program>();
+            this.WaitForApp("User");
         }
         
         /// <summary>
         /// Tests registering and getting a user.
         /// </summary>
         [Test]
-        public void RegisterUser()
+        public void TestRegisterUser()
         {
             // Register a user.
             var userRequest = new RegisterUserRequest()
@@ -55,7 +56,7 @@ namespace Construct.User.Test.Integration.Controllers
         /// Tests registering duplicate users.
         /// </summary>
         [Test]
-        public void RegisterUserDuplicate()
+        public void TestRegisterUserDuplicate()
         {
             // Register a user.
             var userRequest = new RegisterUserRequest()
@@ -84,7 +85,7 @@ namespace Construct.User.Test.Integration.Controllers
         /// Tests getting a user that isn't registered.
         /// </summary>
         [Test]
-        public void GetUserNotFound()
+        public void TestGetUserNotFound()
         {
             // Get the user and check that it was not found.
             var (getResponse, getResponseCode) = this.Get<GenericStatusResponse>("User", "/user/get?hashedid=test_hash");

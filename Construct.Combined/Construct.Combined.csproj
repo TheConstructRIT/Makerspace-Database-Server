@@ -6,6 +6,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\Construct.Compatibility\Construct.Compatibility.csproj" />
       <ProjectReference Include="..\Construct.Core\Construct.Core.csproj" />
       <ProjectReference Include="..\Construct.Swipe\Construct.Swipe.csproj" />
       <ProjectReference Include="..\Construct.User\Construct.User.csproj" />

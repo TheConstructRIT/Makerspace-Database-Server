@@ -36,9 +36,27 @@ namespace Construct.Base.Test.Integration.Base
             {
                 typeof(T).GetMethod("Main")?.Invoke(null, new object[] {Array.Empty<string>()});
             });
-            while (Startup.LifeTime == null)
+        }
+
+        /// <summary>
+        /// Waits for the application to become responsive.
+        /// </summary>
+        /// <param name="name">Name of the application to test.</param>
+        public void WaitForApp(string name)
+        {
+            // Send requests until a non-socket exception is returned.
+            // A loop isn't required on Windows most of the time, but is on other operating systems.
+            while (true)
             {
-                Task.Delay(50).Wait();
+                try
+                {
+                    this.Get<string>(name, "/");
+                    break;
+                }
+                catch (AggregateException)
+                {
+                    // Let the loop run again until a socket exception doesn't happen.
+                }
             }
         }
 

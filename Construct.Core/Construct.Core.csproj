@@ -16,8 +16,4 @@
       <PackageReference Include="Nexus.Logging" Version="1.0.0" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Data\Request" />
-    </ItemGroup>
-
 </Project>
