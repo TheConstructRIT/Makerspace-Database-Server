@@ -1,9 +1,10 @@
 using System.Collections.Generic;
+using Construct.Core.Logging;
 using Microsoft.Extensions.Logging;
 using Nexus.Logging.Output;
 using NUnit.Framework;
 
-namespace Construct.Core.Test
+namespace Construct.Core.Test.Logging
 {
     public class TestOutput : IOutput
     {

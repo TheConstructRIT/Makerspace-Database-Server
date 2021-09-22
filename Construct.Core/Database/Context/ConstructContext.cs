@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 using Construct.Core.Configuration;
 using Construct.Core.Database.Model;
+using Construct.Core.Logging;
 using Microsoft.EntityFrameworkCore;
 
 namespace Construct.Core.Database.Context

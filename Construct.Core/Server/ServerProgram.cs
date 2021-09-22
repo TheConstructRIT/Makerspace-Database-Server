@@ -1,6 +1,7 @@
 using System;
 using Construct.Core.Configuration;
 using Construct.Core.Database.Context;
+using Construct.Core.Logging;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;

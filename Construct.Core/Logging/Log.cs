@@ -4,7 +4,7 @@ using Nexus.Logging;
 using Nexus.Logging.Attribute;
 using Nexus.Logging.Output;
 
-namespace Construct.Core
+namespace Construct.Core.Logging
 {
     public class Log
     {

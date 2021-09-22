@@ -1,4 +1,5 @@
 using Construct.Core.Configuration;
+using Construct.Core.Logging;
 using Microsoft.EntityFrameworkCore;
 
 namespace Construct.Core.Database.Context
