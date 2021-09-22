@@ -12,6 +12,11 @@ namespace Construct.Core.Logging
         /// Logger used for logging messages.
         /// </summary>
         public static Logger Logger { get; set; }
+        
+        /// <summary>
+        /// Identifier used by the logger.
+        /// </summary>
+        public static string Identifer { get; private set; }
 
         /// <summary>
         /// Minimum log level for the console output.
@@ -27,6 +32,7 @@ namespace Construct.Core.Logging
             if (Logger != null) return;
             
             // Set up the console output.
+            Identifer = identifier;
             var consoleLogger = new ConsoleOutput()
             {
                 IncludeDate = true,
