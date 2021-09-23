@@ -39,7 +39,8 @@ namespace Construct.Core.Test.Logging
         /// </summary>
         /// <param name="message">Message to log. Can be an object, like an exception.</param>
         /// <param name="level">Log level to output with.</param>
-        public void LogMessage(object message, LogLevel level)
+        /// <param name="overridePostfix">Override postfix to use.</param>
+        public void LogMessage(object message, LogLevel level, string overridePostfix)
         {
             this.Messages.Add((message, level));
         }

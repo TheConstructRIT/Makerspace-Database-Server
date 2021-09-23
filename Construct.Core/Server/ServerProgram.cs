@@ -49,8 +49,7 @@ namespace Construct.Core.Server
             // Build the app.
             Log.Debug("Preparing server.");
             var host = Host.CreateDefaultBuilder(args)
-                .ConfigureLogging(logging => logging.ClearProviders()
-                    .AddProvider(new LogProvider()))
+                .ConfigureLogging(logging => logging.ClearProviders().AddProvider(Log.Logger))
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>()
