@@ -21,15 +21,11 @@ namespace Construct.Swipe.Controllers
         public async Task<ActionResult<IResponse>> Add([FromBody] AddRequest request)
         {
             // Return an error if a field is invalid.
-            if (string.IsNullOrEmpty(request.HashedId))
+            var validationErrorResponse = request.GetValidationErrorResponse();
+            if (validationErrorResponse != null)
             {
                 Response.StatusCode = 400;
-                return new GenericStatusResponse("missing-hashed-id");
-            }
-            if (string.IsNullOrEmpty(request.Source))
-            {
-                Response.StatusCode = 400;
-                return new GenericStatusResponse("missing-source");
+                return new ActionResult<IResponse>(validationErrorResponse);
             }
             
             // Return if the user doesn't exist.

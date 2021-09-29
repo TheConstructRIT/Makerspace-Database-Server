@@ -63,30 +63,11 @@ namespace Construct.User.Controllers
         public async Task<ActionResult<IResponse>> Register([FromBody] RegisterUserRequest request)
         {
             // Return an error if a field is invalid.
-            if (string.IsNullOrEmpty(request.HashedId))
+            var validationErrorResponse = request.GetValidationErrorResponse();
+            if (validationErrorResponse != null)
             {
                 Response.StatusCode = 400;
-                return new GenericStatusResponse("missing-hashed-id");
-            }
-            if (string.IsNullOrEmpty(request.Name))
-            {
-                Response.StatusCode = 400;
-                return new GenericStatusResponse("missing-name");
-            }
-            if (string.IsNullOrEmpty(request.Email))
-            {
-                Response.StatusCode = 400;
-                return new GenericStatusResponse("missing-email");
-            }
-            if (string.IsNullOrEmpty(request.College))
-            {
-                Response.StatusCode = 400;
-                return new GenericStatusResponse("missing-college");
-            }
-            if (string.IsNullOrEmpty(request.Year))
-            {
-                Response.StatusCode = 400;
-                return new GenericStatusResponse("missing-year");
+                return new ActionResult<IResponse>(validationErrorResponse);
             }
             
             // Correct the email and return if it is invalid.
