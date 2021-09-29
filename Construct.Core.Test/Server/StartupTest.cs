@@ -45,20 +45,25 @@ namespace Construct.Core.Test.Server
     public class StartupTest
     {
         /// <summary>
-        /// Tests the GetRequestHandlerMethods method with types.
+        /// Tests the GetRequestHandlerMethods method with types with single paths.
         /// </summary>
         [Test]
-        public void TestGetRequestHandlerMethodsTypes()
+        public void TestGetRequestHandlerMethodsTypesSinglePaths()
         {
-            // Test with single paths.
             var singlePaths = Startup.GetRequestHandlerMethods(typeof(SinglePathController));
             Assert.AreEqual(2, singlePaths.Count);
             Assert.AreEqual(singlePaths[0].Item1, "/test1");
             Assert.AreEqual(singlePaths[0].Item2.Name, "Test1");
             Assert.AreEqual(singlePaths[1].Item1, "/test2");
             Assert.AreEqual(singlePaths[1].Item2.Name, "Test2");
-            
-            // Test with multiple paths.
+        }
+        
+        /// <summary>
+        /// Tests the GetRequestHandlerMethods method with types with multiple paths.
+        /// </summary>
+        [Test]
+        public void TestGetRequestHandlerMethodsTypesMultiplePaths()
+        {
             var multiplePaths = Startup.GetRequestHandlerMethods(typeof(MultiplePathController));
             Assert.AreEqual(5, multiplePaths.Count);
             Assert.AreEqual(multiplePaths[0].Item1, "/test3/1");

@@ -28,7 +28,7 @@ namespace Construct.User.Controllers
             // Get the user.
             await using var context = new ConstructContext();
             var user = await context.Users.Include(user => user.PrintLogs).Include(user => user.Permissions)
-                .FirstOrDefaultAsync(user => user.HashedId == hashedId);
+                .FirstOrDefaultAsync(user => user.HashedId.ToLower() == hashedId.ToLower());
             
             // Return not found if the user doesn't exist.
             if (user == null)
@@ -108,7 +108,7 @@ namespace Construct.User.Controllers
             
             // Return if the user already exists.
             await using var context = new ConstructContext();
-            if (await context.Users.FirstOrDefaultAsync(user => user.HashedId == request.HashedId) != null)
+            if (await context.Users.FirstOrDefaultAsync(user => user.HashedId.ToLower() == request.HashedId.ToLower() || user.Email.ToLower() == request.Email) != null)
             {
                 Response.StatusCode = 409;
                 return new GenericStatusResponse("duplicate-user");

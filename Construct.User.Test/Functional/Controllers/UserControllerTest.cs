@@ -24,11 +24,25 @@ namespace Construct.User.Test.Functional.Controllers
         private UserController _userController;
 
         /// <summary>
+        /// Register user request used for the tests.
+        /// </summary>
+        private RegisterUserRequest _registerUserRequest;
+        
+        /// <summary>
         /// Sets up the controller.
         /// </summary>
         [SetUp]
         public void SetUpController()
         {
+            this._registerUserRequest = new RegisterUserRequest()
+            {
+                HashedId = "test_hash",
+                Name = "Test Name",
+                Email = "test@email",
+                College = "Test School",
+                Year = "Test Year",
+            };
+            
             ConstructConfiguration.Configuration.Email.ValidEmails = new List<string>() { "@email" };
             ConstructConfiguration.Configuration.Email.EmailCorrections = new Dictionary<string, string>() { {"@test.email", "@email"} };
             this._userController = new UserController()
@@ -281,96 +295,135 @@ namespace Construct.User.Test.Functional.Controllers
         }
 
         /// <summary>
-        /// Tests the /user/register endpoint with missing or invalid data.
+        /// Tests the /user/register endpoint with a null HashedId.
         /// </summary>
         [Test]
-        public void TestRegisterErrors()
+        public void TestRegisterNullHashedId()
         {
-            // Create the base response.
-            var request = new RegisterUserRequest()
-            {
-                HashedId = "test_hash",
-                Name = "Test Name",
-                Email = "test@email",
-                College = "Test School",
-                Year = "Test Year",
-            };
-            
-            // Test the HashedId field.
-            request.HashedId = null;
-            var response = this._userController.Register(request).Result.Value;
+            this._registerUserRequest.HashedId = null;
+            var response = this._userController.Register(this._registerUserRequest).Result.Value;
             Assert.AreEqual(400, this._userController.Response.StatusCode);
             Assert.AreEqual("missing-hashed-id", response.Status);
+        }
 
-            request.HashedId = "";
-            this._userController.Response.StatusCode = 200;
-            response = this._userController.Register(request).Result.Value;
+        /// <summary>
+        /// Tests the /user/register endpoint with an empty HashedId.
+        /// </summary>
+        [Test]
+        public void TestRegisterEmptyHashedId()
+        {
+            this._registerUserRequest.HashedId = "";
+            var response = this._userController.Register(this._registerUserRequest).Result.Value;
             Assert.AreEqual(400, this._userController.Response.StatusCode);
             Assert.AreEqual("missing-hashed-id", response.Status);
-            request.HashedId = "test_hash";
-            
-            // Test the Name field.
-            request.Name = null;
-            this._userController.Response.StatusCode = 200;
-            response = this._userController.Register(request).Result.Value;
+        }
+
+        /// <summary>
+        /// Tests the /user/register endpoint with a null Name.
+        /// </summary>
+        [Test]
+        public void TestRegisterNullName()
+        {
+            this._registerUserRequest.Name = null;
+            var response = this._userController.Register(this._registerUserRequest).Result.Value;
             Assert.AreEqual(400, this._userController.Response.StatusCode);
             Assert.AreEqual("missing-name", response.Status);
+        }
 
-            request.Name = "";
-            this._userController.Response.StatusCode = 200;
-            response = this._userController.Register(request).Result.Value;
+        /// <summary>
+        /// Tests the /user/register endpoint with an empty Name.
+        /// </summary>
+        [Test]
+        public void TestRegisterEmptyName()
+        {
+            this._registerUserRequest.Name = "";
+            var response = this._userController.Register(this._registerUserRequest).Result.Value;
             Assert.AreEqual(400, this._userController.Response.StatusCode);
             Assert.AreEqual("missing-name", response.Status);
-            request.Name = "Test Name";
-            
-            // Test the Email field.
-            request.Email = null;
-            this._userController.Response.StatusCode = 200;
-            response = this._userController.Register(request).Result.Value;
+        }
+
+        /// <summary>
+        /// Tests the /user/register endpoint with a null Email.
+        /// </summary>
+        [Test]
+        public void TestRegisterNullEmail()
+        {
+            this._registerUserRequest.Email = null;
+            var response = this._userController.Register(this._registerUserRequest).Result.Value;
             Assert.AreEqual(400, this._userController.Response.StatusCode);
             Assert.AreEqual("missing-email", response.Status);
+        }
 
-            request.Email = "";
-            this._userController.Response.StatusCode = 200;
-            response = this._userController.Register(request).Result.Value;
+        /// <summary>
+        /// Tests the /user/register endpoint with an empty Email.
+        /// </summary>
+        [Test]
+        public void TestRegisterEmptyEmail()
+        {
+            this._registerUserRequest.Email = "";
+            var response = this._userController.Register(this._registerUserRequest).Result.Value;
             Assert.AreEqual(400, this._userController.Response.StatusCode);
             Assert.AreEqual("missing-email", response.Status);
-            request.Email = "test@email";
-            
-            // Test the College field.
-            request.College = null;
-            this._userController.Response.StatusCode = 200;
-            response = this._userController.Register(request).Result.Value;
-            Assert.AreEqual(400, this._userController.Response.StatusCode);
-            Assert.AreEqual("missing-college", response.Status);
-
-            request.College = "";
-            this._userController.Response.StatusCode = 200;
-            response = this._userController.Register(request).Result.Value;
-            Assert.AreEqual(400, this._userController.Response.StatusCode);
-            Assert.AreEqual("missing-college", response.Status);
-            request.College = "Test School";
-            
-            // Test the Year field.
-            request.Year = null;
-            this._userController.Response.StatusCode = 200;
-            response = this._userController.Register(request).Result.Value;
-            Assert.AreEqual(400, this._userController.Response.StatusCode);
-            Assert.AreEqual("missing-year", response.Status);
-
-            request.Year = "";
-            this._userController.Response.StatusCode = 200;
-            response = this._userController.Register(request).Result.Value;
-            Assert.AreEqual(400, this._userController.Response.StatusCode);
-            Assert.AreEqual("missing-year", response.Status);
-            request.Year = "Test Year";
-            
-            // Test invalid emails.
-            request.Email = "test@invalid-email";
-            this._userController.Response.StatusCode = 200;
-            response = this._userController.Register(request).Result.Value;
+        }
+        
+        /// <summary>
+        /// Tests the /user/register endpoint with an invalid Email.
+        /// </summary>
+        [Test]
+        public void TestRegisterInvalidEmail()
+        {
+            this._registerUserRequest.Email = "test@invalid-email";
+            var response = this._userController.Register(this._registerUserRequest).Result.Value;
             Assert.AreEqual(400, this._userController.Response.StatusCode);
             Assert.AreEqual("invalid-email", response.Status);
+        }
+
+        /// <summary>
+        /// Tests the /user/register endpoint with a null College.
+        /// </summary>
+        [Test]
+        public void TestRegisterNullCollege()
+        {
+            this._registerUserRequest.College = null;
+            var response = this._userController.Register(this._registerUserRequest).Result.Value;
+            Assert.AreEqual(400, this._userController.Response.StatusCode);
+            Assert.AreEqual("missing-college", response.Status);
+        }
+
+        /// <summary>
+        /// Tests the /user/register endpoint with an empty College.
+        /// </summary>
+        [Test]
+        public void TestRegisterEmptyCollege()
+        {
+            this._registerUserRequest.College = "";
+            var response = this._userController.Register(this._registerUserRequest).Result.Value;
+            Assert.AreEqual(400, this._userController.Response.StatusCode);
+            Assert.AreEqual("missing-college", response.Status);
+        }
+
+        /// <summary>
+        /// Tests the /user/register endpoint with a null Year.
+        /// </summary>
+        [Test]
+        public void TestRegisterNullYear()
+        {
+            this._registerUserRequest.Year = null;
+            var response = this._userController.Register(this._registerUserRequest).Result.Value;
+            Assert.AreEqual(400, this._userController.Response.StatusCode);
+            Assert.AreEqual("missing-year", response.Status);
+        }
+
+        /// <summary>
+        /// Tests the /user/register endpoint with an empty Year.
+        /// </summary>
+        [Test]
+        public void TestRegisterEmptyYear()
+        {
+            this._registerUserRequest.Year = "";
+            var response = this._userController.Register(this._registerUserRequest).Result.Value;
+            Assert.AreEqual(400, this._userController.Response.StatusCode);
+            Assert.AreEqual("missing-year", response.Status);
         }
 
         /// <summary>
@@ -379,18 +432,8 @@ namespace Construct.User.Test.Functional.Controllers
         [Test]
         public void TestRegister()
         {
-            // Create the base response.
-            var request = new RegisterUserRequest()
-            {
-                HashedId = "test_hash",
-                Name = "Test Name",
-                Email = "test@test.email",
-                College = "Test School",
-                Year = "Test Year",
-            };
-
             // Send a request and check that it was registered.
-            var response = this._userController.Register(request).Result.Value;
+            var response = this._userController.Register(this._registerUserRequest).Result.Value;
             Assert.AreEqual(200, this._userController.Response.StatusCode);
             Assert.AreEqual("success", response.Status);
             
@@ -405,20 +448,49 @@ namespace Construct.User.Test.Functional.Controllers
             Assert.That(student.User.SignUpTime.HasValue && ((DateTimeOffset) student.User.SignUpTime).ToUnixTimeSeconds() + 10 > DateTimeOffset.Now.ToUnixTimeSeconds());
             
             // Re-send the request and check it was rejected.
-            response = this._userController.Register(request).Result.Value;
+            response = this._userController.Register(this._registerUserRequest).Result.Value;
             Assert.AreEqual(409, this._userController.Response.StatusCode);
             Assert.AreEqual("duplicate-user", response.Status);
             
             // Register another email and check the Student entries have different keys.
             this._userController.Response.StatusCode = 200;
-            request.HashedId += "_2";
-            response = this._userController.Register(request).Result.Value;
+            this._registerUserRequest.HashedId += "_2";
+            this._registerUserRequest.Email = "test2@email";
+            response = this._userController.Register(this._registerUserRequest).Result.Value;
             Assert.AreEqual(200, this._userController.Response.StatusCode);
             Assert.AreEqual("success", response.Status);
 
             var students = context.Students.ToList();
             Assert.AreEqual(2, students.Count);
             Assert.AreNotEqual(students[0].Key, students[1].Key);
+        }
+        
+        /// <summary>
+        /// Tests the /user/register endpoint with duplicate emails.
+        /// </summary>
+        [Test]
+        public void TestRegisterDuplicateEmails()
+        {
+            // Send a request and check that it was registered.
+            var response = this._userController.Register(this._registerUserRequest).Result.Value;
+            Assert.AreEqual(200, this._userController.Response.StatusCode);
+            Assert.AreEqual("success", response.Status);
+            
+            // Re-send the request and check it was rejected.
+            this._registerUserRequest.HashedId += "_2";
+            response = this._userController.Register(this._registerUserRequest).Result.Value;
+            Assert.AreEqual(409, this._userController.Response.StatusCode);
+            Assert.AreEqual("duplicate-user", response.Status);
+            
+            // Test that the user was created.
+            using var context = new ConstructContext();
+            var student = context.Students.Include(s => s.User).First();
+            Assert.AreEqual("Test School", student.College);
+            Assert.AreEqual("Test Year", student.Year);
+            Assert.AreEqual("test_hash", student.User.HashedId);
+            Assert.AreEqual("Test Name", student.User.Name);
+            Assert.AreEqual("test@email", student.User.Email);
+            Assert.That(student.User.SignUpTime.HasValue && ((DateTimeOffset) student.User.SignUpTime).ToUnixTimeSeconds() + 10 > DateTimeOffset.Now.ToUnixTimeSeconds());
         }
     }
 }

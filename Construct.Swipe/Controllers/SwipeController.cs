@@ -34,7 +34,7 @@ namespace Construct.Swipe.Controllers
             
             // Return if the user doesn't exist.
             await using var context = new ConstructContext();
-            var swipedUser = await context.Users.FirstOrDefaultAsync(user => user.HashedId == request.HashedId);
+            var swipedUser = await context.Users.FirstOrDefaultAsync(user => user.HashedId.ToLower() == request.HashedId.ToLower());
             if (swipedUser == null)
             {
                 Response.StatusCode = 404;
