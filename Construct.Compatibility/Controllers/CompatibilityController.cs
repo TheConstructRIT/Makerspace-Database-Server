@@ -1,5 +1,4 @@
 using System;
-using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
@@ -114,7 +113,7 @@ namespace Construct.Compatibility.Controllers
             {
                 email = emailCorrection.CorrectEmail(email);
             }
-            catch (InvalidDataException)
+            catch (FormatException)
             {
                 
             }

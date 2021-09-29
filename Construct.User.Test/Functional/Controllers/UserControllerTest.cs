@@ -43,8 +43,8 @@ namespace Construct.User.Test.Functional.Controllers
                 Year = "Test Year",
             };
             
-            ConstructConfiguration.Configuration.Email.ValidEmails = new List<string>() { "@email" };
-            ConstructConfiguration.Configuration.Email.EmailCorrections = new Dictionary<string, string>() { {"@test.email", "@email"} };
+            ConstructConfiguration.Configuration.Email.ValidEmails = new List<string>() { "email" };
+            ConstructConfiguration.Configuration.Email.EmailCorrections = new Dictionary<string, string>() { {"test.email", "email"} };
             this._userController = new UserController()
             {
                 ControllerContext = new ControllerContext()

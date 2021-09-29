@@ -1,5 +1,5 @@
+using System;
 using System.Collections.Generic;
-using System.IO;
 using Construct.User.Data.Correction;
 using NUnit.Framework;
 
@@ -22,14 +22,14 @@ namespace Construct.User.Test.Data.Correction
             {
                 ValidEmails = new List<string>()
                 {
-                    "@email1.test",
-                    "@email2.test",
+                    "email1.test",
+                    "email2.test",
                 },
                 Corrections = new Dictionary<string, string>()
                 {
-                    { "@email3.test", "@EMAIL1.test" },
-                    { "@EMAIL4.test", "@email3.test" },
-                    { "@email5.test", "@unknown.email1.test" },
+                    { "email3.test", "EMAIL1.test" },
+                    { "EMAIL4.test", "email3.test" },
+                    { "email5.test", "unknown.email1.test" },
                 },
             };
         }
@@ -62,13 +62,17 @@ namespace Construct.User.Test.Data.Correction
         [Test]
         public void TestCorrectEmailInvalid()
         {
-            Assert.Throws<InvalidDataException>(() =>
+            Assert.Throws<FormatException>(() =>
             {
                 this._correction.CorrectEmail("test@email6.test");
             });
-            Assert.Throws<InvalidDataException>(() =>
+            Assert.Throws<FormatException>(() =>
             {
                 this._correction.CorrectEmail("test@email5.test");
+            });
+            Assert.Throws<FormatException>(() =>
+            {
+                this._correction.CorrectEmail("not_an_email");
             });
         }
         

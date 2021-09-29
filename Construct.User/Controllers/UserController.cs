@@ -1,5 +1,4 @@
 using System;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Construct.Core.Attribute;
@@ -100,7 +99,7 @@ namespace Construct.User.Controllers
             {
                 request.Email = emailCorrection.CorrectEmail(request.Email);
             }
-            catch (InvalidDataException)
+            catch (FormatException)
             {
                 Response.StatusCode = 400;
                 return new GenericStatusResponse("invalid-email");
