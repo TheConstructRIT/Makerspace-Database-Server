@@ -87,11 +87,99 @@ namespace Construct.Compatibility.Controllers
             };
         }
         
-        // TODO: GET /isauthorized (Cura)
+        /// <summary>
+        /// Legacy endpoint for determining if a user is a lab manager.
+        /// </summary>
+        [HttpGet]
+        [Path("/isauthorized")]
+        public async Task<IsAuthorizedResponse> GetIsAuthorized(string hashedId, string universityId)
+        {
+            // Convert the university id to a hash.
+            hashedId = GetHash(hashedId, universityId);
+
+            // Get the user and return if the user is authorized.
+            await using var context = new ConstructContext();
+            var user = await context.Users.Include(u => u.Permissions).FirstOrDefaultAsync(u => u.HashedId == hashedId);
+            var isLabManager = (user?.Permissions.FirstOrDefault(p => p.Name.ToLower() == "labmanager") != null);
+            return new IsAuthorizedResponse()
+            {
+                Authorized = isLabManager,
+            };
+        }
         
-        // TODO: GET /hashedid (Cura)
+        /// <summary>
+        /// Legacy endpoint for finding a hashed id from an email.
+        /// </summary>
+        [HttpGet]
+        [Path("/hashedid")]
+        public async Task<HashedIdResponse> GetHashedId(string email)
+        {
+            // Correct the email.
+            var emailCorrection = new EmailCorrection()
+            {
+                ValidEmails = ConstructConfiguration.Configuration.Email.ValidEmails,
+                Corrections = ConstructConfiguration.Configuration.Email.EmailCorrections,
+            };
+            try
+            {
+                email = emailCorrection.CorrectEmail(email);
+            }
+            catch (FormatException)
+            {
+                
+            }
+
+            // Get the user and return the hashed id.
+            await using var context = new ConstructContext();
+            var user = await context.Users.Include(u => u.Permissions).FirstOrDefaultAsync(u => u.Email == email);
+            return new HashedIdResponse()
+            {
+                HashedId = user?.HashedId,
+            };
+        }
         
-        // TODO: GET /userinfo (Cura)
+        /// <summary>
+        /// Legacy endpoint for getting the information of the user.
+        /// </summary>
+        [HttpGet]
+        [Path("/userinfo")]
+        public async Task<UserInfoResponse> GetUserInfo(string hashedId, string universityId)
+        {
+            // Convert the university id to a hash.
+            hashedId = GetHash(hashedId, universityId);
+
+            // Get the user and return the response.
+            await using var context = new ConstructContext();
+            var user = await context.Users.Include(u => u.PrintLogs).FirstOrDefaultAsync(u => u.HashedId == hashedId);
+            var lastPrint = user?.PrintLogs.OrderByDescending(p => p.Time).FirstOrDefault();
+            return new UserInfoResponse()
+            {
+                Email = user?.Email,
+                LastPurpose = lastPrint?.Purpose,
+                LastMSDNumber = lastPrint?.BillTo,
+            };
+        }
+        
+        /// <summary>
+        /// Legacy endpoint for getting the last print time.
+        /// </summary>
+        [HttpGet]
+        [Path("/lastprinttime")]
+        public async Task<LastPrintTimeResponse> GetLastPrintTime(string hashedId, string universityId)
+        {
+            // Convert the university id to a hash.
+            hashedId = GetHash(hashedId, universityId);
+
+            // Get the user and return the response.
+            await using var context = new ConstructContext();
+            var user = await context.Users.Include(u => u.PrintLogs).FirstOrDefaultAsync(u => u.HashedId == hashedId);
+            var lastPrint = user?.PrintLogs.OrderByDescending(p => p.Time).FirstOrDefault();
+            return new LastPrintTimeResponse()
+            {
+                LastPrintTime = lastPrint != null ? ((DateTimeOffset) lastPrint.Time).ToUnixTimeSeconds() : null,
+                LastPrintWeight = lastPrint?.WeightGrams,
+            };
+        }
 
         /// <summary>
         /// Legacy endpoint for adding a user.
@@ -165,9 +253,46 @@ namespace Construct.Compatibility.Controllers
             await context.SaveChangesAsync();
             return new BaseSuccessResponse();
         }
-
-        // TODO: GET /lastprinttime (Cura)
         
-        // TODO: POST /appendprint (Cura)
+        /// <summary>
+        /// Legacy endpoint for adding a print.
+        /// </summary>
+        ///
+        [HttpPost]
+        [Path("/appendprint")]
+        public async Task<BaseSuccessResponse> AppendPrint(string email, string filename, string material, float printWeight, string printVolume, string printPurpose, string? msdNumber, bool? paymentOwed)
+        {
+            // Add the print log.
+            await using var context = new ConstructContext();
+            var user = await context.Users.FirstOrDefaultAsync(user => user.Email.ToLower() == email.ToLower());
+            if (user == null)
+            {
+                return new BaseSuccessResponse();
+            }
+            var materialData = await context.PrintMaterials.FirstOrDefaultAsync(materialData => materialData.Name.ToLower() == material.ToLower());
+            if (materialData == null)
+            {
+                return new BaseSuccessResponse();
+            }
+            context.PrintLog.Add(new PrintLog()
+            {
+                User = user,
+                Time = DateTime.Now,
+                FileName = filename,
+                Material = materialData,
+                WeightGrams = printWeight,
+                Purpose = printPurpose,
+                BillTo = msdNumber,
+                Cost = materialData.CostPerGram * printWeight,
+                Owed = paymentOwed ?? true,
+            });
+            await context.SaveChangesAsync();
+            
+            // Send the receipt.
+            // TODO
+            
+            // Return a success response.
+            return new BaseSuccessResponse();
+        }
     }
 }

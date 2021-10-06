@@ -42,6 +42,12 @@ namespace Construct.Core.Database.Model
         public float WeightGrams { get; set; }
         
         /// <summary>
+        /// Purpose of the print.
+        /// </summary>
+        [Required]
+        public string Purpose { get; set; }
+        
+        /// <summary>
         /// Id to build to. At RIT, this would be MSD / Senior Design.
         /// </summary>
         public string BillTo { get; set; }
