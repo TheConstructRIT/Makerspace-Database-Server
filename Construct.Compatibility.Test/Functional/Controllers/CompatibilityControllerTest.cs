@@ -415,23 +415,15 @@ namespace Construct.Compatibility.Test.Functional.Controllers
             });
             
             // Test getting the user info.
-            var lastPrintTimeResponse = _compatibilityController.GetLastPrintTime("15e2b0d3c33891ebb0f1ef609ec419420c20e320ce94c65fbc8c3312448eb225", null).Result;
+            var lastPrintTimeResponse = _compatibilityController.GetLastPrintTime("test1@email").Result;
             Assert.AreEqual("success", lastPrintTimeResponse.Result);
             Assert.IsFalse(lastPrintTimeResponse.LastPrintTime.HasValue);
             Assert.IsFalse(lastPrintTimeResponse.LastPrintWeight.HasValue);
-            lastPrintTimeResponse = _compatibilityController.GetLastPrintTime("42dd0a7fdcb47aad0f6bd98da39c42ba60c00dc0e01fcba36195c23b7f19143d", null).Result;
+            lastPrintTimeResponse = _compatibilityController.GetLastPrintTime("test2@email").Result;
             Assert.AreEqual("success", lastPrintTimeResponse.Result);
             Assert.AreEqual(1633546230, lastPrintTimeResponse.LastPrintTime.Value);
             Assert.That(Math.Abs(lastPrintTimeResponse.LastPrintWeight.Value - 0.3f) < 0.001);
-            lastPrintTimeResponse = _compatibilityController.GetLastPrintTime(null, "123456789").Result;
-            Assert.AreEqual("success", lastPrintTimeResponse.Result);
-            Assert.IsFalse(lastPrintTimeResponse.LastPrintTime.HasValue);
-            Assert.IsFalse(lastPrintTimeResponse.LastPrintWeight.HasValue);
-            lastPrintTimeResponse = _compatibilityController.GetLastPrintTime(null, "123456780").Result;
-            Assert.AreEqual("success", lastPrintTimeResponse.Result);
-            Assert.AreEqual(1633546230, lastPrintTimeResponse.LastPrintTime.Value);
-            Assert.That(Math.Abs(lastPrintTimeResponse.LastPrintWeight.Value - 0.3f) < 0.001);
-            lastPrintTimeResponse = _compatibilityController.GetLastPrintTime("unknown_hash", null).Result;
+            lastPrintTimeResponse = _compatibilityController.GetLastPrintTime("unknown_user").Result;
             Assert.AreEqual("success", lastPrintTimeResponse.Result);
             Assert.IsFalse(lastPrintTimeResponse.LastPrintTime.HasValue);
             Assert.IsFalse(lastPrintTimeResponse.LastPrintWeight.HasValue);

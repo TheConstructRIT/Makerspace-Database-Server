@@ -165,14 +165,11 @@ namespace Construct.Compatibility.Controllers
         /// </summary>
         [HttpGet]
         [Path("/lastprinttime")]
-        public async Task<LastPrintTimeResponse> GetLastPrintTime(string hashedId, string universityId)
+        public async Task<LastPrintTimeResponse> GetLastPrintTime(string email)
         {
-            // Convert the university id to a hash.
-            hashedId = GetHash(hashedId, universityId);
-
             // Get the user and return the response.
             await using var context = new ConstructContext();
-            var user = await context.Users.Include(u => u.PrintLogs).FirstOrDefaultAsync(u => u.HashedId == hashedId);
+            var user = await context.Users.Include(u => u.PrintLogs).FirstOrDefaultAsync(u => u.Email == email);
             var lastPrint = user?.PrintLogs.OrderByDescending(p => p.Time).FirstOrDefault();
             return new LastPrintTimeResponse()
             {
