@@ -75,34 +75,15 @@ class BaseDeploy:
         self.stop(serviceName)
 
         # Build the new service.
-        print("Building " + serviceName)
-        projectDirectory = os.path.realpath(self.projectRootDirectory + "/" + serviceName)
-        outputDirectory = self.getOutputDirectory(serviceName)
-        if os.path.exists(outputDirectory):
-            shutil.rmtree(outputDirectory)
-        buildProcess = subprocess.Popen(["dotnet", "publish", "--output", outputDirectory], cwd=projectDirectory)
-        buildExitCode = buildProcess.wait()
-        if buildExitCode != 0:
-            raise AssertionError("Build returned a non-zero exit code: " + str(buildExitCode))
-
-        # Delete the configuration. May be from a previous build.
-        newConfiguration = os.path.realpath(outputDirectory + "/configuration.json")
-        if os.path.exists(newConfiguration):
-            os.remove(newConfiguration)
-
-        # Copy the configuration file.
-        configurationPath = self.findConfiguration()
-        if configurationPath is not None:
-            print("Copying configuration file.")
-            shutil.copy(configurationPath, newConfiguration)
+        self.build(serviceName)
 
         # Start the service.
         self.start(serviceName)
 
     """
-    Runs the CLI deploy with the command line arguments.
+    Returns the services to deploy from the CLI arguments.
     """
-    def cliDeploy(self):
+    def getServicesFromCLI(self):
         # Get the services to deploy.
         services = sys.argv[1:]
         if len(sys.argv) <= 1:
@@ -143,10 +124,34 @@ class BaseDeploy:
                 exit(-1)
         print("Verified services.")
 
-        # Deploy the services.
-        for service in servicesToDeploy:
-            print("Deploying " + service)
-            self.deploy(service)
+        # Return the services.
+        return services
+
+    """
+    Builds a service.
+    """
+    def build(self, serviceName):
+        # Build the new service.
+        print("Building " + serviceName)
+        projectDirectory = os.path.realpath(self.projectRootDirectory + "/" + serviceName)
+        outputDirectory = self.getOutputDirectory(serviceName)
+        if os.path.exists(outputDirectory):
+            shutil.rmtree(outputDirectory)
+        buildProcess = subprocess.Popen(["dotnet", "publish", "--output", outputDirectory], cwd=projectDirectory)
+        buildExitCode = buildProcess.wait()
+        if buildExitCode != 0:
+            raise AssertionError("Build returned a non-zero exit code: " + str(buildExitCode))
+
+        # Delete the configuration. May be from a previous build.
+        newConfiguration = os.path.realpath(outputDirectory + "/configuration.json")
+        if os.path.exists(newConfiguration):
+            os.remove(newConfiguration)
+
+        # Copy the configuration file.
+        configurationPath = self.findConfiguration()
+        if configurationPath is not None:
+            print("Copying configuration file.")
+            shutil.copy(configurationPath, newConfiguration)
 
     """
     Stops a service.

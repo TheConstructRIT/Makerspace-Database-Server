@@ -1,12 +1,19 @@
 """
 Zachary Cook
 
-Helper script for deploying projects as processes.
+Helper script for deploying services.
 """
 
-from DeployImplementations.ProcessDeploy import ProcessDeploy
+from DeployImplementations import AutoDeploy
 
 
 # Run the program.
 if __name__ == '__main__':
-    ProcessDeploy().cliDeploy()
+    # Get the services to deploy.
+    deployObject = AutoDeploy.getDeploy()
+    servicesToDeploy = deployObject.getServicesFromCLI()
+
+    # Deploy the services.
+    for service in servicesToDeploy:
+        print("Deploying " + service)
+        deployObject.deploy(service)
