@@ -54,7 +54,7 @@ class SystemdDeploy(BaseDeploy):
                 file.write("[Service]\r\n")
                 file.write("Type=simple\r\n")
                 file.write("WorkingDirectory=" + self.projectRootDirectory + "/scripts\r\n")
-                file.write("ExecStart=\"" + sys.executable + "\" Start.py " + serviceName + "\r\n")
+                file.write("ExecStart=\"" + sys.executable + "\" Run.py " + serviceName + "\r\n")
                 file.write("\r\n")
                 file.write("[Install]\r\n")
                 file.write("WantedBy=multi-user.target\r\n")
