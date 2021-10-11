@@ -37,8 +37,15 @@ Checks for a required program. Stops the program
 if the program doesn't exist.
 """
 def checkRequirement(program):
+    # Split the path.
+    pathString = os.environ["PATH"]
+    if ";" in pathString:
+        paths = os.environ["PATH"].split(";")
+    else:
+        paths = os.environ["PATH"].split(":")
+
     # Return if the program exists.
-    for path in os.environ["PATH"].split(";"):
+    for path in paths:
         if os.path.exists(os.path.join(path, program)) or os.path.exists(os.path.join(path, program) + ".exe"):
             return
 
