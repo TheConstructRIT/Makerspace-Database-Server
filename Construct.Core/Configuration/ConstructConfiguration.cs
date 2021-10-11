@@ -51,6 +51,19 @@ namespace Construct.Core.Configuration
         /// </summary>
         public Dictionary<string, string> EmailCorrections { get; set; } = new Dictionary<string, string>();
     }
+
+    public class PrintReceipt
+    {
+        /// <summary>
+        /// Provider of the print receipt providers.
+        /// </summary>
+        public string Provider { get; set; } = "GoogleAppScripts";
+
+        /// <summary>
+        /// Script id to use with Google App Scripts.
+        /// </summary>
+        public string GoogleAppScriptId { get; set; } = "script_id";
+    }
     
     public class ConstructConfiguration
     {
@@ -76,6 +89,11 @@ namespace Construct.Core.Configuration
 
         /// <summary>
         /// Email configuration of the application.
+        /// </summary>
+        public PrintReceipt PrintReceipt { get; } = new PrintReceipt();
+
+        /// <summary>
+        /// Print receipt configuration of the application.
         /// </summary>
         public Email Email { get; } = new Email();
 

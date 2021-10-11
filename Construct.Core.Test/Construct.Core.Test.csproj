@@ -17,6 +17,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\Construct.Base.Test\Construct.Base.Test.csproj" />
       <ProjectReference Include="..\Construct.Core\Construct.Core.csproj" />
     </ItemGroup>
 

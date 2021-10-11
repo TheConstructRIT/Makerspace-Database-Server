@@ -1,8 +1,12 @@
 ﻿using System;
 using System.IO;
+using System.Net;
+using System.Net.Http;
 using Construct.Core.Configuration;
 using Construct.Core.Database.Context;
+using Construct.Core.Receipt.Print;
 using NUnit.Framework;
+using RichardSzalay.MockHttp;
 
 namespace Construct.Base.Test.Functional.Base
 {
@@ -37,6 +41,20 @@ namespace Construct.Base.Test.Functional.Base
             context.EnsureUpToDateAsync().Wait();
         }
 
+        /// <summary>
+        /// Sets up the mocks for the PrintReceipts.
+        /// </summary>
+        [SetUp]
+        public void SetUpPrintReceipts()
+        {
+            var mockClient = new MockHttpMessageHandler();
+            mockClient.When(HttpMethod.Post, $"https://script.google.com/macros/s/valid_id/exec?request=sendemail&email=test@email&printCount=0&fileName=test.gcode&printWeight=10&printCost={0.3f}&totalCost={0f}")
+                .Respond(HttpStatusCode.OK);
+            mockClient.When(HttpMethod.Post, $"https://script.google.com/macros/s/invalid_id/exec?request=sendemail&email=test@email&printCount=0&fileName=test.gcode&printWeight=10&printCost={0.3f}&totalCost={0f}")
+                .Respond(HttpStatusCode.NotFound);
+            GoogleAppScriptPrintReceipt.Client = mockClient.ToHttpClient();
+        }
+        
         /// <summary>
         /// Adds data to the test database.
         /// </summary>

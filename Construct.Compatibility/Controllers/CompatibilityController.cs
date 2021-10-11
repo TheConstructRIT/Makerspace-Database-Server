@@ -9,6 +9,7 @@ using Construct.Core.Configuration;
 using Construct.Core.Data.Response;
 using Construct.Core.Database.Context;
 using Construct.Core.Database.Model;
+using Construct.Core.Receipt.Print;
 using Construct.User.Data.Correction;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -271,7 +272,7 @@ namespace Construct.Compatibility.Controllers
             {
                 return new BaseSuccessResponse();
             }
-            context.PrintLog.Add(new PrintLog()
+            var printLog = new PrintLog()
             {
                 User = user,
                 Time = DateTime.Now,
@@ -282,12 +283,16 @@ namespace Construct.Compatibility.Controllers
                 BillTo = msdNumber,
                 Cost = materialData.CostPerGram * printWeight,
                 Owed = paymentOwed ?? true,
-            });
+            };
+            context.PrintLog.Add(printLog);
             await context.SaveChangesAsync();
             
             // Send the receipt.
-            // TODO
-            
+            if (printLog.Owed)
+            {
+                PrintReceiptProvider.SendReceipt(printLog);
+            }
+
             // Return a success response.
             return new BaseSuccessResponse();
         }
