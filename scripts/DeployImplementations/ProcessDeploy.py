@@ -21,6 +21,7 @@ class ProcessDeploy(BaseDeploy):
                 print("Stopping " + process.name())
                 process.kill()
                 process.wait()
+                print("Stopped " + process.name())
 
     """
     Starts a service.
