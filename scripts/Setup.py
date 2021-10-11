@@ -16,7 +16,19 @@ commands = [
         "script": "Deploy.py",
         "arguments": "[service1] [service2] [...]",
         "description": "Stops, rebuilds, and deploys a list of services.",
-    }
+    },
+    {
+        "command": "start",
+        "script": "Start.py",
+        "arguments": "[service1] [service2] [...]",
+        "description": "Stops and starts a list of services without rebuilding.",
+    },
+    {
+        "command": "stop",
+        "script": "Stop.py",
+        "arguments": "[service1] [service2] [...]",
+        "description": "Stops a list of services.",
+    },
 ]
 
 

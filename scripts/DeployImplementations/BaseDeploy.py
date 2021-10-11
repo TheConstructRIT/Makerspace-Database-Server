@@ -112,20 +112,8 @@ class BaseDeploy:
         if self.findConfiguration() is None:
             print("Configuration.json not found in the scripts or parent directories. The default will be used.")
 
-        # Verify the services.
-        print("Verifying services before deploying.")
-        for service in servicesToDeploy:
-            try:
-                print("Verifying " + service)
-                self.verify(service)
-            except AssertionError:
-                print("Verification failed for " + service)
-                print("The output above should should the tests that failed. A deployment may not be safe.")
-                exit(-1)
-        print("Verified services.")
-
         # Return the services.
-        return services
+        return servicesToDeploy
 
     """
     Builds a service.
