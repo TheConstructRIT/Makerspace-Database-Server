@@ -48,18 +48,17 @@ class SystemdDeploy(BaseDeploy):
         serviceFileLocation = self.getServiceeFile(serviceName)
         if not os.path.exists(serviceFileLocation):
             with open(serviceFileLocation, "w") as file:
-                file.writelines([
-                    "[Unit]",
-                    "Description=Runs the service " + serviceName,
-                    "",
-                    "[Service]",
-                    "Type=simple",
-                    "WorkingDirectory=" + self.projectRootDirectory + "/scripts",
-                    "ExecStart=\"" + sys.executable + "\" Start.py " + serviceName,
-                    "",
-                    "[Install]",
-                    "WantedBy=multi-user.target",
-                ])
+                file.write("[Unit]\r\n")
+                file.write("Description=Runs the service " + serviceName +"\r\n")
+                file.write("\r\n")
+                file.write("[Service]\r\n")
+                file.write("Type=simple\r\n")
+                file.write("WorkingDirectory=" + self.projectRootDirectory + "/scripts\r\n")
+                file.write("ExecStart=\"" + sys.executable + "\" Start.py " + serviceName + "\r\n")
+                file.write("\r\n")
+                file.write("[Install]\r\n")
+                file.write("WantedBy=multi-user.target\r\n")
+            self.runSystemctl(["daemon-reload"])
 
         # Start and enable the service.
         print("Starting " + serviceName)
