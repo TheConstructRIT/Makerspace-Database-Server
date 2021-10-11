@@ -91,20 +91,29 @@ class BaseDeploy:
             print("\tValid services: " + ",".join(serviceOptions.keys()))
             services = input("Enter the services to deploy:\n").split(" ")
 
+        # Compile all the service options.
+        # This is done for services that call to start the service names directly.
+        allServiceOptions = {}
+        for optionName in serviceOptions.keys():
+            allServiceOptions[optionName] = serviceOptions[optionName]
+            for serviceName in serviceOptions[optionName]:
+                if serviceName.lower() not in allServiceOptions.keys():
+                    allServiceOptions[serviceName.lower()] = [serviceName]
+
         # Determine the invalid options and exit if there are invalid options.
         invalidOptions = []
         for option in services:
-            if option.lower() not in serviceOptions.keys():
+            if option.lower() not in allServiceOptions.keys():
                 invalidOptions.append(option)
         if len(invalidOptions) > 0:
             print("Invalid services specified: " + " ".join(invalidOptions))
-            print("\tValid services: " + ",".join(serviceOptions.keys()))
+            print("\tValid services: " + ",".join(allServiceOptions.keys()))
             exit(-1)
 
         # Determine the services to deploy.
         servicesToDeploy = []
         for option in services:
-            for service in serviceOptions[option.lower()]:
+            for service in allServiceOptions[option.lower()]:
                 if service not in servicesToDeploy:
                     servicesToDeploy.append(service)
 
