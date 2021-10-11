@@ -31,4 +31,4 @@ if __name__ == '__main__':
     executable = os.path.realpath(outputDirectory + "/" + service)
     if os.path.exists(executable + ".exe"):
         executable += ".exe"
-    subprocess.Popen([executable], cwd=outputDirectory, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL).wait()
+    subprocess.Popen([executable], cwd=outputDirectory).wait()
