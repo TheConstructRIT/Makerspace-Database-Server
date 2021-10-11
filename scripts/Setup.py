@@ -103,7 +103,7 @@ if __name__ == '__main__':
     commandName = arguments[0].lower()
     if commandName == "update":
         print("Updating the code.")
-        gitPullProcess = subprocess.Popen(["git", "pull", "origin", "master"])
+        gitPullProcess = subprocess.Popen(["git", "pull", "origin", "master"], cwd=repositoryDirectory)
         gitPullProcess.wait()
         if gitPullProcess.returncode != 0:
             print("Git pull failed. Elevated permissions may be required.")
