@@ -23,7 +23,7 @@ class SystemdDeploy(BaseDeploy):
     def runSystemctl(self, arguments):
         processArguments = ["systemctl"]
         processArguments.extend(arguments)
-        process = subprocess.Popen(arguments)
+        process = subprocess.Popen(processArguments)
         process.wait()
         if process.returncode != 0:
             print("Systemctl failed to execute. Elevated permissions may be required.")
