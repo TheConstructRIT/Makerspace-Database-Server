@@ -12,7 +12,7 @@ import sys
 repositoryUrl = "https://github.com/TheConstructRIT/Makerspace-Database-Server.git"
 commands = [
     {
-        "command": "configure",
+        "command": "config",
         "script": "Config.py",
         "arguments": "",
         "description": "Creates the default configuration if none exists and opens the configuration in a text editor.",

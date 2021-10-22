@@ -7,6 +7,7 @@ Helper script for editing the configuration file.
 import os
 import shutil
 import subprocess
+import sys
 
 projectRootDirectory = os.path.realpath(__file__ + "/../../")
 testProjectDirectory = projectRootDirectory + "/Construct.Core.Test"
@@ -42,5 +43,9 @@ if __name__ == '__main__':
 
     # Open the configuration file in the system default text editor.
     print("Opening configuration file: " + configurationLocation)
-    os.startfile(configurationLocation)
+    if sys.platform == "win32":
+        os.startfile(configurationLocation)
+    else:
+        opener = "open" if sys.platform == "darwin" else "xdg-open"
+        subprocess.call([opener, configurationLocation])
     print("NOTE: Changes to the configuration will not take effect without re-deploying.")
