@@ -54,17 +54,41 @@ wget https://raw.githubusercontent.com/TheConstructRIT/Makerspace-Database-Serve
 Be aware the script does not auto-update with the code.
 
 ## Script Usage
+`sudo` may be required in most cases because of the file permissions of the `/etc/`
+directory and interactions with `systemctl`.
+
 ### `python3 Setup.py update`
-(TODO: Write)
+Updates the files of the database server *without redeploying*. Updating the files
+with the server code running is supported.
 
-### `python3 setup.py deploy [service1] [service2] [...]`
-(TODO: Write)
+### `python3 Setup.py config`
+Creates the default `configuration.json` file if none exists, then opens the system's
+default text editor. On Linux systems, make sure that `xdg-open` is configured to open
+a text editor (the text editor to use is deployment-specific) instead of a web browser.
+After the configuration is saved, `Setup.py deploy` must be ran to apply the changes
+since the applications don't  re-read the configuration, and the file they read is a
+copied version.
 
-### `python3 setup.py start [service1] [service2] [...]`
-(TODO: Write)
+### `python3 Setup.py deploy (service1) (service2) (...)`
+*If no services are specified, the options for services will be displayed and the
+services to deploy will be prompted.*
 
-### `python3 setup.py stop [service1] [service2] [...]`
-(TODO: Write)
+Tests the specified services, stops the specified services, builds the specified services,
+and starts the specified services in that order. If a test fails for one of the specified
+services, none of the specified services will be stopped, built, or started as it is
+considered unsafe to deploy. On `systemd` services, the services will be "enabled"
+(will automatically start on reboot).
 
-### `python3 setup.py config`
-(TODO: Add command and write)
+### `python3 Setup.py start (service1) (service2) (...)`
+*If no services are specified, the options for services will be displayed and the
+services to deploy will be prompted.*
+
+Stops and starts the specified services without re-testing or re-building. On `systemd`
+services, the services will be "enabled" (will automatically start on reboot).
+
+### `python3 Setup.py stop (service1) (service2) (...)`
+*If no services are specified, the options for services will be displayed and the
+services to deploy will be prompted.*
+
+Stops the specified services. On `systemd` services, the services will be "disabled"
+(will not automatically start on reboot).
