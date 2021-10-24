@@ -1,0 +1,233 @@
+/*
+ * Generic
+ */
+span,div {
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.Beveled {
+    border-radius: 0.1cm;
+}
+
+div {
+    margin: 0px;
+}
+
+html,body,div#root {
+    width: 100%;
+    height: 100%;
+    margin: 0px;
+}
+
+button {
+    font-size: 12pt;
+    border-radius: 0.1cm;
+    background-color: rgb(240,240,240);
+    margin: 0.1cm;
+    border-width: 1px;
+}
+
+input[type="text"] {
+    border-width: 1px;
+    font-size: 12pt;
+    border-radius: 0.1cm;
+}
+
+input[type="text"]:focus {
+    border-width: 1px;
+    font-size: 12pt;
+    border-radius: 0.1cm;
+}
+
+
+
+/*
+ * Top bar
+ */
+.TopBarContainer {
+    top: 0px;
+    position: sticky;
+    background-color: rgb(247,105,2);
+}
+
+.TopBarSearchBox {
+    margin-left: 1cm;
+}
+
+.TopBarSelectedButton {
+    background-color: rgb(160,210,255);
+}
+
+.TopBarLogoutButton {
+    position: absolute;
+    right: 0.1pt;
+}
+
+/*
+ * Top bar
+ */
+.BottomBarContainer {
+    width: 100%;
+    position: 0px;
+    position: absolute;
+    background-color: rgb(247,105,2);
+}
+
+
+
+
+/*
+ * Swipe screen
+ */
+.SwipeBackgroundCover {
+    background-color: rgba(0,0,0,0.5);
+    position: fixed;
+    top: 0px;
+    width: 100%;
+    height: 100%;
+    margin: 0px;
+}
+
+.SwipeBackground {
+    margin-top: 2cm;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: rgb(255,255,255);
+    padding: 0.2cm;
+    width: 12cm;
+}
+
+.SwipeEnterIdText {
+    text-align: center;
+    font-size: 16pt;
+    margin-bottom: 0.2cm;
+}
+
+.SwipeEnterIdLowerText {
+    text-align: center;
+    font-size: 12pt;
+    margin-bottom: 0.2cm;
+}
+
+.SwipeIdInputBox {
+    position: relative;
+    left: 1.3cm;
+    text-align: center;
+    font-size: 14pt;
+    width: 9cm;
+}
+
+
+
+/*
+ * Summary view
+ */
+thead {
+    top: 0px;
+    position: sticky;
+    background-color: rgb(247,105,2);
+    background-color: rgb(245,245,245);
+}
+
+.PageCounter {
+    display: block;
+}
+
+table.dataTable thead th, table.dataTable thead td, table.dataTable.no-footer {
+    border: none !important;
+}
+
+tr.odd {
+    background-color: rgb(250,250,250) !important; 
+}
+ 
+
+
+/*
+ * Inspect view
+ */
+.InspectBackgroundCover {
+    background-color: rgba(0,0,0,0.5);
+    position: fixed;
+    top: 0px;
+    width: 100%;
+    height: 100%;
+    margin: 0px;
+}
+
+.InspectPrintBackground {
+    margin-top: 2cm;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: rgb(255,255,255);
+    padding: 0.2cm;
+    width: 12cm;
+}
+
+.InspectUserBackground {
+    margin-top: 2cm;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: rgb(255,255,255);
+    padding: 0.2cm;
+    width: 90%;
+    max-height: 90%;
+}
+
+.InspectTextBig {
+    text-align: center;
+    font-size: 16pt;
+    margin-bottom: 0.2cm;
+}
+
+.InspectText {
+    text-align: center;
+    font-size: 12pt;
+    margin-bottom: 0.2cm;
+}
+
+.InspectDivider {
+    margin-left: 2%;
+    width: 96%;
+    height: 1px;
+    margin-top: 2pt;
+    margin-bottom: 4pt;
+    background-color: rgb(200,200,200);
+}
+
+.InspectInputInvalid {
+    border-color: #FF0000;
+}
+
+.InspectInputInvalid:focus {
+    border: 3px solid #FF0000;
+}
+
+.InspectSummaryContainer {
+    overflow-y: scroll;
+    height: calc(100vh - 9cm);
+}
+
+.ClearBalanceBackgroundCover {
+    background-color: rgba(0,0,0,0.5);
+    position: fixed;
+    top: 0px;
+    width: 100%;
+    height: 100%;
+    margin: 0px;
+}
+
+.ClearBalanceBackground {
+    margin-top: 2cm;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: rgb(230,230,230);
+    padding: 0.2cm;
+    width: 12cm;
+}
+
+.ClearBalanceText {
+    text-align: center;
+    font-size: 12pt;
+    margin-bottom: 0.2cm;
+}

@@ -7,6 +7,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Construct.Core\Construct.Core.csproj" />
+      <Content Include="..\web\admin\**" LinkBase="web\admin\" CopyToOutputDirectory="PreserveNewest" />
     </ItemGroup>
 
 </Project>
