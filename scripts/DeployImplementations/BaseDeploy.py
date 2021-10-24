@@ -11,10 +11,12 @@ import sys
 
 
 serviceOptions = {
+    "all": ["Construct.Swipe","Construct.User","Construct.Compatibility","Construct.Admin"],
     "combined": ["Construct.Combined"],
     "compatibility": ["Construct.Compatibility"],
     "swipe": ["Construct.Swipe"],
     "user": ["Construct.User"],
+    "admin": ["Construct.Admin"],
 }
 
 
