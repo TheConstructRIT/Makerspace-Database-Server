@@ -65,8 +65,7 @@ class Swipe extends React.Component {
                 session: session,
             }),
             success: function(result) {
-                result = JSON.parse(result);
-                if (result.result == "success") {
+                if (result.status == "success") {
                     swipeObject.setProcessState("Hidden");
                 } else {
                     swipeObject.setProcessState("Open");
@@ -97,11 +96,10 @@ class Swipe extends React.Component {
         let swipeObject = this;
         $.ajax({
             url: "/admin/authenticate?" + $.param({
-                universityid: id,
+                hashedid: sha256(id),
             }),
             success: function(result) {
-                result = JSON.parse(result);
-                if (result.result == "success") {
+                if (result.status == "success") {
                     setCookie("session",result.session);
                     swipeObject.setProcessState("Hidden");
                     staticSummary.loadData();

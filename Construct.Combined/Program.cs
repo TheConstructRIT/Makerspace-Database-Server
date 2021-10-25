@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Construct.Admin.Controllers;
 using Construct.Compatibility.Controllers;
 using Construct.Core.Server;
 using Construct.Swipe.Controllers;
@@ -24,6 +25,8 @@ namespace Construct.Combined
                 typeof(UserController),
                 // Construct.Swipe reference
                 typeof(SwipeController),
+                // Construct.Admin reference
+                typeof(AdminSessionController),
                 // Construct.Compatibility reference
                 typeof(CompatibilityController),
             };
