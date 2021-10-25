@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Net;
 using Construct.Admin.Data.Response;
 using Construct.Base.Test.Integration.Base;
-using Construct.Core.Configuration;
 using Construct.Core.Data.Response;
 using Construct.Core.Database.Model;
 using NUnit.Framework;
