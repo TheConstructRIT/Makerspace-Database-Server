@@ -78,5 +78,55 @@ namespace Construct.Admin.Test.State
             Assert.AreEqual("test", this._session.GetIdentifier(this._session.CreateSession("test")));
             Assert.AreEqual("test2", this._session.GetIdentifier(this._session.CreateSession("test2")));
         }
+
+        /// <summary>
+        /// Tests refreshing a missing session.
+        /// </summary>
+        [Test]
+        public void TestRefreshMissing()
+        {
+            Assert.IsFalse(this._session.RefreshSession("unknown"));
+        }
+
+        /// <summary>
+        /// Tests refreshing an expired session.
+        /// </summary>
+        [Test]
+        public void TestRefreshExpired()
+        {
+            var initialSession = this._session.CreateSession("test");
+            Thread.Sleep(1500);
+            Assert.IsFalse(this._session.RefreshSession(initialSession));
+        }
+
+        /// <summary>
+        /// Tests refreshing single sessions.
+        /// </summary>
+        [Test]
+        public void TestRefreshSingleSession()
+        {
+            var initialSession = this._session.CreateSession("test");
+            Thread.Sleep(500);
+            Assert.IsTrue(this._session.RefreshSession(initialSession));
+            Thread.Sleep(750);
+            Assert.IsTrue(this._session.SessionValid(initialSession));
+        }
+
+        /// <summary>
+        /// Tests refreshing the first session.
+        /// Later sessions that don't get refreshed must expire.
+        /// </summary>
+        [Test]
+        public void TestRefreshFirstSession()
+        {
+            var session1 = this._session.CreateSession("test");
+            var session2 = this._session.CreateSession("test");
+            Thread.Sleep(500);
+            Assert.IsTrue(this._session.RefreshSession(session1));
+            Assert.IsTrue(this._session.SessionValid(session2));
+            Thread.Sleep(750);
+            Assert.IsTrue(this._session.SessionValid(session1));
+            Assert.IsFalse(this._session.SessionValid(session2));
+        }
     }
 }

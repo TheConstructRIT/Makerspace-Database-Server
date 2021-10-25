@@ -106,5 +106,45 @@ namespace Construct.Admin.State
         {
             return this.GetIdentifier(sessionString) != null;
         }
+
+        /// <summary>
+        /// Refreshes a session string.
+        /// </summary>
+        /// <param name="sessionString">Session string to refresh.</param>
+        /// <returns>Whether the session is valid.</returns>
+        public bool RefreshSession(string sessionString)
+        {
+            // Return false if the session isn't valid already.
+            if (!this.SessionValid(sessionString))
+            {
+                return false;
+            }
+            
+            // Iterate over the identifiers.
+            foreach (var (identifier, sessions) in this._sessions)
+            {
+                // Ignore if the session is not linked to the identifier.
+                if (sessions.All(session => session.Key != sessionString)) continue;
+                
+                // Remove the session.
+                // This keeps the concept of making the list of sessions increase in expire time.
+                for (var i = 0; i < sessions.Count; i++)
+                {
+                    if (sessions[i].Key != sessionString) continue;
+                    sessions.RemoveAt(i);
+                    break;
+                }
+                while (sessions.Count > 0 && sessions[0].Value < DateTime.Now)
+                {
+                    sessions.RemoveAt(0);
+                }
+                
+                // Re-add the session with the new expire time.
+                sessions.Add(new KeyValuePair<string, DateTime>(sessionString, DateTime.Now.AddSeconds(this.MaxSessionDuration)));
+            }
+            
+            // Return true (was valid).
+            return true;
+        }
     }
 }
