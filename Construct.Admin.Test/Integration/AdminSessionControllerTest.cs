@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net;
 using Construct.Admin.Data.Response;
 using Construct.Base.Test.Integration.Base;
+using Construct.Core.Configuration;
 using Construct.Core.Data.Response;
 using Construct.Core.Database.Model;
 using NUnit.Framework;
@@ -17,6 +18,8 @@ namespace Construct.Admin.Test.Integration
         [SetUp]
         public void SetUpProgram()
         {
+            // Start the program.
+            ConstructConfiguration.Configuration.Admin.MaximumUserSessions = 3;
             this.StartProgram<Program>();
             this.WaitForApp("Admin");
             
@@ -76,7 +79,7 @@ namespace Construct.Admin.Test.Integration
             Assert.AreEqual("success",checkResponse.Status);
             
             // Test expiring the session.
-            for (var i = 0; i < 5; i++)
+            for (var i = 0; i < 3; i++)
             {
                 this.Get<SessionResponse>("Admin", "/admin/authenticate?hashedid=test_hash_2");
             }

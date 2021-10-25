@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Construct.Core.Configuration;
 
 namespace Construct.Admin.State
 {
@@ -32,7 +33,11 @@ namespace Construct.Admin.State
         /// <returns></returns>
         public static Session GetSingleton()
         {
-            return _staticSession ??= new Session();
+            return _staticSession ??= new Session()
+            {
+                MaxSessions = Math.Max(0, ConstructConfiguration.Configuration.Admin.MaximumUserSessions),
+                MaxSessionDuration = Math.Max(0, ConstructConfiguration.Configuration.Admin.MaximumUserSessionDuration),
+            };
         }
 
         /// <summary>

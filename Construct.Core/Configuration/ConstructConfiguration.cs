@@ -64,6 +64,19 @@ namespace Construct.Core.Configuration
         /// </summary>
         public string GoogleAppScriptId { get; set; } = "script_id";
     }
+
+    public class Admin
+    {
+        /// <summary>
+        /// Maximum sessions a user can have with the admin user interface.
+        /// </summary>
+        public int MaximumUserSessions { get; set; } = 5;
+
+        /// <summary>
+        /// Maximum duration of a session that a user can have with the admin user interface.
+        /// </summary>
+        public int MaximumUserSessionDuration { get; set; } = 60 * 60;
+    }
     
     public class ConstructConfiguration
     {
@@ -96,6 +109,11 @@ namespace Construct.Core.Configuration
         /// Print receipt configuration of the application.
         /// </summary>
         public Email Email { get; } = new Email();
+
+        /// <summary>
+        /// Admin configuration of the application.
+        /// </summary>
+        public Admin Admin { get; } = new Admin();
 
         /// <summary>
         /// Ports used by the services.
