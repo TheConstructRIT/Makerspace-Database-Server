@@ -19,7 +19,6 @@ namespace Construct.Admin.Test.Integration
         public void SetUpProgram()
         {
             // Start the program.
-            ConstructConfiguration.Configuration.Admin.MaximumUserSessions = 3;
             this.StartProgram<Program>();
             this.WaitForApp("Admin");
             
@@ -79,7 +78,7 @@ namespace Construct.Admin.Test.Integration
             Assert.AreEqual("success",checkResponse.Status);
             
             // Test expiring the session.
-            for (var i = 0; i < 3; i++)
+            for (var i = 0; i < 5; i++)
             {
                 this.Get<SessionResponse>("Admin", "/admin/authenticate?hashedid=test_hash_2");
             }
