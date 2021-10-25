@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Construct.Admin.Controllers;
 using Construct.Admin.Data.Response;
+using Construct.Admin.State;
 using Construct.Base.Test.Functional.Base;
 using Construct.Core.Data.Response;
 using Construct.Core.Database.Model;
@@ -129,7 +130,41 @@ namespace Construct.Admin.Test.Functional.Controllers
             Assert.AreEqual(200, this._adminSessionController.Response.StatusCode);
             var nextResponse = (SessionResponse) this._adminSessionController.GetAuthenticate("test_hash_3").Result.Value;
             Assert.AreNotEqual(response.Session, nextResponse.Session);
+        }
 
+        /// <summary>
+        /// Tests the GetCheckSession with no session.
+        /// </summary>
+        [Test]
+        public void TestGetCheckSessionNoSession()
+        {
+            var response = this._adminSessionController.GetCheckSession(null).Value;
+            Assert.AreEqual(400, this._adminSessionController.Response.StatusCode);
+            Assert.IsTrue(response is GenericStatusResponse);
+            Assert.AreEqual("missing-session", response.Status);
+        }
+
+        /// <summary>
+        /// Tests the GetCheckSession with an invalid session.
+        /// </summary>
+        [Test]
+        public void TestGetCheckSessionInvalidSession()
+        {
+            var response = this._adminSessionController.GetCheckSession("unknown_session").Value;
+            Assert.AreEqual(401, this._adminSessionController.Response.StatusCode);
+            Assert.IsTrue(response is UnauthorizedResponse);
+        }
+
+        /// <summary>
+        /// Tests the GetCheckSession with a invalid session.
+        /// </summary>
+        [Test]
+        public void TestGetCheckSessionValidSession()
+        {
+            var session = Session.GetSingleton().CreateSession("test_hash_3");
+            var response = this._adminSessionController.GetCheckSession(session).Value;
+            Assert.AreEqual(200, this._adminSessionController.Response.StatusCode);
+            Assert.IsTrue(response is BaseSuccessResponse);
         }
     }
 }
