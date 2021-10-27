@@ -74,7 +74,6 @@ var COLUMNS = {
         {
             title: "User",
             data: "user",
-            orderable: false, // Technical limitation because databases are individual files (improves read/write times drastically for SQLite).
         },
     ],
     PrintsNoUsers: [
@@ -148,19 +147,16 @@ var COLUMNS = {
             title: "Total Prints",
             data: "totalPrints",
             width: "30pt",
-            orderable: false, // Technical limitation because databases are individual files (improves read/write times drastically for SQLite).
         },
         {
             title: "Total Weight",
             data: "totalWeight",
             width: "30pt",
-            orderable: false, // Technical limitation because databases are individual files (improves read/write times drastically for SQLite).
         },
         {
             title: "Prints Owed",
             data: "totalOwedPrints",
             width: "30pt",
-            orderable: false, // Technical limitation because databases are individual files (improves read/write times drastically for SQLite).
         },
         {
             title: "Balance Due",
@@ -172,7 +168,6 @@ var COLUMNS = {
                     currency: "USD",
                 }).format(value);
             },
-            orderable: false, // Technical limitation because databases are individual files (improves read/write times drastically for SQLite).
         },
     ],
 };
@@ -291,8 +286,6 @@ class Summary extends React.Component {
         $.ajax({
             url: "/admin/prints?" + $.param(urlParameters),
             success: function(result) {
-                result = JSON.parse(result);
-
                 // Return if the current loading request doesn't match.
                 if (summaryObject.state.currentlyLoading != currentTime) {
                     return;
@@ -325,7 +318,7 @@ class Summary extends React.Component {
                         material: cleanString(entry.print.material),
                         cost: entry.print.cost,
                         owed: entry.print.owed,
-                        msdnumber: cleanString(entry.print.msdnumber),
+                        msdnumber: cleanString(entry.print.msdNumber == null ? "(None)" : entry.print.msdNumber),
                         user: cleanString(user),
                     });
                 });
@@ -383,8 +376,6 @@ class Summary extends React.Component {
             }),
             
             success: function(result) {
-                result = JSON.parse(result);
-
                 // Return if the current loading request doesn't match.
                 if (summaryObject.state.currentlyLoading != currentTime) {
                     return;
@@ -402,7 +393,7 @@ class Summary extends React.Component {
                 summaryObject.counter.setMaxPage(Math.ceil(result.totalUsers / MAX_ENTRIES_PER_PAGE));
                 summaryObject.state.entries = result.users;
                 result.users.forEach(function(entry) {
-                    entry.hashedUniversityId = cleanString(entry.hashedUniversityId);
+                    entry.hashedUniversityId = cleanString(entry.hashedId);
                     entry.name = cleanString(entry.name);
                     entry.email = cleanString(entry.email);
                 });
