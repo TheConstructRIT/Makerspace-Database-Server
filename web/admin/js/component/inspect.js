@@ -136,15 +136,17 @@ class Inspect extends React.Component {
     clearBalance(tigerBucksUsed,completeCallback) {
         let inspectObject = this;
         $.ajax({
-            url: "/admin/clearbalance?" + $.param({
+            url: "/admin/clearbalance",
+            data: JSON.stringify({
                 "hashedid": this.props.data.hashedId,
-                "tigerbucks": tigerBucksUsed,
+                // "tigerbucks": tigerBucksUsed, // Tiger Bucks usage is not stored or included in the web API at the moment.
                 "session": getCookie("session"),
             }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
             method: "POST",
             success: function(result) {
-                result = JSON.parse(result);
-                if (result.result == "success") {
+                if (result.status == "success") {
                     // Clear the balance.
                     inspectObject.props.data.totalOwedCost = 0;
                     inspectObject.props.data.totalOwedPrints = 0;

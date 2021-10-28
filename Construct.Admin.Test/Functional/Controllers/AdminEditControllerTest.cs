@@ -327,5 +327,67 @@ namespace Construct.Admin.Test.Functional.Controllers
             Assert.AreEqual(user.Name, "New Name");
             Assert.AreEqual(user.Email, "new@email");
         }
+        
+        
+
+        /// <summary>
+        /// Tests PostClearBalance with an unauthorized session.
+        /// </summary>
+        [Test]
+        public void TestPostClearBalanceUnauthorized()
+        {
+            Assert.AreEqual("unauthorized", this._adminEditController.PostClearBalance(new ClearBalanceRequest()
+            {
+                Session = "unknown",
+            }).Result.Value.Status);
+            Assert.AreEqual(this._adminEditController.Response.StatusCode, 401);
+        }
+        
+        /// <summary>
+        /// Tests PostClearBalance with a missing hashed id.
+        /// </summary>
+        [Test]
+        public void TestPostClearBalanceMissingHashedId()
+        {
+            Assert.AreEqual("missing-hashed-id", this._adminEditController.PostClearBalance(new ClearBalanceRequest()
+            {
+                Session = this._session,
+            }).Result.Value.Status);
+            Assert.AreEqual(this._adminEditController.Response.StatusCode, 400);
+        }
+        
+        /// <summary>
+        /// Tests PostClearBalance with a missing user.
+        /// </summary>
+        [Test]
+        public void TestPostClearBalanceUserNotFound()
+        {
+            Assert.AreEqual("user-not-found", this._adminEditController.PostClearBalance(new ClearBalanceRequest()
+            {
+                Session = this._session,
+                HashedId = "unknown_hash",
+            }).Result.Value.Status);
+            Assert.AreEqual(this._adminEditController.Response.StatusCode, 404);
+        }
+        
+        /// <summary>
+        /// Tests clearing the print balance of a user.
+        /// </summary>
+        [Test]
+        public void TestPostClearBalance()
+        {
+            // Send the clear request.
+            Assert.AreEqual("success", this._adminEditController.PostClearBalance(new ClearBalanceRequest()
+            {
+                Session = this._session,
+                HashedId = "test_hash",
+            }).Result.Value.Status);
+            
+            // Check that the print is changed.
+            using var context = new ConstructContext();
+            var print = context.PrintLog.First();
+            Assert.AreEqual(print.Key, 1);
+            Assert.IsFalse(print.Owed);
+        }
     }
 }
