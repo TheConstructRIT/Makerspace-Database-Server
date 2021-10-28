@@ -82,7 +82,7 @@ namespace Construct.Admin.Controllers
         /// <returns>The CSV ZIP reference.</returns>
         [HttpGet]
         [Path("/admin/csvs")]
-        public async Task<ActionResult<object>> GetPrints(string session)
+        public async Task<ActionResult<object>> GetCsvs(string session)
         {
             // Return if the session isn't valid.
             if (!Session.GetSingleton().RefreshSession(session))
