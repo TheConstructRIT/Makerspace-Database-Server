@@ -42,8 +42,8 @@ namespace Construct.Admin.Test.Functional.Controllers
             // Add the test users and prints.
             this.AddData((context) =>
             {
-                // Add 10 normal prints.
-                for (var i = 0; i < 10; i++)
+                // Add 9 normal prints.
+                for (var i = 0; i < 9; i++)
                 {
                     // Create the test user, material, and print.
                     // All of the strings are offset for various tests with searches.
@@ -56,19 +56,19 @@ namespace Construct.Admin.Test.Functional.Controllers
                     };
                     var testMaterial = new PrintMaterial()
                     {
-                        Name = "TestMaterial" + ((i + 1) % 10),
+                        Name = "TestMaterial" + ((i + 1) % 9),
                         CostPerGram = 0.03f,
                     };
                     var testPrint = new PrintLog()
                     {
                         User = testUser,
-                        Time = new DateTime(((i + 2) % 10) * 1000),
-                        FileName = "TestPrint" + ((i + 3) % 10),
+                        Time = new DateTime(((i + 2) % 9) * 1000),
+                        FileName = "TestPrint" + ((i + 3) % 9),
                         Material = testMaterial,
                         WeightGrams = ((i + 4) % 10),
-                        Purpose = "TestPurpose" + ((i + 5) % 10),
-                        BillTo = "TestBillTo" + ((i + 6) % 10),
-                        Cost = ((i + 7) % 10),
+                        Purpose = "TestPurpose" + ((i + 5) % 9),
+                        BillTo = "TestBillTo" + ((i + 6) % 9),
+                        Cost = ((i + 7) % 9),
                         Owed = (i % 2 == 0),
                     };
                     
@@ -77,6 +77,27 @@ namespace Construct.Admin.Test.Functional.Controllers
                     context.PrintMaterials.Add(testMaterial);
                     context.PrintLog.Add(testPrint);
                 }
+                
+                // Add a print with no user.
+                var noUserTestMaterial = new PrintMaterial()
+                {
+                    Name = "TestMaterial9",
+                    CostPerGram = 0.03f,
+                };
+                var noUserTestPrint = new PrintLog()
+                {
+                    User = null,
+                    Time = new DateTime(9000),
+                    FileName = "TestPrint9",
+                    Material = noUserTestMaterial,
+                    WeightGrams = 9,
+                    Purpose = "TestPurpose9",
+                    BillTo = "TestBillTo9",
+                    Cost = 9,
+                    Owed = true,
+                };
+                context.PrintMaterials.Add(noUserTestMaterial);
+                context.PrintLog.Add(noUserTestPrint);
             });
         }
 
@@ -108,7 +129,7 @@ namespace Construct.Admin.Test.Functional.Controllers
         {
             var response = (UsersResponse) this._adminSearchController.GetUsers(this._session, 3, offsetUsers, order, ascending, search).Result.Value;
             Assert.AreEqual(userNames, response.Users.Select(print => print.Name).ToList());
-            Assert.AreEqual(10, response.TotalUsers);
+            Assert.AreEqual(9, response.TotalUsers);
         }
 
         /// <summary>
@@ -135,7 +156,7 @@ namespace Construct.Admin.Test.Functional.Controllers
         [Test]
         public void TestGetPrintsTimeDescending()
         {
-            this.AssertPrintsOrder("Time", false, new List<string>() { "TestPrint0", "TestPrint9", "TestPrint8" });
+            this.AssertPrintsOrder("Time", false, new List<string>() { "TestPrint9", "TestPrint0", "TestPrint8" });
         }
 
         /// <summary>
@@ -162,7 +183,7 @@ namespace Construct.Admin.Test.Functional.Controllers
         [Test]
         public void TestGetPrintsPurposeAscending()
         {
-            this.AssertPrintsOrder("Purpose", true, new List<string>() { "TestPrint8", "TestPrint9", "TestPrint0" });
+            this.AssertPrintsOrder("Purpose", true, new List<string>() { "TestPrint7", "TestPrint8", "TestPrint0" });
         }
 
         /// <summary>
@@ -171,7 +192,7 @@ namespace Construct.Admin.Test.Functional.Controllers
         [Test]
         public void TestGetPrintsPurposeDescending()
         {
-            this.AssertPrintsOrder("Purpose", false, new List<string>() { "TestPrint7", "TestPrint6", "TestPrint5" });
+            this.AssertPrintsOrder("Purpose", false, new List<string>() { "TestPrint9", "TestPrint6", "TestPrint5" });
         }
 
         /// <summary>
@@ -189,7 +210,7 @@ namespace Construct.Admin.Test.Functional.Controllers
         [Test]
         public void TestGetPrintsMaterialDescending()
         {
-            this.AssertPrintsOrder("Material", false, new List<string>() { "TestPrint1", "TestPrint0", "TestPrint9" });
+            this.AssertPrintsOrder("Material", false, new List<string>() { "TestPrint9", "TestPrint1", "TestPrint0" });
         }
 
         /// <summary>
@@ -198,7 +219,7 @@ namespace Construct.Admin.Test.Functional.Controllers
         [Test]
         public void TestGetPrintsWeightAscending()
         {
-            this.AssertPrintsOrder("Weight", true, new List<string>() { "TestPrint9", "TestPrint0", "TestPrint1" });
+            this.AssertPrintsOrder("Weight", true, new List<string>() { "TestPrint0", "TestPrint1", "TestPrint2" });
         }
 
         /// <summary>
@@ -207,7 +228,7 @@ namespace Construct.Admin.Test.Functional.Controllers
         [Test]
         public void TestGetPrintsWeightDescending()
         {
-            this.AssertPrintsOrder("Weight", false, new List<string>() { "TestPrint8", "TestPrint7", "TestPrint6" });
+            this.AssertPrintsOrder("Weight", false, new List<string>() { "TestPrint8", "TestPrint9", "TestPrint7" });
         }
 
         /// <summary>
@@ -216,7 +237,7 @@ namespace Construct.Admin.Test.Functional.Controllers
         [Test]
         public void TestGetPrintsCostAscending()
         {
-            this.AssertPrintsOrder("Cost", true, new List<string>() { "TestPrint6", "TestPrint7", "TestPrint8" });
+            this.AssertPrintsOrder("Cost", true, new List<string>() { "TestPrint5", "TestPrint6", "TestPrint7" });
         }
 
         /// <summary>
@@ -225,7 +246,7 @@ namespace Construct.Admin.Test.Functional.Controllers
         [Test]
         public void TestGetPrintsCostDescending()
         {
-            this.AssertPrintsOrder("Cost", false, new List<string>() { "TestPrint5", "TestPrint4", "TestPrint3" });
+            this.AssertPrintsOrder("Cost", false, new List<string>() { "TestPrint9", "TestPrint4", "TestPrint3" });
         }
 
         /// <summary>
@@ -252,7 +273,7 @@ namespace Construct.Admin.Test.Functional.Controllers
         [Test]
         public void TestGetPrintsBillToAscending()
         {
-            this.AssertPrintsOrder("BillTo", true, new List<string>() { "TestPrint7", "TestPrint8", "TestPrint9" });
+            this.AssertPrintsOrder("BillTo", true, new List<string>() { "TestPrint6", "TestPrint7", "TestPrint8" });
         }
 
         /// <summary>
@@ -261,7 +282,7 @@ namespace Construct.Admin.Test.Functional.Controllers
         [Test]
         public void TestGetPrintsBillToDescending()
         {
-            this.AssertPrintsOrder("BillTo", false, new List<string>() { "TestPrint6", "TestPrint5", "TestPrint4" });
+            this.AssertPrintsOrder("BillTo", false, new List<string>() { "TestPrint9", "TestPrint5", "TestPrint4" });
         }
 
         /// <summary>
@@ -270,7 +291,7 @@ namespace Construct.Admin.Test.Functional.Controllers
         [Test]
         public void TestGetPrintsUserAscending()
         {
-            this.AssertPrintsOrder("User", true, new List<string>() { "TestPrint3", "TestPrint4", "TestPrint5" });
+            this.AssertPrintsOrder("User", true, new List<string>() { "TestPrint9", "TestPrint3", "TestPrint4" });
         }
 
         /// <summary>
@@ -311,8 +332,8 @@ namespace Construct.Admin.Test.Functional.Controllers
         public void TestGetPrintsSearch()
         {
             this.AssertPrintsOrder("FileName", true, new List<string>() { "TestPrint1" }, search: "TestPrint1");
-            this.AssertPrintsOrder("FileName", true, new List<string>() { "TestPrint8" }, search: "TestBillTo1");
-            this.AssertPrintsOrder("FileName", true, new List<string>() { "TestPrint1", "TestPrint8" }, search: "1");
+            this.AssertPrintsOrder("FileName", true, new List<string>() { "TestPrint7" }, search: "TestBillTo1");
+            this.AssertPrintsOrder("FileName", true, new List<string>() { "TestPrint1", "TestPrint7" }, search: "1");
             this.AssertPrintsOrder("FileName", true, new List<string>() { }, search: "unknown");
         }
 
@@ -350,7 +371,7 @@ namespace Construct.Admin.Test.Functional.Controllers
         [Test]
         public void TestGetUsersNameDescending()
         {
-            this.AssertUsersOrder("Name", false, new List<string>() { "Test Name 9", "Test Name 8", "Test Name 7" });
+            this.AssertUsersOrder("Name", false, new List<string>() { "Test Name 8", "Test Name 7", "Test Name 6" });
         }
         
         /// <summary>
@@ -368,7 +389,7 @@ namespace Construct.Admin.Test.Functional.Controllers
         [Test]
         public void TestGetUsersEmailDescending()
         {
-            this.AssertUsersOrder("Email", false, new List<string>() { "Test Name 9", "Test Name 8", "Test Name 7" });
+            this.AssertUsersOrder("Email", false, new List<string>() { "Test Name 8", "Test Name 7", "Test Name 6" });
         }
         
         /// <summary>
@@ -377,7 +398,7 @@ namespace Construct.Admin.Test.Functional.Controllers
         [Test]
         public void TestGetUsersTotalPrintsAscending()
         {
-            this.AssertUsersOrder("TotalPrints", true, new List<string>() { "Test Name 4", "Test Name 5", "Test Name 9" });
+            this.AssertUsersOrder("TotalPrints", true, new List<string>() { "Test Name 2", "Test Name 4", "Test Name 5" });
         }
 
         /// <summary>
@@ -386,7 +407,7 @@ namespace Construct.Admin.Test.Functional.Controllers
         [Test]
         public void TestGetUsersTotalPrintsDescending()
         {
-            this.AssertUsersOrder("TotalPrints", false, new List<string>() { "Test Name 4", "Test Name 5", "Test Name 9" });
+            this.AssertUsersOrder("TotalPrints", false, new List<string>() { "Test Name 2", "Test Name 4", "Test Name 5" });
         }
 
         /// <summary>
@@ -413,7 +434,7 @@ namespace Construct.Admin.Test.Functional.Controllers
         [Test]
         public void TestGetUsersTotalOwedPrintsAscending()
         {
-            this.AssertUsersOrder("TotalOwedPrints", true, new List<string>() { "Test Name 5", "Test Name 7", "Test Name 9" });
+            this.AssertUsersOrder("TotalOwedPrints", true, new List<string>() { "Test Name 1", "Test Name 5", "Test Name 7" });
         }
 
         /// <summary>
@@ -431,7 +452,7 @@ namespace Construct.Admin.Test.Functional.Controllers
         [Test]
         public void TestGetUsersTotalOwedCostAscending()
         {
-            this.AssertUsersOrder("TotalOwedCost", true, new List<string>() { "Test Name 5", "Test Name 7", "Test Name 9" });
+            this.AssertUsersOrder("TotalOwedCost", true, new List<string>() { "Test Name 1", "Test Name 2", "Test Name 5" });
         }
 
         /// <summary>
@@ -440,7 +461,7 @@ namespace Construct.Admin.Test.Functional.Controllers
         [Test]
         public void TestGetUsersTotalOwedCostDescending()
         {
-            this.AssertUsersOrder("TotalOwedCost", false, new List<string>() { "Test Name 2", "Test Name 0", "Test Name 8" });
+            this.AssertUsersOrder("TotalOwedCost", false, new List<string>() { "Test Name 0", "Test Name 8", "Test Name 6" });
         }
 
         /// <summary>
@@ -461,7 +482,7 @@ namespace Construct.Admin.Test.Functional.Controllers
             this.AssertUsersOrder("Name", true, new List<string>() { "Test Name 0", "Test Name 1", "Test Name 2" }, 0);
             this.AssertUsersOrder("Name", true, new List<string>() { "Test Name 1", "Test Name 2", "Test Name 3" }, 1);
             this.AssertUsersOrder("Name", true, new List<string>() { "Test Name 4", "Test Name 5", "Test Name 6" }, 4);
-            this.AssertUsersOrder("Name", true, new List<string>() { "Test Name 8", "Test Name 9" }, 8);
+            this.AssertUsersOrder("Name", true, new List<string>() { "Test Name 7", "Test Name 8" }, 7);
             this.AssertUsersOrder("Name", true, new List<string>() { }, 10);
         }
         

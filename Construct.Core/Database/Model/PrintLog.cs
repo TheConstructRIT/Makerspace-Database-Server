@@ -14,7 +14,6 @@ namespace Construct.Core.Database.Model
         /// <summary>
         /// User who printed.
         /// </summary>
-        [Required]
         public User User { get; set; }
         
         /// <summary>
