@@ -12,5 +12,8 @@
   * Removes tags from strings.
   */
 function cleanString(uncleanedString) {
+    if (uncleanedString == null) {
+        return "";
+    }
     return uncleanedString.replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;");
 }

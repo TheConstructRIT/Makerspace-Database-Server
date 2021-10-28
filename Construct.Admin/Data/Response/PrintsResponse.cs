@@ -6,6 +6,11 @@ namespace Construct.Admin.Data.Response
     public class PrintResponseEntryPrint
     {
         /// <summary>
+        /// Id of the print.
+        /// </summary>
+        public long Id { get; set; }
+        
+        /// <summary>
         /// Name of the print.
         /// </summary>
         public string Name { get; set; }

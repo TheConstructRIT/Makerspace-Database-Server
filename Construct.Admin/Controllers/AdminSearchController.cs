@@ -91,6 +91,7 @@ namespace Construct.Admin.Controllers
                     User = user,
                     Print = new PrintResponseEntryPrint()
                     {
+                        Id = printLog.Key,
                         Name = printLog.FileName,
                         Timestamp = ((DateTimeOffset) printLog.Time).ToUnixTimeSeconds(),
                         Material = printLog.Material.Name,

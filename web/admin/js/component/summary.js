@@ -311,6 +311,7 @@ class Summary extends React.Component {
 
                     // Add the entry.
                     summaryObject.state.entries.push({
+                        id: entry.print.id,
                         time: entry.print.timestamp,
                         filename: cleanString(entry.print.name),
                         purpose: cleanString(entry.print.purpose),
@@ -318,7 +319,7 @@ class Summary extends React.Component {
                         material: cleanString(entry.print.material),
                         cost: entry.print.cost,
                         owed: entry.print.owed,
-                        msdnumber: cleanString(entry.print.msdNumber == null ? "(None)" : entry.print.msdNumber),
+                        msdnumber: cleanString(entry.print.msdNumber),
                         user: cleanString(user),
                     });
                 });

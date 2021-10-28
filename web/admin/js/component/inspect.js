@@ -90,21 +90,23 @@ class Inspect extends React.Component {
             // Store the identifiers.
             entries["session"] = getCookie("session");
             if (entryType == "Print") {
-                entries["initialFileName"] = this.props.data.filename;
-                entries["time"] = this.props.data.time;
+                entries["id"] = this.props.data.id;
             } else if (entryType == "User") {
-                entries["hashedUniversityId"] = this.props.data.hashedUniversityId;
+                entries["hashedId"] = this.props.data.hashedUniversityId;
             }
 
             // Send the network request to update.
             let inspectObject = this;
-            let url = "/admin/changeprint?" + $.param(entries);
+            let url = "/admin/changeprint";
             if (entryType == "User") {
                 url = "/admin/changeuser?" + $.param(entries);
             }
             $.ajax({
                 url: url,
                 method: "POST",
+                data: JSON.stringify(entries),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
                 success: function() {
                     // TODO: Future enhancement - reload data from server, such as changing the balance for users.
                     inspectObject.props.summary.loadData();
