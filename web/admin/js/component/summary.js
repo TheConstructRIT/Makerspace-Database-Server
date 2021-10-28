@@ -68,7 +68,7 @@ var COLUMNS = {
         },
         {
             title: "MSD Number",
-            data: "msdnumber",
+            data: "billto",
             width: "40pt",
         },
         {
@@ -130,7 +130,7 @@ var COLUMNS = {
         },
         {
             title: "MSD Number",
-            data: "msdnumber",
+            data: "billto",
             width: "40pt",
         },
     ],
@@ -319,7 +319,7 @@ class Summary extends React.Component {
                         material: cleanString(entry.print.material),
                         cost: entry.print.cost,
                         owed: entry.print.owed,
-                        msdnumber: cleanString(entry.print.msdNumber),
+                        billto: cleanString(entry.print.billTo),
                         user: cleanString(user),
                     });
                 });

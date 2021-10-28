@@ -36,9 +36,9 @@ namespace Construct.Admin.Data.Response
         public string Purpose { get; set; }
         
         /// <summary>
-        /// MSD Number of the print.
+        /// Bill To of the print.
         /// </summary>
-        public string MsdNumber { get; set; }
+        public string BillTo { get; set; }
         
         /// <summary>
         /// Cost of the print.

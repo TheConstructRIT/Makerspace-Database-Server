@@ -35,7 +35,7 @@ namespace Construct.Admin.Data.Request
         /// <summary>
         /// New Bill To of the print.
         /// </summary>
-        public string MSDNumber { get; set; }
+        public string BillTo { get; set; }
         
         /// <summary>
         /// New owed flag of the print.

@@ -252,7 +252,7 @@ namespace Construct.Admin.Test.Functional.Controllers
         [Test]
         public void TestGetPrintsBillToAscending()
         {
-            this.AssertPrintsOrder("MSDNumber", true, new List<string>() { "TestPrint7", "TestPrint8", "TestPrint9" });
+            this.AssertPrintsOrder("BillTo", true, new List<string>() { "TestPrint7", "TestPrint8", "TestPrint9" });
         }
 
         /// <summary>
@@ -261,7 +261,7 @@ namespace Construct.Admin.Test.Functional.Controllers
         [Test]
         public void TestGetPrintsBillToDescending()
         {
-            this.AssertPrintsOrder("MSDNumber", false, new List<string>() { "TestPrint6", "TestPrint5", "TestPrint4" });
+            this.AssertPrintsOrder("BillTo", false, new List<string>() { "TestPrint6", "TestPrint5", "TestPrint4" });
         }
 
         /// <summary>

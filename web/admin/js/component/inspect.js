@@ -9,7 +9,7 @@ let INSPECT_ELEMENTS = {
         "InspectPrintName": "filename",
         "InspectPurpose": "purpose",
         "InspectWeight": "weight",
-        "InspectMSD": "msdnumber",
+        "InspectMSD": "billto",
         "InspectOwed": "owed",
     },
     "User": {
@@ -203,7 +203,7 @@ class Inspect extends React.Component {
                     <InspectInput ref="InspectWeight" modify={this.state.modifying} class="InspectText" name="Weight (Grams)" type="Integer" value={this.props.data.weight}/>
                     <InspectInput class="InspectText" name="Material" value={this.props.data.material}/>
                     <InspectInput class="InspectText" name="Cost (USD)" value={cost}/>
-                    <InspectInput ref="InspectMSD" modify={this.state.modifying} class="InspectText" name="MSD" type="MSDNumber" value={this.props.data.msdnumber}/>
+                    <InspectInput ref="InspectMSD" modify={this.state.modifying} class="InspectText" name="MSD" type="MSDNumber" value={this.props.data.billto}/>
                     <InspectInput ref="InspectOwed" modify={this.state.modifying} class="InspectText" name="Owed" type="Bool" value={owed}/>
                     <div class="InspectDivider"/>
                     <center>

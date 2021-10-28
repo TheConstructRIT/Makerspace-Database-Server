@@ -47,7 +47,7 @@ namespace Construct.Admin.Controllers
             print.FileName = request.FileName;
             print.Purpose = request.Purpose;
             print.WeightGrams = request.Weight;
-            print.BillTo = (request.MSDNumber == "" ? null : request.MSDNumber);
+            print.BillTo = (request.BillTo == "" ? null : request.BillTo);
             print.Owed = request.Owed;
             await context.SaveChangesAsync();
             return new BaseSuccessResponse();

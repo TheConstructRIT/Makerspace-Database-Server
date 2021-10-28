@@ -101,7 +101,7 @@ namespace Construct.Admin.Test.Functional.Controllers
                 Id = 0,
                 Purpose = "NewPurpose",
                 Weight = 6,
-                MSDNumber = null,
+                BillTo = null,
                 Owed = false,
             }).Result.Value.Status);
             Assert.AreEqual(this._adminEditController.Response.StatusCode, 400);
@@ -119,7 +119,7 @@ namespace Construct.Admin.Test.Functional.Controllers
                 Id = 0,
                 FileName = "NewFileName",
                 Weight = 6,
-                MSDNumber = null,
+                BillTo = null,
                 Owed = false,
             }).Result.Value.Status);
             Assert.AreEqual(this._adminEditController.Response.StatusCode, 400);
@@ -138,7 +138,7 @@ namespace Construct.Admin.Test.Functional.Controllers
                 FileName = "NewFileName",
                 Purpose = "NewPurpose",
                 Weight = 6,
-                MSDNumber = null,
+                BillTo = null,
                 Owed = false,
             }).Result.Value.Status);
             Assert.AreEqual(this._adminEditController.Response.StatusCode, 404);
@@ -158,7 +158,7 @@ namespace Construct.Admin.Test.Functional.Controllers
                 FileName = "NewFileName",
                 Purpose = "NewPurpose",
                 Weight = 6,
-                MSDNumber = null,
+                BillTo = null,
                 Owed = false,
             }).Result.Value.Status);
             
@@ -187,7 +187,7 @@ namespace Construct.Admin.Test.Functional.Controllers
                 FileName = "NewFileName",
                 Purpose = "NewPurpose",
                 Weight = 6,
-                MSDNumber = "",
+                BillTo = "",
                 Owed = false,
             }).Result.Value.Status);
             
@@ -216,7 +216,7 @@ namespace Construct.Admin.Test.Functional.Controllers
                 FileName = "NewFileName",
                 Purpose = "NewPurpose",
                 Weight = 6,
-                MSDNumber = "TestBillTo",
+                BillTo = "TestBillTo",
                 Owed = false,
             }).Result.Value.Status);
             
