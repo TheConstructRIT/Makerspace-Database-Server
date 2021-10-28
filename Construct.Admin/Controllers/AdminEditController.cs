@@ -52,5 +52,44 @@ namespace Construct.Admin.Controllers
             await context.SaveChangesAsync();
             return new BaseSuccessResponse();
         }
+        
+        /// <summary>
+        /// Changes a user in the database.
+        /// </summary>
+        /// <param name="request">Request data of the user to change.</param>
+        [HttpPost]
+        [Path("/admin/changeuser")]
+        public async Task<ActionResult<IResponse>> PostChangeUser([FromBody] ChangeUserRequest request)
+        {
+            // Return if the session isn't valid.
+            if (!Session.GetSingleton().RefreshSession(request.Session))
+            {
+                Response.StatusCode = 401;
+                return new UnauthorizedResponse();
+            }
+            
+            // Return an error if a field is invalid.
+            var validationErrorResponse = request.GetValidationErrorResponse();
+            if (validationErrorResponse != null)
+            {
+                Response.StatusCode = 400;
+                return new ActionResult<IResponse>(validationErrorResponse);
+            }
+            
+            // Get the user and return an error if none exists.
+            await using var context = new ConstructContext();
+            var user = await context.Users.FirstOrDefaultAsync(printLog => printLog.HashedId == request.HashedId);
+            if (user == null)
+            {
+                Response.StatusCode = 404;
+                return new GenericStatusResponse("user-not-found");
+            }
+            
+            // Update the user, save the user, and return success.
+            user.Name = request.Name;
+            user.Email = request.Email;
+            await context.SaveChangesAsync();
+            return new BaseSuccessResponse();
+        }
     }
 }

@@ -394,7 +394,7 @@ class Summary extends React.Component {
                 summaryObject.counter.setMaxPage(Math.ceil(result.totalUsers / MAX_ENTRIES_PER_PAGE));
                 summaryObject.state.entries = result.users;
                 result.users.forEach(function(entry) {
-                    entry.hashedUniversityId = cleanString(entry.hashedId);
+                    entry.hashedId = cleanString(entry.hashedId);
                     entry.name = cleanString(entry.name);
                     entry.email = cleanString(entry.email);
                 });

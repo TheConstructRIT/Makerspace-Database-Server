@@ -92,7 +92,7 @@ class Inspect extends React.Component {
             if (entryType == "Print") {
                 entries["id"] = this.props.data.id;
             } else if (entryType == "User") {
-                entries["hashedId"] = this.props.data.hashedUniversityId;
+                entries["hashedId"] = this.props.data.hashedId;
             }
 
             // Send the network request to update.
@@ -137,7 +137,7 @@ class Inspect extends React.Component {
         let inspectObject = this;
         $.ajax({
             url: "/admin/clearbalance?" + $.param({
-                "hasheduniversityid": this.props.data.hashedUniversityId,
+                "hashedid": this.props.data.hashedId,
                 "tigerbucks": tigerBucksUsed,
                 "session": getCookie("session"),
             }),
@@ -229,7 +229,7 @@ class Inspect extends React.Component {
                     <InspectInput class="InspectText" name="Total Prints" value={this.props.data.totalPrints}/>
                     <InspectInput class="InspectText" name="Total Weight (Grams)" value={this.props.data.totalWeight}/>
                     <div class="InspectSummaryContainer">
-                        <Summary user={this.props.data.hashedUniversityId} ref="InspectSummary"/>
+                        <Summary user={this.props.data.hashedId} ref="InspectSummary"/>
                     </div>
                     <center>
                         <button class="InspectModifyButton" onClick={this.toggleModify}>Modify</button>
