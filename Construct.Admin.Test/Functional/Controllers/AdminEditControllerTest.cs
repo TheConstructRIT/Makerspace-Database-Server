@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Construct.Admin.Controllers;
 using Construct.Admin.Data.Request;
@@ -8,6 +9,7 @@ using Construct.Core.Database.Context;
 using Construct.Core.Database.Model;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using NUnit.Framework;
 
 namespace Construct.Admin.Test.Functional.Controllers
@@ -255,6 +257,7 @@ namespace Construct.Admin.Test.Functional.Controllers
                 Session = this._session,
                 Name = "New Name",
                 Email = "new@email",
+                Permissions = new Dictionary<string, bool>(),
             }).Result.Value.Status);
             Assert.AreEqual(this._adminEditController.Response.StatusCode, 400);
         }
@@ -270,6 +273,7 @@ namespace Construct.Admin.Test.Functional.Controllers
                 Session = this._session,
                 HashedId = "test_hash",
                 Email = "new@email",
+                Permissions = new Dictionary<string, bool>(),
             }).Result.Value.Status);
             Assert.AreEqual(this._adminEditController.Response.StatusCode, 400);
         }
@@ -285,6 +289,23 @@ namespace Construct.Admin.Test.Functional.Controllers
                 Session = this._session,
                 HashedId = "test_hash",
                 Name = "New Name",
+                Permissions = new Dictionary<string, bool>(),
+            }).Result.Value.Status);
+            Assert.AreEqual(this._adminEditController.Response.StatusCode, 400);
+        }
+        
+        /// <summary>
+        /// Tests PostChangePrint with missing permissions.
+        /// </summary>
+        [Test]
+        public void TestPostChangeUserMissingPermissions()
+        {
+            Assert.AreEqual("missing-permissions", this._adminEditController.PostChangeUser(new ChangeUserRequest()
+            {
+                Session = this._session,
+                HashedId = "test_hash",
+                Name = "New Name",
+                Email = "new@email",
             }).Result.Value.Status);
             Assert.AreEqual(this._adminEditController.Response.StatusCode, 400);
         }
@@ -301,6 +322,7 @@ namespace Construct.Admin.Test.Functional.Controllers
                 HashedId = "unknown_hash",
                 Name = "New Name",
                 Email = "new@email",
+                Permissions = new Dictionary<string, bool>(),
             }).Result.Value.Status);
             Assert.AreEqual(this._adminEditController.Response.StatusCode, 404);
         }
@@ -318,6 +340,7 @@ namespace Construct.Admin.Test.Functional.Controllers
                 HashedId = "test_hash",
                 Name = "New Name",
                 Email = "new@email",
+                Permissions = new Dictionary<string, bool>(),
             }).Result.Value.Status);
 
             // Check that the user is changed.
@@ -328,7 +351,194 @@ namespace Construct.Admin.Test.Functional.Controllers
             Assert.AreEqual(user.Email, "new@email");
         }
         
+        /// <summary>
+        /// Tests PostChangePrint with making the user a lab manager.
+        /// </summary>
+        [Test]
+        public void TestPostChangeUserAddLabManger()
+        {
+            // Send the change request.
+            Assert.AreEqual("success", this._adminEditController.PostChangeUser(new ChangeUserRequest()
+            {
+                Session = this._session,
+                HashedId = "test_hash",
+                Name = "New Name",
+                Email = "new@email",
+                Permissions = new Dictionary<string, bool>() { {"LabManager", true} },
+            }).Result.Value.Status);
+
+            // Check that the permission is added.
+            using var context = new ConstructContext();
+            var user = context.Users.Include(user => user.Permissions).First();
+            Assert.AreEqual(1, user.Permissions.Count);
+            Assert.AreEqual("LabManager", user.Permissions.First().Name);
+            Assert.IsTrue(user.Permissions.First().IsActive());
+        }
         
+        /// <summary>
+        /// Tests PostChangePrint with keeping the user a lab manager.
+        /// </summary>
+        [Test]
+        public void TestPostChangeUserKeepLabManger()
+        {
+            // Make the user a lab manager.
+            this.AddData((context) =>
+            {
+                context.Users.Include(user => user.Permissions).First().Permissions.Add(new Permission()
+                {
+                    Name = "LabManager",
+                });
+            });
+            
+            // Send the change request.
+            Assert.AreEqual("success", this._adminEditController.PostChangeUser(new ChangeUserRequest()
+            {
+                Session = this._session,
+                HashedId = "test_hash",
+                Name = "New Name",
+                Email = "new@email",
+                Permissions = new Dictionary<string, bool>() { {"LabManager", true} },
+            }).Result.Value.Status);
+
+            // Check that the permission is kept.
+            using var context = new ConstructContext();
+            var user = context.Users.Include(user => user.Permissions).First();
+            Assert.AreEqual(1, user.Permissions.Count);
+            Assert.AreEqual("LabManager", user.Permissions.First().Name);
+            Assert.IsTrue(user.Permissions.First().IsActive());
+        }
+        
+        /// <summary>
+        /// Tests PostChangePrint with renewing the user a lab manager.
+        /// </summary>
+        [Test]
+        public void TestPostChangeUserRenewLabManger()
+        {
+            // Make the user an expired lab manager.
+            this.AddData((context) =>
+            {
+                context.Users.Include(user => user.Permissions).First().Permissions.Add(new Permission()
+                {
+                    Name = "LabManager",
+                    EndTime = new DateTime(0),
+                });
+            });
+            
+            // Send the change request.
+            Assert.AreEqual("success", this._adminEditController.PostChangeUser(new ChangeUserRequest()
+            {
+                Session = this._session,
+                HashedId = "test_hash",
+                Name = "New Name",
+                Email = "new@email",
+                Permissions = new Dictionary<string, bool>() { {"LabManager", true} },
+            }).Result.Value.Status);
+
+            // Check that the permission is kept.
+            using var context = new ConstructContext();
+            var user = context.Users.Include(user => user.Permissions).First();
+            Assert.AreEqual(1, user.Permissions.Count);
+            Assert.AreEqual("LabManager", user.Permissions.First().Name);
+            Assert.IsTrue(user.Permissions.First().IsActive());
+        }
+        
+        /// <summary>
+        /// Tests PostChangePrint with removing the user a lab manager.
+        /// </summary>
+        [Test]
+        public void TestPostChangeUserRemoveLabManger()
+        {
+            // Make the user a lab manager.
+            this.AddData((context) =>
+            {
+                context.Users.Include(user => user.Permissions).First().Permissions.Add(new Permission()
+                {
+                    Name = "LabManager",
+                });
+            });
+            
+            // Send the change request.
+            Assert.AreEqual("success", this._adminEditController.PostChangeUser(new ChangeUserRequest()
+            {
+                Session = this._session,
+                HashedId = "test_hash",
+                Name = "New Name",
+                Email = "new@email",
+                Permissions = new Dictionary<string, bool>() { {"LabManager", false} },
+            }).Result.Value.Status);
+
+            // Check that the permission is kept.
+            using var context = new ConstructContext();
+            var user = context.Users.Include(user => user.Permissions).First();
+            Assert.AreEqual(0, user.Permissions.Count);
+        }
+        
+        /// <summary>
+        /// Tests PostChangePrint with keeping the user an expired lab manager.
+        /// </summary>
+        [Test]
+        public void TestPostChangeUserKeepExpiredLabManger()
+        {
+            // Make the user a lab manager.
+            this.AddData((context) =>
+            {
+                context.Users.Include(user => user.Permissions).First().Permissions.Add(new Permission()
+                {
+                    Name = "LabManager",
+                    EndTime = new DateTime(0),
+                });
+            });
+            
+            // Send the change request.
+            Assert.AreEqual("success", this._adminEditController.PostChangeUser(new ChangeUserRequest()
+            {
+                Session = this._session,
+                HashedId = "test_hash",
+                Name = "New Name",
+                Email = "new@email",
+                Permissions = new Dictionary<string, bool>() { {"LabManager", false} },
+            }).Result.Value.Status);
+
+            // Check that the permission is kept.
+            using var context = new ConstructContext();
+            var user = context.Users.Include(user => user.Permissions).First();
+            Assert.AreEqual(1, user.Permissions.Count);
+            Assert.AreEqual("LabManager", user.Permissions.First().Name);
+            Assert.IsFalse(user.Permissions.First().IsActive());
+        }
+        
+        /// <summary>
+        /// Tests PostChangePrint with the LabManager permission not given.
+        /// </summary>
+        [Test]
+        public void TestPostChangeUserLabMangerNotGiven()
+        {
+            // Make the user a lab manager.
+            this.AddData((context) =>
+            {
+                context.Users.Include(user => user.Permissions).First().Permissions.Add(new Permission()
+                {
+                    Name = "LabManager",
+                });
+            });
+            
+            // Send the change request.
+            Assert.AreEqual("success", this._adminEditController.PostChangeUser(new ChangeUserRequest()
+            {
+                Session = this._session,
+                HashedId = "test_hash",
+                Name = "New Name",
+                Email = "new@email",
+                Permissions = new Dictionary<string, bool>(),
+            }).Result.Value.Status);
+
+            // Check that the permission is kept.
+            using var context = new ConstructContext();
+            var user = context.Users.Include(user => user.Permissions).First();
+            Assert.AreEqual(1, user.Permissions.Count);
+            Assert.AreEqual("LabManager", user.Permissions.First().Name);
+            Assert.IsTrue(user.Permissions.First().IsActive());
+        }
 
         /// <summary>
         /// Tests PostClearBalance with an unauthorized session.

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Construct.Core.Data.Attribute;
 using Construct.Core.Data.Request;
 
@@ -27,5 +28,11 @@ namespace Construct.Admin.Data.Request
         /// </summary>
         [NotEmpty("missing-email")]
         public string Email { get; set; }
+        
+        /// <summary>
+        /// Permissions of the user to update.
+        /// </summary>
+        [NotEmpty("missing-permissions")]
+        public Dictionary<string, bool> Permissions { get; set; }
     }
 }

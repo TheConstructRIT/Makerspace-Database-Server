@@ -1,9 +1,12 @@
+using System.Linq;
 using System.Threading.Tasks;
 using Construct.Admin.Data.Request;
 using Construct.Admin.State;
 using Construct.Core.Attribute;
+using Construct.Core.Configuration;
 using Construct.Core.Data.Response;
 using Construct.Core.Database.Context;
+using Construct.Core.Database.Model;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -78,16 +81,49 @@ namespace Construct.Admin.Controllers
             
             // Get the user and return an error if none exists.
             await using var context = new ConstructContext();
-            var user = await context.Users.FirstOrDefaultAsync(printLog => printLog.HashedId == request.HashedId);
+            var user = await context.Users.Include(user => user.Permissions)
+                .FirstOrDefaultAsync(printLog => printLog.HashedId == request.HashedId);
             if (user == null)
             {
                 Response.StatusCode = 404;
                 return new GenericStatusResponse("user-not-found");
             }
             
-            // Update the user, save the user, and return success.
+            // Update the user.
             user.Name = request.Name;
             user.Email = request.Email;
+            foreach (var permissionName in ConstructConfiguration.Configuration.Admin.ConfigurablePermissions)
+            {
+                if (request.Permissions.All(permissionPair => permissionPair.Key.ToLower() != permissionName.ToLower())) continue;
+                var newPermission = request.Permissions.First(permissionPair => permissionPair.Key.ToLower() == permissionName.ToLower()).Value;
+                var existingPermission = user.Permissions.FirstOrDefault(permission => permission.Name.ToLower() == permissionName.ToLower());
+                if (newPermission)
+                {
+                    // Either make the permission no longer expired or add the permission.
+                    if (existingPermission == null)
+                    {
+                        user.Permissions.Add(new Permission()
+                        {
+                            Name = permissionName,
+                        });
+                    }
+                    else
+                    {
+                        existingPermission.StartTime = null;
+                        existingPermission.EndTime = null;
+                    }
+                }
+                else
+                {
+                    // Remove the permission if it is active.
+                    if (existingPermission != null && existingPermission.IsActive())
+                    {
+                        user.Permissions.Remove(existingPermission);
+                    }
+                }
+            }
+            
+            // Save the user and return success.
             await context.SaveChangesAsync();
             return new BaseSuccessResponse();
         }
