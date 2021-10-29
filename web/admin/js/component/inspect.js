@@ -93,6 +93,10 @@ class Inspect extends React.Component {
                 entries["id"] = this.props.data.id;
             } else if (entryType == "User") {
                 entries["hashedId"] = this.props.data.hashedId;
+                entries["permissions"] = {};
+                for (const [permissionName, hasPermission] of Object.entries(this.props.data.permissions)) {
+                    entries["permissions"][permissionName] = this.refs["Permission." + permissionName].getValue();
+                }
             }
 
             // Send the network request to update.
@@ -220,17 +224,25 @@ class Inspect extends React.Component {
                 currency: "USD",
             }).format(this.props.data.totalOwedCost);
 
+            // Format the permissions.
+            let permissions = [];
+            for (const [permissionName, hasPermission] of Object.entries(this.props.data.permissions)) {
+                permissions.push(<InspectInput ref={"Permission." + permissionName} class="InspectText" modify={this.state.modifying} type="Bool" name={permissionName} value={hasPermission ? "Yes" : "No"}/>);
+            }
+
             // Create the component.
             return <div ref="BackgroundCover" class="InspectBackgroundCover" onClick={this.close}>
                 <div class="InspectUserBackground Beveled">
                     <InspectInput ref="InspectName" modify={this.state.modifying} class="InspectTextBig" name="Name" value={this.props.data.name}/>
                     <InspectInput ref="InspectEmail" modify={this.state.modifying} class="InspectText" name="Email" type="Email" value={this.props.data.email}/>
                     <div class="InspectDivider"/>
+                    {permissions}
+                    <div class="InspectDivider"/>
                     <InspectInput class="InspectText" name="Total Owed Cost (USD)" value={owedCost}/>
                     <InspectInput class="InspectText" name="Total Owed Prints" value={this.props.data.totalOwedPrints}/>
                     <InspectInput class="InspectText" name="Total Prints" value={this.props.data.totalPrints}/>
                     <InspectInput class="InspectText" name="Total Weight (Grams)" value={this.props.data.totalWeight}/>
-                    <div class="InspectSummaryContainer">
+                    <div class="InspectSummaryContainer" style={{height: "calc(100vh - 10cm - " + (12 * permissions.length) + "pt)"}}>
                         <Summary user={this.props.data.hashedId} ref="InspectSummary"/>
                     </div>
                     <center>
