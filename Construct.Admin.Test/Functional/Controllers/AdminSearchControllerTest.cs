@@ -8,6 +8,7 @@ using Construct.Base.Test.Functional.Base;
 using Construct.Core.Database.Model;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using NUnit.Framework;
 
 namespace Construct.Admin.Test.Functional.Controllers
@@ -485,7 +486,6 @@ namespace Construct.Admin.Test.Functional.Controllers
             this.AssertUsersOrder("Name", true, new List<string>() { "Test Name 7", "Test Name 8" }, 7);
             this.AssertUsersOrder("Name", true, new List<string>() { }, 10);
         }
-        
 
         /// <summary>
         /// Tests GetUsers with a search term.
@@ -497,6 +497,32 @@ namespace Construct.Admin.Test.Functional.Controllers
             this.AssertUsersOrder("Name", true, new List<string>() { "Test Name 1" }, search: "test1@email");
             this.AssertUsersOrder("Name", true, new List<string>() { "Test Name 1"}, search: "1");
             this.AssertUsersOrder("Name", true, new List<string>() { }, search: "unknown");
+        }
+
+        /// <summary>
+        /// Tests GetUsers for permissions.
+        /// </summary>
+        [Test]
+        public void TestGetUsersPermissions()
+        {
+            // Make the 1st user a LabManager and the 2nd user a LabManager, but expired.
+            this.AddData((context) =>
+            {
+                context.Users.Include(user => user.Permissions).First(user => user.HashedId == "test_hash_1").Permissions.Add(new Permission()
+                {
+                    Name = "LabManager",
+                });
+                context.Users.Include(user => user.Permissions).First(user => user.HashedId == "test_hash_2").Permissions.Add(new Permission()
+                {
+                    Name = "LabManager",
+                    EndTime = new DateTime(0),
+                });
+            });
+            
+            // Check that the permissions are correct.
+            Assert.IsTrue(((UsersResponse) this._adminSearchController.GetUsers(this._session, 1, 0, "Name", search: "Test Name 1").Result.Value).Users[0].Permissions["LabManager"]);
+            Assert.IsFalse(((UsersResponse) this._adminSearchController.GetUsers(this._session, 1, 0, "Name", search: "Test Name 2").Result.Value).Users[0].Permissions["LabManager"]);
+            Assert.IsFalse(((UsersResponse) this._adminSearchController.GetUsers(this._session, 1, 0, "Name", search: "Test Name 3").Result.Value).Users[0].Permissions["LabManager"]);
         }
     }
 }

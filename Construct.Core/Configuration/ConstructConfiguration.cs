@@ -76,6 +76,11 @@ namespace Construct.Core.Configuration
         /// Maximum duration of a session that a user can have with the admin user interface.
         /// </summary>
         public int MaximumUserSessionDuration { get; set; } = 60 * 60;
+
+        /// <summary>
+        /// Permissions that are shown in the admin user interface.
+        /// </summary>
+        public List<string> ConfigurablePermissions { get; set; } = new List<string>() { "LabManager", };
     }
     
     public class ConstructConfiguration

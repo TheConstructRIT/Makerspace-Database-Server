@@ -39,6 +39,11 @@ namespace Construct.Admin.Data.Response
         /// Total cost of prints for the user that are owed.
         /// </summary>
         public float TotalOwedCost { get; set; }
+        
+        /// <summary>
+        /// Permissions of the user.
+        /// </summary>
+        public Dictionary<string , bool> Permissions { get; set; }
     }
     
     public class UsersResponse : BaseSuccessResponse

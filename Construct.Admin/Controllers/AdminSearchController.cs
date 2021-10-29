@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Construct.Admin.Data.Response;
 using Construct.Admin.State;
 using Construct.Core.Attribute;
+using Construct.Core.Configuration;
 using Construct.Core.Data.Response;
 using Construct.Core.Database.Context;
 using Microsoft.AspNetCore.Mvc;
@@ -135,7 +136,7 @@ namespace Construct.Admin.Controllers
             search = (search ?? "").ToLower();
             order = (order ?? "").ToLower() + (ascending ? "" : "Descending");
             await using var context = new ConstructContext();
-            var basePrintsQuery = context.Users.Include(user => user.PrintLogs)
+            var basePrintsQuery = context.Users.Include(user => user.PrintLogs).Include(user => user.Permissions)
                 .Where(user => user.Name.ToLower().Contains(search) || user.Email.ToLower().Contains(search));
 
             // Add the ordering to the query.
@@ -157,10 +158,19 @@ namespace Construct.Admin.Controllers
             };
             basePrintsQuery = basePrintsQuery.Skip(offsetUsers).Take(maxUsers);
             
-            // Return the prints.
+            // Return the users.
             var users = new List<UserEntry>();
             foreach (var user in basePrintsQuery.ToList())
             {
+                // Get the permissions for the user.
+                var permissions = new Dictionary<string, bool>();
+                foreach (var permissionName in ConstructConfiguration.Configuration.Admin.ConfigurablePermissions)
+                {
+                    var permission = user.Permissions.FirstOrDefault(permission => permission.Name.ToLower() == permissionName.ToLower());
+                    permissions[permissionName] = (permission != null && permission.IsActive());
+                }
+                
+                // Add the user.
                 users.Add(new UserEntry()
                 {
                     HashedId = user.HashedId,
@@ -170,6 +180,7 @@ namespace Construct.Admin.Controllers
                     TotalWeight = user.PrintLogs.Sum(printLog => printLog.WeightGrams),
                     TotalOwedPrints = user.PrintLogs.Count(printLog => printLog.Owed),
                     TotalOwedCost = user.PrintLogs.Where(printLog => printLog.Owed).Sum(printLog => printLog.Cost),
+                    Permissions = permissions,
                 });
             }
             return new UsersResponse()
