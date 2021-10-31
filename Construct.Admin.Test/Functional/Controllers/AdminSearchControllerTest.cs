@@ -115,7 +115,7 @@ namespace Construct.Admin.Test.Functional.Controllers
         {
             var response = (PrintsResponse) this._adminSearchController.GetPrints(this._session, 3, offsetPrints, order, ascending, search, hashedId).Result.Value;
             Assert.AreEqual(printNames, response.Prints.Select(print => print.Print.Name).ToList());
-            Assert.AreEqual(10, response.TotalPrints);
+            Assert.AreEqual((hashedId == null ? 10 : printNames.Count), response.TotalPrints);
         }
 
         /// <summary>

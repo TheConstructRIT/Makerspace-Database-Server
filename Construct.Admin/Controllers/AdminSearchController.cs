@@ -106,7 +106,7 @@ namespace Construct.Admin.Controllers
             }
             return new PrintsResponse()
             {
-                TotalPrints = context.PrintLog.Count(),
+                TotalPrints = (hashedId != null ? context.PrintLog.Count(printLog => printLog.User != null && printLog.User.HashedId.ToLower() == hashedId.ToLower()) : context.PrintLog.Count()),
                 Prints = prints,
             };
         }
