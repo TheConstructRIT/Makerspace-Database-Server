@@ -278,7 +278,7 @@ class Summary extends React.Component {
             search: this.state.searchTerm,
         };
         if (this.props.user) {
-            urlParameters.user = this.props.user;
+            urlParameters.hashedId = this.props.user;
         }
 
         // Start loading the data.
