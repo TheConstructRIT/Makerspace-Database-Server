@@ -29,6 +29,11 @@ namespace Construct.Core.Configuration
         public string Source { get; set; }
         
         /// <summary>
+        /// Database in the host (source). Not used with Sqlite.
+        /// </summary>
+        public string SourceDatabase { get; set; }
+        
+        /// <summary>
         /// Username to access the data source.
         /// </summary>
         public string Username { get; set; }

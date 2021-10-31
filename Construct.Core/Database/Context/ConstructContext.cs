@@ -57,6 +57,9 @@ namespace Construct.Core.Database.Context
             if (provider == "sqlite")
             {
                 this._wrappedContext = new SqliteContext();
+            } else if (provider == "postgres" || provider == "postgresql")
+            {
+                this._wrappedContext = new PostgresContext();
             }
             else
             {

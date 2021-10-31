@@ -5,6 +5,7 @@ Helper script for creating Entity Framework database migrates.
 """
 
 import subprocess
+import testing.postgresql
 import os.path
 
 projectRootDirectory = os.path.realpath(__file__ + "/../../")
@@ -33,35 +34,46 @@ def createSqliteMigrate(migrateName):
     run(["dotnet", "ef", "migrations", "add", "Sqlite" + migrateName, "--context", "SqliteContext"], coreProjectDirectory)
 
 """
+Creates a PostgreSQL migrate.
+"""
+def createPostgresMigrate(migrateName):
+    # Create the migrates.
+    embeddedPostgres = testing.postgresql.Postgresql(port=39468)
+    run(["dotnet", "ef", "migrations", "add", "Postgres" + migrateName, "--context", "PostgresContext"], coreProjectDirectory)
+    embeddedPostgres.stop()
+
+"""
 Adds ExcludeFromCodeCoverage to the migrate files.
 """
 def ignoreMigrationsCodeCoverage():
     # Iterate over the files.
-    for fileName in os.listdir(migrationsDirectory):
-        file = os.path.join(migrationsDirectory, fileName)
+    for folderName in os.listdir(migrationsDirectory):
+        providerDirectory = os.path.join(migrationsDirectory, folderName)
+        for fileName in os.listdir(providerDirectory):
+            file = os.path.join(providerDirectory, fileName)
 
-        # Read the file and ignore it if the import exists.
-        if ".Designer.cs" not in fileName:
-            with open(file, encoding="utf8") as fileData:
-                fileContents = fileData.read()
-                if "System.Diagnostics.CodeAnalysis" not in fileContents:
-                    # Split the lines and add the import.
-                    lines = fileContents.split("\n")
-                    for i in range(0, len(lines)):
-                        line = lines[i]
-                        if "using System;" in line or "using Microsoft" in line:
-                            lines.insert(i + 1, "using System.Diagnostics.CodeAnalysis;")
-                            break
+            # Read the file and ignore it if the import exists.
+            if ".Designer.cs" not in fileName:
+                with open(file, encoding="utf8") as fileData:
+                    fileContents = fileData.read()
+                    if "System.Diagnostics.CodeAnalysis" not in fileContents:
+                        # Split the lines and add the import.
+                        lines = fileContents.split("\n")
+                        for i in range(0, len(lines)):
+                            line = lines[i]
+                            if "using System;" in line or "using Microsoft" in line:
+                                lines.insert(i + 1, "using System.Diagnostics.CodeAnalysis;")
+                                break
 
-                    # Add the code coverage ignore attributes.
-                    for i in range(len(lines) - 1, -1, -1):
-                        line = lines[i]
-                        if "partial class" in line:
-                            lines.insert(i, "    [ExcludeFromCodeCoverage]")
+                        # Add the code coverage ignore attributes.
+                        for i in range(len(lines) - 1, -1, -1):
+                            line = lines[i]
+                            if "partial class" in line:
+                                lines.insert(i, "    [ExcludeFromCodeCoverage]")
 
-                    # Write the file.
-                    with open(file, "w", encoding="utf8") as newFile:
-                        newFile.write("\n".join(lines))
+                        # Write the file.
+                        with open(file, "w", encoding="utf8") as newFile:
+                            newFile.write("\n".join(lines))
 
 
 # Run the program.
@@ -82,6 +94,7 @@ if __name__ == '__main__':
     # Create the migrates.
     print("Creating Sqlite migrate.")
     createSqliteMigrate(migrateName)
+    createPostgresMigrate(migrateName)
 
     # Ignore the migrations in code coverage.
     print("Finalizing migrates.")
