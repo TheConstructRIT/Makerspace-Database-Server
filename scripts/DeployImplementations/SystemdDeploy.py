@@ -7,6 +7,7 @@ Deploys services using systemd (most Linux distributions).
 import os
 import subprocess
 import sys
+import pwd
 from .BaseDeploy import BaseDeploy
 
 
@@ -15,7 +16,7 @@ class SystemdDeploy(BaseDeploy):
     Returns the path of the service file for the given service.
     """
     def getServiceeFile(self, serviceName):
-        return "/lib/systemd/system/" + serviceName + ".service"
+        return "/etc/systemd/system/" + serviceName + ".service"
 
     """
     Runs a systemctl command.
@@ -44,20 +45,31 @@ class SystemdDeploy(BaseDeploy):
     Starts a service.
     """
     def start(self, serviceName):
+        # Create the user if it doesn't exist
+        try:
+            pwd.getpwnam("construct-database")
+        except KeyError:
+            os.system("useradd -d " + self.projectRootDirectory + " -s /sbin/nologin construct-database")
+
+        # Give the user ownership of the project root directory
+        os.system("chown -R construct-database:construct-database " + self.projectRootDirectory)
+
         # Create the service file if it doesn't exist.
         serviceFileLocation = self.getServiceeFile(serviceName)
         if not os.path.exists(serviceFileLocation):
             with open(serviceFileLocation, "w") as file:
-                file.write("[Unit]\r\n")
-                file.write("Description=Runs the service " + serviceName +"\r\n")
-                file.write("\r\n")
-                file.write("[Service]\r\n")
-                file.write("Type=simple\r\n")
-                file.write("WorkingDirectory=" + self.projectRootDirectory + "/scripts\r\n")
-                file.write("ExecStart=\"" + sys.executable + "\" Run.py " + serviceName + "\r\n")
-                file.write("\r\n")
-                file.write("[Install]\r\n")
-                file.write("WantedBy=multi-user.target\r\n")
+                file.write("[Unit]\n")
+                file.write("Description=Runs the service " + serviceName +"\n")
+                file.write("\n")
+                file.write("[Service]\n")
+                file.write("Type=simple\n")
+                file.write("User=construct-database\n")
+                file.write("Group=construct-database\n")
+                file.write("WorkingDirectory=" + self.projectRootDirectory + "/scripts\n")
+                file.write("ExecStart=\"" + sys.executable + "\" Run.py " + serviceName + "\n")
+                file.write("\n")
+                file.write("[Install]\n")
+                file.write("WantedBy=multi-user.target\n")
             self.runSystemctl(["daemon-reload"])
 
         # Start and enable the service.

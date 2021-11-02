@@ -13,7 +13,7 @@ from .SystemdDeploy import SystemdDeploy
 Returns the deploy object to use for the system.
 """
 def getDeploy():
-    if os.path.exists("/lib/systemd/system"):
+    if os.path.exists("/etc/systemd/system"):
         print("Using Systemd Deploy method.")
         return SystemdDeploy()
     else:
