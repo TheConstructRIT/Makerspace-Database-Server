@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """
 Zachary Cook
 
@@ -74,10 +75,10 @@ if __name__ == '__main__':
     checkRequirement("dotnet")
 
     # Determine the directory.
-    if os.path.exists("/etc"):
-        repositoryDirectory = "/etc/construct-database"
-    else:
+    if sys.platform == 'win32':
         repositoryDirectory = "C:/Program Files/Construct-Database"
+    else:
+        repositoryDirectory = "/opt/construct-database"
 
     # Prepare the code.
     if not os.path.exists(repositoryDirectory):
