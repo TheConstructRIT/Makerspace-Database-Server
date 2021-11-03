@@ -92,7 +92,7 @@ div.FocusBlock {
 }
 
 div.FocusBlockOpague {
-    background-color: rgba(0, 0, 0, 0.75);
+    background-color: rgba(0, 0, 0, 0.8);
 }
 
 
@@ -104,10 +104,10 @@ div.FocusBlockTransparent {
 span.FocusBlockText {
     width: 100%;
     position: fixed;
-    bottom: 20px;
+    top: 290px;
     text-align: center;
     z-index: 101;
-    font-size: 24px;
+    font-size: 42px;
     transition-duration: 250ms;
 }
 
