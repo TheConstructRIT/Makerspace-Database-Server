@@ -114,9 +114,9 @@ class SignUpFormView extends React.Component {
             <span class="SignUpFormText" style={{top: "10px", "font-size": "30px"}}>Welcome to The Construct!</span>
             <span class="SignUpFormText" style={{top: "50px", "font-size": "24px"}}>Name (First and Last)</span>
             <input class="SignUpTextBox" style={{top: "84px"}} type="text" name="name" value={this.state.name} onChange={this.formChanged}></input>
-            <span class="SignUpFormText" style={{top: "120px", "font-size": "24px"}}>RIT Emal (abcd1234@rit.edu)</span>
+            <span class="SignUpFormText" style={{top: "120px", "font-size": "24px"}}>RIT Email (abcd1234@rit.edu)</span>
             <input class="SignUpTextBox" style={{top: "154px"}} type="text" name="email" value={this.state.email} onChange={this.formChanged}></input>
-            <span class="SignUpFormText" style={{top: "190px", "font-size": "24px"}}>Which college are you a part of?</span>
+            <span class="SignUpFormText" style={{top: "190px", "font-size": "24px"}}>Which college are you part of?</span>
             <select class="SignUpDropDown" style={{top: "224px"}} name="college" value={this.state.college} onChange={this.formChanged}>
                 <option value="">(Please select)</option>
                 <option value="KGCOE">KGCOE</option>
