@@ -19,6 +19,9 @@ class FocusBlock extends React.Component {
         window.onfocus = function() {
             focusBlock.setFocused(true);
         };
+        document.addEventListener("keypress", (event) => {
+            focusBlock.setFocused(true);
+        });
         window.onblur = function() {
             focusBlock.setFocused(false);
         };
