@@ -18,6 +18,13 @@ serviceOptions = {
     "user": ["Construct.User"],
     "admin": ["Construct.Admin"],
 }
+requiredTests = {
+    "Construct.Combined": ["Construct.Core.Test","Construct.Combined.Test","Construct.User.Test","Construct.Swipe.Test","Construct.Admin.Test","Construct.Compatibility.Test"],
+    "Construct.User": ["Construct.Core.Test","Construct.User.Test"],
+    "Construct.Swipe": ["Construct.Core.Test","Construct.Swipe.Test"],
+    "Construct.Admin": ["Construct.Core.Test","Construct.Admin.Test"],
+    "Construct.Compatibility": ["Construct.Core.Test","Construct.Compatibility.Test"],
+}
 
 
 class BaseDeploy:
@@ -56,12 +63,12 @@ class BaseDeploy:
         return None
 
     """
-    Verifies a services for deployment, such as running unit tests.
+    Verifies a project for deployment, such as running unit tests.
     An exception will be thrown if the verification fails.
     """
-    def verify(self, serviceName):
+    def verify(self, projectName):
         # Run the tests for the project.
-        projectTestDirectory = os.path.realpath(self.projectRootDirectory + "/" + serviceName + ".Test")
+        projectTestDirectory = os.path.realpath(self.projectRootDirectory + "/" + projectName)
         testProcess = subprocess.Popen(["dotnet", "test"], cwd=projectTestDirectory)
 
         # Throw an exception if the tests fail.
