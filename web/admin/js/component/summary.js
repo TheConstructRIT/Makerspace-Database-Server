@@ -272,7 +272,7 @@ class Summary extends React.Component {
         let urlParameters = {
             session: getCookie("session"),
             maxprints: MAX_ENTRIES_PER_PAGE,
-            offsetprints: (this.state.currentPage - 1) * MAX_ENTRIES_PER_PAGE,
+            offsetprints: Math.max(this.state.currentPage - 1, 0) * MAX_ENTRIES_PER_PAGE,
             order: column,
             ascending: ascending,
             search: this.state.searchTerm,
@@ -370,7 +370,7 @@ class Summary extends React.Component {
             url: "/admin/users?" + $.param({
                 session: getCookie("session"),
                 maxusers: MAX_ENTRIES_PER_PAGE,
-                offsetusers: (this.state.currentPage - 1) * MAX_ENTRIES_PER_PAGE,
+                offsetusers: Math.max(this.state.currentPage - 1, 0) * MAX_ENTRIES_PER_PAGE,
                 order: column,
                 ascending: ascending,
                 search: summaryObject.state.searchTerm,
