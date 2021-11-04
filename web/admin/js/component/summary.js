@@ -19,9 +19,12 @@ var COLUMNS = {
             title: "Time",
             data: "time",
             width: "60pt",
-            render: function(value) {
-                let date = new Date(value * 1000);
-                return (date.getMonth() + 1) + "/" + date.getDate() + "/" + date.getFullYear() + " " + date.toLocaleTimeString("en-US");
+            render: function(value, type) { 
+                if(type == "display"){
+                    let date = new Date(value * 1000);
+                    return (date.getMonth() + 1) + "/" + date.getDate() + "/" + date.getFullYear() + " " + date.toLocaleTimeString("en-US");
+                }
+                return value;
             },
         },
         {
@@ -81,9 +84,12 @@ var COLUMNS = {
             title: "Time",
             data: "time",
             width: "60pt",
-            render: function(value) {
-                let date = new Date(value * 1000);
-                return (date.getMonth() + 1) + "/" + date.getDate() + "/" + date.getFullYear() + " " + date.toLocaleTimeString("en-US");
+            render: function(value, type) { 
+                if(type == "display"){
+                    let date = new Date(value * 1000);
+                    return (date.getMonth() + 1) + "/" + date.getDate() + "/" + date.getFullYear() + " " + date.toLocaleTimeString("en-US");
+                }
+                return value;
             },
         },
         {
