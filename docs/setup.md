@@ -39,7 +39,15 @@ sudo dnf install -y git python3-pip dotnet-sdk-5.0 aspnetcore-runtime-5.0
 ```
 
 ### Database
-(TODO: Add PostgreSQL support and write)
+By default, SQLite is used as a database, but is only intended for test environments.
+PostgreSQL is the only supported database providers, but others like MySQL can be added
+if Microsoft Entity Framework supports it. For PostgreSQL, version 9 and older result in
+errors on starting, with newer versions recommended for features and security updates.
+For non-SQLite database management systems, a user must exist (the default root account
+is NOT recommended) and a database much be created with table creation and query
+permissions granted to that user (all is recommended to reduce headaches with setup and
+changes).  If a database is not created with the database management system or the account
+has incorrect permissions, the server will fail to start.
 
 ### Setup Script
 The setup script can be ran independently of the rest of the code since it manages
