@@ -25,8 +25,14 @@ namespace Construct.Core.Configuration
         
         /// <summary>
         /// Non-default data source to use. Can be a URL or a file name.
+        /// For URLs, the port must not be included.
         /// </summary>
         public string Source { get; set; }
+        
+        /// <summary>
+        /// Port to connect to the host (source). Not used with Sqlite.
+        /// </summary>
+        public int? SourcePort { get; set; }
         
         /// <summary>
         /// Database in the host (source). Not used with Sqlite.

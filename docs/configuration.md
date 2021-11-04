@@ -53,6 +53,9 @@ Configuration for the database used by the server.
   * `Provider` is `"sqlite"` - `Source` will point to the file to use.
     If none is specified, `database.sqlite` will be used.
   * `Provider` is `"postgres"` - `Source` will be the host of PostgreSQL.
+* `SourcePort (Integer)` - Post to connect to the host with. If not provided, the
+  default port will be used as determined by Microsoft Entity Framework. *Not used
+  with `sqlite`.*
 * `SourceDatabase (String)` - Database to use on the host. *Not used with `sqlite`.*
 * `Username (String)` - Username to connect to the database with. The user
   must have the ability to create tables and query them. *Not used with `sqlite`.*

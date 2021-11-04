@@ -17,6 +17,7 @@ namespace Construct.Core.Database.Context
             if (ConstructConfiguration.Configuration.Database.Source != null)
             {
                 dataSource = $"Host={ConstructConfiguration.Configuration.Database.Source};" +
+                             (ConstructConfiguration.Configuration.Database.SourcePort.HasValue ? $"Port={ConstructConfiguration.Configuration.Database.SourcePort};" : "")+
                              $"Database={ConstructConfiguration.Configuration.Database.SourceDatabase};" +
                              $"Username={ConstructConfiguration.Configuration.Database.Username};" +
                              $"Password={ConstructConfiguration.Configuration.Database.Password}";
