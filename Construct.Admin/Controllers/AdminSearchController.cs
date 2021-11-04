@@ -72,11 +72,10 @@ namespace Construct.Admin.Controllers
                 "user" => basePrintsQuery.OrderBy(printLog => printLog.User.Email.ToLower()),
                 _ => basePrintsQuery.OrderBy(printLog => printLog.FileName.ToLower()),
             };
-            basePrintsQuery = basePrintsQuery.Skip(offsetPrints).Take(maxPrints);
             
             // Return the prints.
             var prints = new List<PrintResponseEntry>();
-            foreach (var printLog in basePrintsQuery.ToList())
+            foreach (var printLog in basePrintsQuery.Skip(offsetPrints).Take(maxPrints).ToList())
             {
                 PrintResponseEntryUser user = null;
                 if (printLog.User != null)
@@ -106,7 +105,7 @@ namespace Construct.Admin.Controllers
             }
             return new PrintsResponse()
             {
-                TotalPrints = (hashedId != null ? context.PrintLog.Count(printLog => printLog.User != null && printLog.User.HashedId.ToLower() == hashedId.ToLower()) : context.PrintLog.Count()),
+                TotalPrints = basePrintsQuery.Count(),
                 Prints = prints,
             };
         }
@@ -156,11 +155,10 @@ namespace Construct.Admin.Controllers
                 "totalowedcost" => basePrintsQuery.OrderBy(user => user.PrintLogs.Where(printLog => printLog.Owed).Sum(printLog => printLog.Cost)),
                 _ => basePrintsQuery.OrderBy(user => user.Name.ToLower()),
             };
-            basePrintsQuery = basePrintsQuery.Skip(offsetUsers).Take(maxUsers);
             
             // Return the users.
             var users = new List<UserEntry>();
-            foreach (var user in basePrintsQuery.ToList())
+            foreach (var user in basePrintsQuery.Skip(offsetUsers).Take(maxUsers).ToList())
             {
                 // Get the permissions for the user.
                 var permissions = new Dictionary<string, bool>();
@@ -185,7 +183,7 @@ namespace Construct.Admin.Controllers
             }
             return new UsersResponse()
             {
-                TotalUsers = context.Users.Count(),
+                TotalUsers = basePrintsQuery.Count(),
                 Users = users,
             };
         }

@@ -115,7 +115,7 @@ namespace Construct.Admin.Test.Functional.Controllers
         {
             var response = (PrintsResponse) this._adminSearchController.GetPrints(this._session, 3, offsetPrints, order, ascending, search, hashedId).Result.Value;
             Assert.AreEqual(printNames, response.Prints.Select(print => print.Print.Name).ToList());
-            Assert.AreEqual((hashedId == null ? 10 : printNames.Count), response.TotalPrints);
+            Assert.AreEqual(((hashedId == null && search == "") ? 10 : printNames.Count), response.TotalPrints);
         }
 
         /// <summary>
@@ -130,7 +130,7 @@ namespace Construct.Admin.Test.Functional.Controllers
         {
             var response = (UsersResponse) this._adminSearchController.GetUsers(this._session, 3, offsetUsers, order, ascending, search).Result.Value;
             Assert.AreEqual(userNames, response.Users.Select(print => print.Name).ToList());
-            Assert.AreEqual(9, response.TotalUsers);
+            Assert.AreEqual((search == "" ? 9 : userNames.Count), response.TotalUsers);
         }
 
         /// <summary>
