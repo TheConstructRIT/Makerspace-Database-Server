@@ -370,7 +370,7 @@ class Summary extends React.Component {
             url: "/admin/users?" + $.param({
                 session: getCookie("session"),
                 maxusers: MAX_ENTRIES_PER_PAGE,
-                offsetusers: Math.Max(this.state.currentPage - 1, 0) * MAX_ENTRIES_PER_PAGE,
+                offsetusers: Math.max(this.state.currentPage - 1, 0) * MAX_ENTRIES_PER_PAGE,
                 order: column,
                 ascending: ascending,
                 search: summaryObject.state.searchTerm,
