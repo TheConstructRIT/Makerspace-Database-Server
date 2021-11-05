@@ -17,6 +17,32 @@ namespace Construct.User.Controllers
     public class UserController : Controller
     {
         /// <summary>
+        /// Creates a GetUserResponse for a user. Must have the permissions and print logs.
+        /// </summary>
+        /// <param name="user">User to create the response for.</param>
+        /// <returns>Response to return.</returns>
+        private static GetUserResponse CreateGetUserResponse(Core.Database.Model.User user)
+        {
+            // Determine the balance for the print logs.
+            var owedPrints = user.PrintLogs.Where(print => print.Owed);
+            var owedPrintBalance = 0.0;
+            foreach (var print in owedPrints)
+            {
+                owedPrintBalance += print.Cost;
+            }
+            
+            // Return the response.
+            return new GetUserResponse()
+            {
+                HashedId = user.HashedId,
+                Name = user.Name,
+                Email = user.Email,
+                OwedPrintBalance = owedPrintBalance,
+                Permissions = user.Permissions.Where(permission => permission.IsActive()).Select(permission => permission.Name).ToList(),
+            };
+        }
+        
+        /// <summary>
         /// Fetches information about an existing user.
         /// </summary>
         /// <param name="hashedId">Hashed id of the user.</param>
@@ -36,22 +62,8 @@ namespace Construct.User.Controllers
                 return new NotFoundResponse();
             }
             
-            // Determine the balance for the print logs.
-            var owedPrints = user.PrintLogs.Where(print => print.Owed);
-            var owedPrintBalance = 0.0;
-            foreach (var print in owedPrints)
-            {
-                owedPrintBalance += print.Cost;
-            }
-            
             // Return the response.
-            return new GetUserResponse()
-            {
-                Name = user.Name,
-                Email = user.Email,
-                OwedPrintBalance = owedPrintBalance,
-                Permissions = user.Permissions.Where(permission => permission.IsActive()).Select(permission => permission.Name).ToList(),
-            };
+            return CreateGetUserResponse(user);
         }
         
         /// <summary>

@@ -90,6 +90,7 @@ namespace Construct.User.Test.Functional.Controllers
             Assert.AreEqual(200, this._userController.Response.StatusCode);
             var userResponse = (GetUserResponse) response;
             Assert.AreEqual("success", userResponse.Status);
+            Assert.AreEqual("test_hash", userResponse.HashedId);
             Assert.AreEqual("Test Name", userResponse.Name);
             Assert.AreEqual("test@email", userResponse.Email);
             Assert.AreEqual(0, userResponse.OwedPrintBalance);
@@ -164,6 +165,7 @@ namespace Construct.User.Test.Functional.Controllers
             Assert.AreEqual(200, this._userController.Response.StatusCode);
             var userResponse = (GetUserResponse) response;
             Assert.AreEqual("success", userResponse.Status);
+            Assert.AreEqual("test_hash", userResponse.HashedId);
             Assert.AreEqual("Test Name", userResponse.Name);
             Assert.AreEqual("test@email", userResponse.Email);
             Assert.AreEqual(0, userResponse.OwedPrintBalance);
@@ -238,6 +240,7 @@ namespace Construct.User.Test.Functional.Controllers
             Assert.AreEqual(200, this._userController.Response.StatusCode);
             var userResponse = (GetUserResponse) response;
             Assert.AreEqual("success", userResponse.Status);
+            Assert.AreEqual("test_hash", userResponse.HashedId);
             Assert.AreEqual("Test Name", userResponse.Name);
             Assert.AreEqual("test@email", userResponse.Email);
             Assert.That(Math.Abs(userResponse.OwedPrintBalance - 0.5) < 0.001);
@@ -294,6 +297,7 @@ namespace Construct.User.Test.Functional.Controllers
             Assert.AreEqual(200, this._userController.Response.StatusCode);
             var userResponse = (GetUserResponse) response;
             Assert.AreEqual("success", userResponse.Status);
+            Assert.AreEqual("test_hash", userResponse.HashedId);
             Assert.AreEqual("Test Name", userResponse.Name);
             Assert.AreEqual("test@email", userResponse.Email);
             Assert.AreEqual(0, userResponse.OwedPrintBalance);

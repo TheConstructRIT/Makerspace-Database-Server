@@ -6,6 +6,11 @@ namespace Construct.User.Data.Response
     public class GetUserResponse : BaseSuccessResponse
     {
         /// <summary>
+        /// Hashed id of the user.
+        /// </summary>
+        public string HashedId { get; set; }
+        
+        /// <summary>
         /// Name of the user.
         /// </summary>
         public string Name { get; set; }
