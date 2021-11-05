@@ -305,6 +305,110 @@ namespace Construct.User.Test.Functional.Controllers
         }
 
         /// <summary>
+        /// Tests the /user/find endpoint with a null email.
+        /// </summary>
+        [Test]
+        public void TestFindNullEmail()
+        {
+            var response = _userController.Find(null).Result.Value;
+            Assert.AreEqual(400, this._userController.Response.StatusCode);
+            Assert.AreEqual("missing-email", response.Status);
+        }
+
+        /// <summary>
+        /// Tests the /user/find endpoint with a empty email.
+        /// </summary>
+        [Test]
+        public void TestFindEmptyEmail()
+        {
+            var response = _userController.Find("").Result.Value;
+            Assert.AreEqual(400, this._userController.Response.StatusCode);
+            Assert.AreEqual("missing-email", response.Status);
+        }
+
+        /// <summary>
+        /// Tests the /user/find endpoint with an invalid email.
+        /// </summary>
+        [Test]
+        public void TestFindInvalidEmail()
+        {
+            var response = _userController.Find("test@bad-email").Result.Value;
+            Assert.AreEqual(400, this._userController.Response.StatusCode);
+            Assert.AreEqual("invalid-email", response.Status);
+        }
+
+        /// <summary>
+        /// Tests the /user/find endpoint with a missing user.
+        /// </summary>
+        [Test]
+        public void TestFindMissing()
+        {
+            var response = _userController.Find("unknown@email").Result.Value;
+            Assert.AreEqual(404, this._userController.Response.StatusCode);
+            Assert.AreEqual("not-found", response.Status);
+        }
+        
+        /// <summary>
+        /// Tests the /user/find endpoint with a user with the email domain specified.
+        /// </summary>
+        [Test]
+        public void TestFind()
+        {
+            // Add the user.
+            this.AddData((context) =>
+            {
+                context.Users.Add(new Core.Database.Model.User()
+                {
+                    HashedId = "test_hash",
+                    Name = "Test Name",
+                    Email = "test@email",
+                    SignUpTime = DateTime.Now,
+                });
+            });
+            
+            // Run a request and make sure it returned a not found request.
+            var response = _userController.Find("TESt@email").Result.Value;
+            Assert.AreEqual(200, this._userController.Response.StatusCode);
+            var userResponse = (GetUserResponse) response;
+            Assert.AreEqual("success", userResponse.Status);
+            Assert.AreEqual("test_hash", userResponse.HashedId);
+            Assert.AreEqual("Test Name", userResponse.Name);
+            Assert.AreEqual("test@email", userResponse.Email);
+            Assert.AreEqual(0, userResponse.OwedPrintBalance);
+            Assert.AreEqual(0, userResponse.Permissions.Count);
+        }
+        
+        /// <summary>
+        /// Tests the /user/find endpoint with a user with the email domain not specified.
+        /// </summary>
+        [Test]
+        public void TestFindNoDomain()
+        {
+            // Add the user.
+            this.AddData((context) =>
+            {
+                context.Users.Add(new Core.Database.Model.User()
+                {
+                    HashedId = "test_hash",
+                    Name = "Test Name",
+                    Email = "test@email",
+                    SignUpTime = DateTime.Now,
+                });
+            });
+            
+            // Run a request and make sure it returned a not found request.
+            var response = _userController.Find("TESt").Result.Value;
+            Assert.AreEqual(200, this._userController.Response.StatusCode);
+            var userResponse = (GetUserResponse) response;
+            Assert.AreEqual("success", userResponse.Status);
+            Assert.AreEqual("test_hash", userResponse.HashedId);
+            Assert.AreEqual("Test Name", userResponse.Name);
+            Assert.AreEqual("test@email", userResponse.Email);
+            Assert.AreEqual(0, userResponse.OwedPrintBalance);
+            Assert.AreEqual(0, userResponse.Permissions.Count);
+        }
+
+        /// <summary>
         /// Tests the /user/register endpoint with a null HashedId.
         /// </summary>
         [Test]

@@ -67,6 +67,59 @@ namespace Construct.User.Controllers
         }
         
         /// <summary>
+        /// Finds information about an existing user from their email.
+        /// </summary>
+        /// <param name="email">Email to search for.</param>
+        [HttpGet]
+        [Path("/user/find")]
+        public async Task<ActionResult<IResponse>> Find(string email)
+        {
+            // Return if the email is null or empty.
+            if (string.IsNullOrEmpty(email))
+            {
+                Response.StatusCode = 400;
+                return new GenericStatusResponse("missing-email");
+            }
+            
+            // Add an end to the email if none exists.
+            if (!email.Contains("@") && ConstructConfiguration.Configuration.Email.ValidEmails.Count > 0)
+            {
+                email += "@" + ConstructConfiguration.Configuration.Email.ValidEmails[0];
+            }
+            
+            // Correct the email.
+            var emailCorrection = new EmailCorrection()
+            {
+                ValidEmails = ConstructConfiguration.Configuration.Email.ValidEmails,
+                Corrections = ConstructConfiguration.Configuration.Email.EmailCorrections,
+            };
+            try
+            {
+                email = emailCorrection.CorrectEmail(email);
+            }
+            catch (FormatException)
+            {
+                Response.StatusCode = 400;
+                return new GenericStatusResponse("invalid-email");
+            }
+            
+            // Find the user.
+            await using var context = new ConstructContext();
+            var user = await context.Users.Include(user => user.PrintLogs).Include(user => user.Permissions)
+                .FirstOrDefaultAsync(user => user.Email.ToLower() == email);
+            
+            // Return not found if the user doesn't exist.
+            if (user == null)
+            {
+                Response.StatusCode = 404;
+                return new NotFoundResponse();
+            }
+            
+            // Return the response.
+            return CreateGetUserResponse(user);
+        }
+        
+        /// <summary>
         /// Registers a new user in the system.
         /// </summary>
         /// <param name="request">User information sent to register.</param>
