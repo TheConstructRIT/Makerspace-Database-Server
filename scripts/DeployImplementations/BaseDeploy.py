@@ -11,18 +11,20 @@ import sys
 
 
 serviceOptions = {
-    "all": ["Construct.Swipe","Construct.User","Construct.Compatibility","Construct.Admin"],
+    "all": ["Construct.Swipe","Construct.User","Construct.Compatibility","Construct.Admin","Construct.Print"],
     "combined": ["Construct.Combined"],
     "compatibility": ["Construct.Compatibility"],
     "swipe": ["Construct.Swipe"],
     "user": ["Construct.User"],
     "admin": ["Construct.Admin"],
+    "print": ["Construct.Print"],
 }
 requiredTests = {
     "Construct.Combined": ["Construct.Core.Test","Construct.Combined.Test","Construct.User.Test","Construct.Swipe.Test","Construct.Admin.Test","Construct.Compatibility.Test"],
     "Construct.User": ["Construct.Core.Test","Construct.User.Test"],
     "Construct.Swipe": ["Construct.Core.Test","Construct.Swipe.Test"],
     "Construct.Admin": ["Construct.Core.Test","Construct.Admin.Test"],
+    "Construct.Print": ["Construct.Core.Test","Construct.Print.Test"],
     "Construct.Compatibility": ["Construct.Core.Test","Construct.Compatibility.Test"],
 }
 

@@ -140,6 +140,7 @@ namespace Construct.Core.Configuration
             { "User", 8001 },
             { "Swipe", 8002 },
             { "Admin", 8003 },
+            { "Print", 8004 },
             { "Compatibility", 8005 },
         };
 

@@ -35,6 +35,7 @@ document for how the file can be modified and deployed.
     "User": 8001,
     "Swipe": 8002,
     "Admin": 8003,
+    "Print": 8004,
     "Compatibility": 8005
   }
 }
@@ -99,15 +100,14 @@ Configuration for the admin UI for server.
   admin UI. *Time-based permissions are supported in the database but not by the UI.**
 
 ### Ports
-Configuration for the ports used by the system. *The default configuration
-includes 2 ports between `"Admin"` and `"Compatibility"`. Up to 2 more
-services are planned.*
+Configuration for the ports used by the system.
 * `Combined (Integer)` - Port used by the service that runs everything together.
   This is only intended for systems where connecting directly to the server is required,
   or for local testing.
 * `User (Integer)` - Port used by the service for registering and fetching users.
 * `Swipe (Integer)` - Port used by the service for registering user visits.
 * `Admin (Integer)` - Port used for the admin UI service.
+* `Print (Integer)` - Port used for the print service.
 * `Compatibility (Integer)` - Port used for the service with legacy endpoints for
   legacy applications at The Construct @ RIT. **The API for this service is not
   documented and is deprecated. It will be removed in the future.**
