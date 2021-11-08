@@ -159,6 +159,7 @@ namespace Construct.Print.Test.Functional.Controllers
             var response = (LastPrintResponse) this._printController.GetLast("test_hash_2").Result.Value;
             Assert.AreEqual("success", response.Status);
             Assert.AreEqual("Test File 2", response.FileName);
+            Assert.AreEqual(0.3f, response.Weight);
             Assert.AreEqual("Test Purpose 2", response.Purpose);
             Assert.AreEqual("Test Bill To 2", response.BillTo);
         }

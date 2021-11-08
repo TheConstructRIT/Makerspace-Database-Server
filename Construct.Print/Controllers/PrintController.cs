@@ -52,6 +52,7 @@ namespace Construct.Print.Controllers
             return new LastPrintResponse()
             {
                 FileName = lastPrint.FileName,
+                Weight = lastPrint.WeightGrams,
                 TimeStamp = ((DateTimeOffset) lastPrint.Time).ToUnixTimeSeconds(),
                 Purpose = lastPrint.Purpose,
                 BillTo = lastPrint.BillTo,

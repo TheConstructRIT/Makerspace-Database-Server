@@ -57,6 +57,7 @@ namespace Construct.Print.Test.Integration.Controllers
             Assert.AreEqual(HttpStatusCode.OK, lastPrintResponseCode);
             Assert.AreEqual("success",lastPrintResponse.Status);
             Assert.AreEqual("test_file",lastPrintResponse.FileName);
+            Assert.AreEqual(10,lastPrintResponse.Weight);
             Assert.AreEqual("Test Purpose",lastPrintResponse.Purpose);
             Assert.IsNull(lastPrintResponse.BillTo);
             

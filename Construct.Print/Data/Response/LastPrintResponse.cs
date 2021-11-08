@@ -15,6 +15,11 @@ namespace Construct.Print.Data.Response
         public long TimeStamp { get; set; }
         
         /// <summary>
+        /// Weight of the last print.
+        /// </summary>
+        public float Weight { get; set; }
+        
+        /// <summary>
         /// Purpose of the last print.
         /// </summary>
         public string Purpose { get; set; }
