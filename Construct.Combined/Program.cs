@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Construct.Admin.Controllers;
 using Construct.Compatibility.Controllers;
 using Construct.Core.Server;
+using Construct.Print.Controllers;
 using Construct.Swipe.Controllers;
 using Construct.User.Controllers;
 
@@ -27,6 +28,8 @@ namespace Construct.Combined
                 typeof(SwipeController),
                 // Construct.Admin reference
                 typeof(AdminSessionController),
+                // Construct.Print reference
+                typeof(PrintController),
                 // Construct.Compatibility reference
                 typeof(CompatibilityController),
             };
