@@ -5,6 +5,7 @@ using Construct.Core.Attribute;
 using Construct.Core.Data.Response;
 using Construct.Core.Database.Context;
 using Construct.Core.Database.Model;
+using Construct.Core.Receipt.Print;
 using Construct.Print.Data.Request;
 using Construct.Print.Data.Response;
 using Microsoft.AspNetCore.Mvc;
@@ -106,7 +107,7 @@ namespace Construct.Print.Controllers
             }
             
             // Add the print.
-            user.PrintLogs.Add(new PrintLog()
+            var printLog = new PrintLog()
             {
                 User = user,
                 Time = DateTime.Now,
@@ -117,8 +118,15 @@ namespace Construct.Print.Controllers
                 BillTo = request.BillTo,
                 Cost = material.CostPerGram * request.Weight,
                 Owed = request.Owed ?? true,
-            });
+            };
+            user.PrintLogs.Add(printLog);
             
+            // Send the print receipt in the background.
+            if (printLog.Owed && printLog.Cost > 0)
+            {
+                var _ = Task.Run(() => PrintReceiptProvider.SendReceipt(printLog));
+            }
+
             // Save the changes and return success.
             await context.SaveChangesAsync();
             return new BaseSuccessResponse();
