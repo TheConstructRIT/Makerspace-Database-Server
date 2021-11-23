@@ -32,18 +32,21 @@ namespace Construct.Admin.Controllers
             var user = await context.Users.Include(user => user.Permissions)
                 .FirstOrDefaultAsync(user => user.HashedId.ToLower() == hashedId.ToLower());
             
-            // Return not found if the user isn't authorized.
-            if (user?.Permissions.FirstOrDefault(p => p.Name.ToLower() == "labmanager") == null)
+            // Check if the user is authorized.
+            var labmanager = user?.Permissions.FirstOrDefault(p => p.Name.ToLower() == "labmanager");
+            if (labmanager is not null && labmanager.IsActive()) {
+                // Create and return the session.
+                return new SessionResponse()
+                {
+                    Session = Session.GetSingleton().CreateSession(hashedId)
+                };
+            }
+            else
             {
+                // Return not found if the user isn't authorized.
                 Response.StatusCode = 401;
                 return new UnauthorizedResponse();
             }
-            
-            // Create and return the session.
-            return new SessionResponse()
-            {
-                Session = Session.GetSingleton().CreateSession(hashedId)
-            };
         }
         
         /// <summary>
