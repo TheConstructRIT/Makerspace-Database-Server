@@ -4,6 +4,10 @@
  * Top bar for switching between views.
  */
 
+const AUTO_SEARCH_TOPBAR = true;
+
+
+
 class TopBar extends React.Component {
     /*
      * Creates the swipe component.
@@ -18,6 +22,7 @@ class TopBar extends React.Component {
         this.setView = this.setView.bind(this);
         this.setPrintsView = this.setPrintsView.bind(this);
         this.setUsersView = this.setUsersView.bind(this);
+        this.searchUpdated = this.searchUpdated.bind(this);
         this.search = this.search.bind(this);
         this.logout = this.logout.bind(this);
     }
@@ -52,6 +57,14 @@ class TopBar extends React.Component {
     }
 
     /*
+     * Invoked when the search box updates.
+     */
+    searchUpdated(event) {
+        if (AUTO_SEARCH_TOPBAR != true) return;
+        this.search();
+    }
+
+    /*
      * Performs a search.
      */
     search(event) {
@@ -82,7 +95,7 @@ class TopBar extends React.Component {
         return <div class="TopBarContainer">
             <button class={printsButtonClasses} onClick={this.setPrintsView}>Prints</button>
             <button class={usersButtonClasses} onClick={this.setUsersView}>Users</button>
-            <input class="TopBarSearchBox" type="text" ref="searchBox"></input>
+            <input class="TopBarSearchBox" type="text" ref="searchBox" onChange={this.searchUpdated}></input>
             <button class="TopBarButton TopBarButtonSearch" onClick={this.search}>Search</button>
             <button class="TopBarButton TopBarLogoutButton" onClick={this.logout}>Logout</button>
         </div>
