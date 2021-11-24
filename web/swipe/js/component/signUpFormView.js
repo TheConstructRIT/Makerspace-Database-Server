@@ -74,6 +74,22 @@ class SignUpFormView extends React.Component {
             dataType: "json",
             cache: false,
             success: function(data){
+                // Send the swipe log for the user for their first sign-in.
+                // This failing is not checked.
+                let id = form.state.currentId;
+                $.ajax({
+                    type: "POST",
+                    url: "/swipe/add",
+                    data: JSON.stringify({ 
+                        hashedId: id,
+                        source: "MainLab",
+                    }),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    cache: false,
+                });
+
+                // Set the form as submitted.
                 form.state.status = "submitted";
                 form.setState(form.state);
                 staticApp.setVisibleView("swipe");
