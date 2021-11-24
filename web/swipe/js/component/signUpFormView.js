@@ -18,6 +18,7 @@ class SignUpFormView extends React.Component {
         // Wrap the methods.
         this.formChanged = this.formChanged.bind(this);
         this.submitForm = this.submitForm.bind(this);
+        this.cancelForm = this.cancelForm.bind(this);
     }
 
     /*
@@ -85,6 +86,14 @@ class SignUpFormView extends React.Component {
     }
 
     /*
+     * Cancels the form.
+     */
+    cancelForm() {
+        this.setState(this.state);
+        staticApp.setVisibleView("swipe");
+    }
+
+    /*
      * Returns the HTML structure of the element.
      */
     render() {
@@ -111,6 +120,9 @@ class SignUpFormView extends React.Component {
 
         // Render the app.
         return <div class="View" style={{left: (this.props.position * 100) + "%"}}>
+            <div class="SignUpClose" onClick={this.cancelForm}>
+                <span class="SignUpCloseText">×</span>
+            </div>
             <span class="SignUpFormText" style={{top: "10px", "font-size": "30px"}}>Welcome to The Construct!</span>
             <span class="SignUpFormText" style={{top: "50px", "font-size": "24px"}}>Name (First and Last)</span>
             <input class="SignUpTextBox" style={{top: "84px"}} type="text" name="name" value={this.state.name} onChange={this.formChanged}></input>
