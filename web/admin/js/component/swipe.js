@@ -151,6 +151,11 @@ class Swipe extends React.Component {
             </div>
         }
 
+        // Reset the views if the swipe form is open (not logged in).
+        if (this.state.ProcessState == "Open" || this.state.ProcessState == "Error") {
+            staticSummary.clearData();
+        }
+
         // Determine the input item.
         let stateElement;
         if (this.state.ProcessState != "Processing") {

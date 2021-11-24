@@ -198,6 +198,7 @@ class Summary extends React.Component {
         this.loadPrints = this.loadPrints.bind(this);
         this.loadUsers = this.loadUsers.bind(this);
         this.loadData = this.loadData.bind(this);
+        this.clearData = this.clearData.bind(this);
         this.updateState = this.updateState.bind(this);
         this.updateTable = this.updateTable.bind(this);
         this.updateInspectValues = this.updateInspectValues.bind(this);
@@ -433,6 +434,14 @@ class Summary extends React.Component {
         } else {
             this.loadUsers();
         }
+    }
+
+    /*
+     * Clears the data for the current view.
+     */
+    clearData() {
+        this.state.entries = [];
+        this.updateState();
     }
 
     /*
