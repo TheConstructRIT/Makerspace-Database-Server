@@ -252,6 +252,14 @@ class Summary extends React.Component {
         if (this.props.user == null) {
             staticSummary = this;
         }
+
+        // Occasionally update the visits list.
+        let summaryObject = this;
+        setInterval(function() {
+            if (summaryObject.state.view == "Visits") {
+                summaryObject.loadVisits(true);
+            }
+        },5000);
     }
 
     /*
@@ -469,11 +477,13 @@ class Summary extends React.Component {
     /*
      * Updates the visits to show.
      */
-    loadVisits() {
+    loadVisits(silent) {
         // Set the visits as loading.
         let currentTime = new Date().getTime();
         this.state.failed = false;
-        this.state.loading = true;
+        if (silent != true) {
+            this.state.loading = true;
+        }
         this.state.unathorized = false;
         this.state.currentlyLoading = currentTime;
         this.updateState();
