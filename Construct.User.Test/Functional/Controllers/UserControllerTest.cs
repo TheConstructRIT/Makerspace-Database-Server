@@ -63,8 +63,7 @@ namespace Construct.User.Test.Functional.Controllers
             // Run a request and make sure it returned a not found request.
             var response = _userController.Get("not_found").Result.Value;
             Assert.AreEqual(404, this._userController.Response.StatusCode);
-            Assert.IsTrue(response is NotFoundResponse);
-            Assert.AreEqual("not-found", response.Status);
+            Assert.AreEqual("user-not-found", response.Status);
         }
         
         /// <summary>
@@ -345,7 +344,7 @@ namespace Construct.User.Test.Functional.Controllers
         {
             var response = _userController.Find("unknown@email").Result.Value;
             Assert.AreEqual(404, this._userController.Response.StatusCode);
-            Assert.AreEqual("not-found", response.Status);
+            Assert.AreEqual("user-not-found", response.Status);
         }
         
         /// <summary>

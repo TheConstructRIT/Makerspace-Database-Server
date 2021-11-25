@@ -59,7 +59,7 @@ namespace Construct.User.Controllers
             if (user == null)
             {
                 Response.StatusCode = 404;
-                return new NotFoundResponse();
+                return new GenericStatusResponse("user-not-found");
             }
             
             // Return the response.
@@ -112,7 +112,7 @@ namespace Construct.User.Controllers
             if (user == null)
             {
                 Response.StatusCode = 404;
-                return new NotFoundResponse();
+                return new GenericStatusResponse("user-not-found");
             }
             
             // Return the response.

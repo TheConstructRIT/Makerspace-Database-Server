@@ -90,7 +90,7 @@ namespace Construct.User.Test.Integration.Controllers
             // Get the user and check that it was not found.
             var (getResponse, getResponseCode) = this.Get<GenericStatusResponse>("User", "/user/get?hashedid=test_hash");
             Assert.AreEqual(HttpStatusCode.NotFound, getResponseCode);
-            Assert.AreEqual("not-found", getResponse.Status);
+            Assert.AreEqual("user-not-found", getResponse.Status);
             
             // Stop the program.
             // Can't be done in a TearDown since the ASP.NET app prevents it from running.

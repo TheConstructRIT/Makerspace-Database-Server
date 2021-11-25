@@ -113,7 +113,7 @@ class SwipeView extends React.Component {
                 }
             },
             error: function(xhr) {
-                if (xhr.status == 404 && xhr.responseJSON != null && xhr.responseJSON.status == "not-found") {
+                if (xhr.status == 404 && xhr.responseJSON != null && xhr.responseJSON.status == "user-not-found") {
                     // Prompt the form.
                     staticApp.state.currentId = id;
                     swipeView.setStatusThenReset("form", 2);
