@@ -22,6 +22,7 @@ class TopBar extends React.Component {
         this.setView = this.setView.bind(this);
         this.setPrintsView = this.setPrintsView.bind(this);
         this.setUsersView = this.setUsersView.bind(this);
+        this.setVisitsView = this.setVisitsView.bind(this);
         this.searchUpdated = this.searchUpdated.bind(this);
         this.search = this.search.bind(this);
         this.logout = this.logout.bind(this);
@@ -57,6 +58,13 @@ class TopBar extends React.Component {
     }
 
     /*
+     * Sets the view to Visits.
+     */
+    setVisitsView(event) {
+        this.setView("Visits");
+    }
+
+    /*
      * Invoked when the search box updates.
      */
     searchUpdated(event) {
@@ -85,16 +93,20 @@ class TopBar extends React.Component {
         // Determine the classes.
         let printsButtonClasses = "TopBarButton TopBarTabButton";
         let usersButtonClasses = "TopBarButton TopBarTabButton";
+        let visitsButtonClasses = "TopBarButton TopBarTabButton";
         if (this.state.view == "Prints") {
             printsButtonClasses += " TopBarSelectedButton";
         } else if (this.state.view == "Users") {
             usersButtonClasses += " TopBarSelectedButton";
+        } else if (this.state.view == "Visits") {
+            visitsButtonClasses += " TopBarSelectedButton";
         }
 
         // Return the top bar.
         return <div class="TopBarContainer">
             <button class={printsButtonClasses} onClick={this.setPrintsView}>Prints</button>
             <button class={usersButtonClasses} onClick={this.setUsersView}>Users</button>
+            <button class={visitsButtonClasses} onClick={this.setVisitsView}>Visits</button>
             <input class="TopBarSearchBox" type="text" ref="searchBox" onChange={this.searchUpdated}></input>
             <button class="TopBarButton TopBarButtonSearch" onClick={this.search}>Search</button>
             <button class="TopBarButton TopBarLogoutButton" onClick={this.logout}>Logout</button>

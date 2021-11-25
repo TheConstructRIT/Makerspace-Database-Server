@@ -72,11 +72,18 @@ namespace Construct.Admin.Test.Functional.Controllers
                         Cost = ((i + 7) % 9),
                         Owed = (i % 2 == 0),
                     };
+                    var testVisitLog = new VisitLog()
+                    {
+                        User = testUser,
+                        Time = new DateTime(((i + 8) % 9) * 1000),
+                        Source = "TestSource" + ((i + 9) % 9),
+                    };
                     
                     // Add the test data.
                     context.Users.Add(testUser);
                     context.PrintMaterials.Add(testMaterial);
                     context.PrintLog.Add(testPrint);
+                    context.VisitLogs.Add(testVisitLog);
                 }
                 
                 // Add a print with no user.
@@ -119,7 +126,23 @@ namespace Construct.Admin.Test.Functional.Controllers
         }
 
         /// <summary>
-        /// 
+        /// Asserts that a list of prints are returned for a search.
+        /// </summary>
+        /// <param name="order">Column to sort by.</param>
+        /// <param name="ascending">Whether to search by ascending.</param>
+        /// <param name="totalPrintNames">Total prrint names to assert.</param>
+        /// <param name="offsetPrints">Offset of the prints to pull.</param>
+        /// <param name="search">String to search for.</param>
+        /// <param name="hashedId">Hashed id to filter for.</param>
+        private void AssertPrintsOrder(string order, bool ascending, int totalPrintNames, int offsetPrints = 0, string search = "", string hashedId = null)
+        {
+            var response = (PrintsResponse) this._adminSearchController.GetPrints(this._session, 3, offsetPrints, order, ascending, search, hashedId).Result.Value;
+            Assert.AreEqual(totalPrintNames, response.Prints.Select(print => print.Print.Name).Count());
+            Assert.AreEqual(((hashedId == null && search == "") ? 10 : totalPrintNames), response.TotalPrints);
+        }
+
+        /// <summary>
+        /// Asserts that a list of users are returned for a search.
         /// </summary>
         /// <param name="order">Column to sort by.</param>
         /// <param name="ascending">Whether to search by ascending.</param>
@@ -131,6 +154,36 @@ namespace Construct.Admin.Test.Functional.Controllers
             var response = (UsersResponse) this._adminSearchController.GetUsers(this._session, 3, offsetUsers, order, ascending, search).Result.Value;
             Assert.AreEqual(userNames, response.Users.Select(print => print.Name).ToList());
             Assert.AreEqual((search == "" ? 9 : userNames.Count), response.TotalUsers);
+        }
+
+        /// <summary>
+        /// Asserts that a list of visits are returned for a search.
+        /// </summary>
+        /// <param name="order">Column to sort by.</param>
+        /// <param name="ascending">Whether to search by ascending.</param>
+        /// <param name="userNames">User names to assert.</param>
+        /// <param name="offsetVisits">Offset of the visits to return.</param>
+        /// <param name="search">String to search for.</param>
+        private void AssertVisitsOrder(string order, bool ascending, List<string> userNames, int offsetVisits = 0, string search = "")
+        {
+            var response = (VisitsResponse) this._adminSearchController.GetVisits(this._session, 3, offsetVisits, order, ascending, search).Result.Value;
+            Assert.AreEqual(userNames, response.Visits.Select(visit => visit.Name).ToList());
+            Assert.AreEqual((search == "" ? 9 : userNames.Count), response.TotalVisits);
+        }
+
+        /// <summary>
+        /// Asserts that a list of visits are returned for a search.
+        /// </summary>
+        /// <param name="order">Column to sort by.</param>
+        /// <param name="ascending">Whether to search by ascending.</param>
+        /// <param name="totalUsernames">Total user names to assert.</param>
+        /// <param name="offsetVisits">Offset of the visits to return.</param>
+        /// <param name="search">String to search for.</param>
+        private void AssertVisitsOrder(string order, bool ascending, int totalUsernames, int offsetVisits = 0, string search = "")
+        {
+            var response = (VisitsResponse) this._adminSearchController.GetVisits(this._session, 3, offsetVisits, order, ascending, search).Result.Value;
+            Assert.AreEqual(totalUsernames, response.Visits.Select(visit => visit.Name).Count());
+            Assert.AreEqual((search == "" ? 9 : totalUsernames), response.TotalVisits);
         }
 
         /// <summary>
@@ -256,7 +309,7 @@ namespace Construct.Admin.Test.Functional.Controllers
         [Test]
         public void TestGetPrintsOwedAscending()
         {
-            this.AssertPrintsOrder("Owed", true, new List<string>() { "TestPrint4", "TestPrint6", "TestPrint8" });
+            this.AssertPrintsOrder("Owed", true, 3);
         }
 
         /// <summary>
@@ -265,7 +318,7 @@ namespace Construct.Admin.Test.Functional.Controllers
         [Test]
         public void TestGetPrintsOwedDescending()
         {
-            this.AssertPrintsOrder("Owed", false, new List<string>() { "TestPrint3", "TestPrint5", "TestPrint7" });
+            this.AssertPrintsOrder("Owed", false, 3);
         }
 
         /// <summary>
@@ -523,6 +576,139 @@ namespace Construct.Admin.Test.Functional.Controllers
             Assert.IsTrue(((UsersResponse) this._adminSearchController.GetUsers(this._session, 1, 0, "Name", search: "Test Name 1").Result.Value).Users[0].Permissions["LabManager"]);
             Assert.IsFalse(((UsersResponse) this._adminSearchController.GetUsers(this._session, 1, 0, "Name", search: "Test Name 2").Result.Value).Users[0].Permissions["LabManager"]);
             Assert.IsFalse(((UsersResponse) this._adminSearchController.GetUsers(this._session, 1, 0, "Name", search: "Test Name 3").Result.Value).Users[0].Permissions["LabManager"]);
+        }
+
+        /// <summary>
+        /// Tests GetVisits with an unauthorized search.
+        /// </summary>
+        [Test]
+        public void TestGetVistisUnauthorized()
+        {
+            Assert.AreEqual("unauthorized", this._adminSearchController.GetVisits("unknown", 10, 0, null).Result.Value.Status);
+        }
+
+        /// <summary>
+        /// Tests GetVisits with ordering by time ascending.
+        /// </summary>
+        [Test]
+        public void TestGetVisitsTimeAscending()
+        {
+            this.AssertVisitsOrder("Time", true, new List<string>() { "Test Name 1", "Test Name 2", "Test Name 3" });
+        }
+
+        /// <summary>
+        /// Tests GetVisits with ordering by time descending.
+        /// </summary>
+        [Test]
+        public void TestGetVisitsTimeDescending()
+        {
+            this.AssertVisitsOrder("Time", false, new List<string>() { "Test Name 0", "Test Name 8", "Test Name 7" });
+        }
+        
+        /// <summary>
+        /// Tests GetVisits with ordering by name ascending.
+        /// </summary>
+        [Test]
+        public void TestGetVisitsNameAscending()
+        {
+            this.AssertVisitsOrder("Name", true, new List<string>() { "Test Name 0", "Test Name 1", "Test Name 2" });
+        }
+
+        /// <summary>
+        /// Tests GetVisits with ordering by name descending.
+        /// </summary>
+        [Test]
+        public void TestGetVisitsNameDescending()
+        {
+            this.AssertVisitsOrder("Name", false, new List<string>() { "Test Name 8", "Test Name 7", "Test Name 6" });
+        }
+        
+        /// <summary>
+        /// Tests GetVisits with ordering by email ascending.
+        /// </summary>
+        [Test]
+        public void TestGetVisitsEmailAscending()
+        {
+            this.AssertVisitsOrder("Email", true, new List<string>() { "Test Name 0", "Test Name 1", "Test Name 2" });
+        }
+
+        /// <summary>
+        /// Tests GetVisits with ordering by email descending.
+        /// </summary>
+        [Test]
+        public void TestGetVisitsEmailDescending()
+        {
+            this.AssertVisitsOrder("Email", false, new List<string>() { "Test Name 8", "Test Name 7", "Test Name 6" });
+        }
+        
+        /// <summary>
+        /// Tests GetVisits with ordering by total owed prints ascending.
+        /// </summary>
+        [Test]
+        public void TestGetVisitsTotalOwedPrintsAscending()
+        {
+            this.AssertVisitsOrder("TotalOwedPrints", true, 3);
+        }
+
+        /// <summary>
+        /// Tests GetVisits with ordering by total owed prints descending.
+        /// </summary>
+        [Test]
+        public void TestGetVisitsTotalOwedPrintsDescending()
+        {
+            this.AssertVisitsOrder("TotalOwedPrints", false, 3);
+        }
+        
+        /// <summary>
+        /// Tests GetVisits with ordering by total owed cost ascending.
+        /// </summary>
+        [Test]
+        public void TestGetVisitsTotalOwedCostAscending()
+        {
+            this.AssertVisitsOrder("TotalOwedCost", true, new List<string>() { "Test Name 2", "Test Name 5", "Test Name 1" });
+        }
+
+        /// <summary>
+        /// Tests GetVisits with ordering by total owed cost descending.
+        /// </summary>
+        [Test]
+        public void TestGetVisitsTotalOwedCostDescending()
+        {
+            this.AssertVisitsOrder("TotalOwedCost", false, new List<string>() { "Test Name 0", "Test Name 8", "Test Name 6" });
+        }
+
+        /// <summary>
+        /// Tests GetVisits with an unknown order.
+        /// </summary>
+        [Test]
+        public void TestGetVisitsUnknownOrder()
+        {
+            this.AssertVisitsOrder("Unknown", true, new List<string>() { "Test Name 0", "Test Name 1", "Test Name 2" });
+        }
+        
+        /// <summary>
+        /// Tests GetVisits with an offset.
+        /// </summary>
+        [Test]
+        public void TestGetVisitsOffset()
+        {
+            this.AssertVisitsOrder("Name", true, new List<string>() { "Test Name 0", "Test Name 1", "Test Name 2" }, 0);
+            this.AssertVisitsOrder("Name", true, new List<string>() { "Test Name 1", "Test Name 2", "Test Name 3" }, 1);
+            this.AssertVisitsOrder("Name", true, new List<string>() { "Test Name 4", "Test Name 5", "Test Name 6" }, 4);
+            this.AssertVisitsOrder("Name", true, new List<string>() { "Test Name 7", "Test Name 8" }, 7);
+            this.AssertVisitsOrder("Name", true, new List<string>() { }, 10);
+        }
+
+        /// <summary>
+        /// Tests GetVisits with a search term.
+        /// </summary>
+        [Test]
+        public void TestGetVisitsSearch()
+        {
+            this.AssertVisitsOrder("Name", true, new List<string>() { "Test Name 1" }, search: "Test Name 1");
+            this.AssertVisitsOrder("Name", true, new List<string>() { "Test Name 1" }, search: "test1@email");
+            this.AssertVisitsOrder("Name", true, new List<string>() { "Test Name 1"}, search: "1");
+            this.AssertVisitsOrder("Name", true, new List<string>() { }, search: "unknown");
         }
     }
 }

@@ -5,6 +5,7 @@
  */
 
 var MAX_ENTRIES_PER_PAGE = 25;
+var MAX_VISIT_ENTRIES_PER_PAGE = 50;
 var staticSummary;
 
 
@@ -12,6 +13,7 @@ var staticSummary;
 var DEFAULT_ORDERS = {
     Prints: [0,"desc"],
     Users: [0,"asc"],
+    Visits: [0,"desc"],
 };
 var COLUMNS = {
     Prints: [
@@ -176,6 +178,44 @@ var COLUMNS = {
             },
         },
     ],
+    Visits: [
+        {
+            title: "Time",
+            data: "time",
+            width: "60pt",
+            render: function(value, type) { 
+                if(type == "display"){
+                    let date = new Date(value * 1000);
+                    return (date.getMonth() + 1) + "/" + date.getDate() + "/" + date.getFullYear() + " " + date.toLocaleTimeString("en-US");
+                }
+                return value;
+            },
+        },
+        {
+            title: "Name",
+            data: "name",
+        },
+        {
+            title: "Email",
+            data: "email",
+        },
+        {
+            title: "Prints Owed",
+            data: "totalOwedPrints",
+            width: "30pt",
+        },
+        {
+            title: "Balance Due",
+            data: "totalOwedCost",
+            width: "30pt",
+            render: function(value) {
+                return new Intl.NumberFormat("en-US",{
+                    style: "currency",
+                    currency: "USD",
+                }).format(value);
+            },
+        },
+    ],
 };
 
 
@@ -197,6 +237,7 @@ class Summary extends React.Component {
         // Bind the functions.
         this.loadPrints = this.loadPrints.bind(this);
         this.loadUsers = this.loadUsers.bind(this);
+        this.loadVisits = this.loadVisits.bind(this);
         this.loadData = this.loadData.bind(this);
         this.clearData = this.clearData.bind(this);
         this.updateState = this.updateState.bind(this);
@@ -426,11 +467,89 @@ class Summary extends React.Component {
     }
 
     /*
+     * Updates the visits to show.
+     */
+    loadVisits() {
+        // Set the visits as loading.
+        let currentTime = new Date().getTime();
+        this.state.failed = false;
+        this.state.loading = true;
+        this.state.unathorized = false;
+        this.state.currentlyLoading = currentTime;
+        this.updateState();
+
+        // Determine the sorting.
+        let column = "time";
+        let ascending = false;
+        if (this.table != null) {
+            var order = this.table.order();
+            column = COLUMNS.Visits[order[0][0]].data;
+            ascending = order[0][1] == "asc";
+        }
+        
+        // Start loading the data.
+        let summaryObject = this;
+        $.ajax({
+            url: "/admin/visits?" + $.param({
+                session: getCookie("session"),
+                maxvisits: MAX_VISIT_ENTRIES_PER_PAGE,
+                offsetvisits: Math.max(this.state.currentPage - 1, 0) * MAX_VISIT_ENTRIES_PER_PAGE,
+                order: column,
+                ascending: ascending,
+                search: summaryObject.state.searchTerm,
+            }),
+            
+            success: function(result) {
+                // Return if the current loading request doesn't match.
+                if (summaryObject.state.currentlyLoading != currentTime) {
+                    return;
+                }
+
+                // Display an unauthorized message if there is no users.
+                if (result.visits == null) {
+                    summaryObject.state.loading = false;
+                    summaryObject.state.unathorized = true;
+                    summaryObject.updateState();
+                    return;
+                }
+
+                // Convert the result.
+                summaryObject.counter.setMaxPage(Math.ceil(result.totalVisits / MAX_VISIT_ENTRIES_PER_PAGE));
+                summaryObject.state.entries = result.visits;
+                result.visits.forEach(function(entry) {
+                    entry.time = entry.timestamp;
+                    entry.hashedId = cleanString(entry.hashedId);
+                    entry.name = cleanString(entry.name);
+                    entry.email = cleanString(entry.email);
+                });
+                
+                // Set the entries.
+                summaryObject.state.loading = false;
+                summaryObject.state.failed = false;
+                summaryObject.updateState();
+            },
+            error: function() {
+                // Return if the current loading request doesn't match.
+                if (summaryObject.state.currentlyLoading != currentTime) {
+                    return;
+                }
+
+                // Set the loading as failed.
+                summaryObject.state.loading = false;
+                summaryObject.state.failed = true;
+                summaryObject.updateState();
+            }
+        });
+    }
+
+    /*
      * Loads the data for the current view.
      */
     loadData() {
         if (this.state.view == "Prints") { 
             this.loadPrints();
+        } else if (this.state.view == "Visits") { 
+            this.loadVisits();
         } else {
             this.loadUsers();
         }

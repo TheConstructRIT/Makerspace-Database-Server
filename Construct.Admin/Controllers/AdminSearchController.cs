@@ -8,6 +8,7 @@ using Construct.Core.Attribute;
 using Construct.Core.Configuration;
 using Construct.Core.Data.Response;
 using Construct.Core.Database.Context;
+using Construct.Core.Logging;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -185,6 +186,82 @@ namespace Construct.Admin.Controllers
             {
                 TotalUsers = basePrintsQuery.Count(),
                 Users = users,
+            };
+        }
+        
+        /// <summary>
+        /// Searches for visits in the database.
+        /// </summary>
+        /// <param name="session">Session of the user.</param>
+        /// <param name="maxVisits">Maximum visits to display.</param>
+        /// <param name="offsetVisits">Offset of the visits to return.</param>
+        /// <param name="order">Column to sort by.</param>
+        /// <param name="ascending">Whether to search by ascending.</param>
+        /// <param name="search">String to search for.</param>
+        /// <returns>The results of the search.</returns>
+        [HttpGet]
+        [Path("/admin/visits")]
+        public async Task<ActionResult<IResponse>> GetVisits(string session, int maxVisits, int offsetVisits, string order, bool ascending = false, string search = "")
+        {
+            // Return if the session isn't valid.
+            if (!Session.GetSingleton().RefreshSession(session))
+            {
+                Response.StatusCode = 401;
+                return new UnauthorizedResponse();
+            }
+            
+            // Build the base query.
+            search = (search ?? "").ToLower();
+            order = (order ?? "").ToLower() + (ascending ? "" : "Descending");
+            await using var context = new ConstructContext();
+            var basePrintsQuery = context.VisitLogs.Include(visitLog => visitLog.User).ThenInclude(user => user.PrintLogs)
+                .Include(visitLog => visitLog.User).ThenInclude(user => user.Permissions)
+                .Where(visitLog => visitLog.User.Name.ToLower().Contains(search) || visitLog.User.Email.ToLower().Contains(search));
+
+            // Add the ordering to the query.
+            basePrintsQuery = order switch
+            {
+                "timeDescending" => basePrintsQuery.OrderByDescending(visitLog => visitLog.Time),
+                "time" => basePrintsQuery.OrderBy(visitLog => visitLog.Time),
+                "nameDescending" => basePrintsQuery.OrderByDescending(visitLog => visitLog.User.Name.ToLower()),
+                "name" => basePrintsQuery.OrderBy(visitLog => visitLog.User.Name.ToLower()),
+                "emailDescending" => basePrintsQuery.OrderByDescending(visitLog => visitLog.User.Email.ToLower()),
+                "email" => basePrintsQuery.OrderBy(visitLog => visitLog.User.Email.ToLower()),
+                "totalowedprintsDescending" => basePrintsQuery.OrderByDescending(visitLog => visitLog.User.PrintLogs.Count(printLog => printLog.Owed)),
+                "totalowedprints" => basePrintsQuery.OrderBy(visitLog => visitLog.User.PrintLogs.Count(printLog => printLog.Owed)),
+                "totalowedcostDescending" => basePrintsQuery.OrderByDescending(visitLog => visitLog.User.PrintLogs.Where(printLog => printLog.Owed).Sum(printLog => printLog.Cost)),
+                "totalowedcost" => basePrintsQuery.OrderBy(visitLog => visitLog.User.PrintLogs.Where(printLog => printLog.Owed).Sum(printLog => printLog.Cost)),
+                _ => basePrintsQuery.OrderBy(visitLog => visitLog.User.Name.ToLower()),
+            };
+            
+            // Return the visits.
+            var visits = new List<VisitEntry>();
+            foreach (var visitLog in basePrintsQuery.Skip(offsetVisits).Take(maxVisits).ToList())
+            {// Get the permissions for the user.
+                var permissions = new Dictionary<string, bool>();
+                foreach (var permissionName in ConstructConfiguration.Configuration.Admin.ConfigurablePermissions)
+                {
+                    var permission = visitLog.User.Permissions.FirstOrDefault(permission => permission.Name.ToLower() == permissionName.ToLower());
+                    permissions[permissionName] = (permission != null && permission.IsActive());
+                }
+                
+                // Add the visit.
+                visits.Add(new VisitEntry()
+                {
+                    Timestamp = ((DateTimeOffset) visitLog.Time).ToUnixTimeSeconds(),
+                    Source = visitLog.Source,
+                    HashedId = visitLog.User.HashedId,
+                    Name = visitLog.User.Name,
+                    Email = visitLog.User.Email,
+                    TotalOwedPrints = visitLog.User.PrintLogs.Count(printLog => printLog.Owed),
+                    TotalOwedCost = visitLog.User.PrintLogs.Where(printLog => printLog.Owed).Sum(printLog => printLog.Cost),
+                    Permissions = permissions,
+                });
+            }
+            return new VisitsResponse()
+            {
+                TotalVisits = basePrintsQuery.Count(),
+                Visits = visits,
             };
         }
     }
