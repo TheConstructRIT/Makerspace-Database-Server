@@ -1,0 +1,336 @@
+swagger: "2.0"
+info:
+  description: "Web endpoint API for The Construct @ RIT's [Makerspace Database Server](https://github.com/TheConstructRIT/Makerspace-Database-Server)."
+  version: "1.0.0"
+  title: "Makerspace Database Server"
+  license:
+    name: "MIT License"
+    url: "https://github.com/TheConstructRIT/Makerspace-Database-Server/blob/master/LICENSE"
+host: "localhost:8000"
+tags:
+- name: "User"
+  description: "Service for fetching and managing users."
+- name: "Swipe"
+  description: "Service for registering visits."
+- name: "Print"
+  description: "Service for fetching and registering prints."
+- name: "Admin"
+  description: "Service for administrating the system (not documented as they are not meant for public use)."
+schemes:
+- "http"
+- "https"
+paths:
+  /user/get:
+    get:
+      tags:
+      - "User"
+      summary: "Returns the information of the user for an id."
+      description: ""
+      operationId: "getUser"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "hashedId"
+        in: "query"
+        description: "Hashed id of the user to get."
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "User found."
+          schema:
+            $ref: "#/definitions/User"
+        "404":
+          description: "User not found."
+          schema:
+            $ref: "#/definitions/NotFoundResponse"
+  /user/find:
+    get:
+      tags:
+      - "User"
+      summary: "Finds the information of the user for their email."
+      description: ""
+      operationId: "findUser"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "email"
+        in: "query"
+        description: "Email of the user to find."
+        required: true
+        type: "string"
+        format: "email"
+      responses:
+        "200":
+          description: "User found."
+          schema:
+            $ref: "#/definitions/User"
+        "400":
+          description: "Invalid email."
+          schema:
+            $ref: "#/definitions/BadRequestResponse"
+        "404":
+          description: "User not found."
+          schema:
+            $ref: "#/definitions/NotFoundResponse"
+  /user/register:
+    post:
+      tags:
+      - "User"
+      summary: "Registers a user in the system."
+      description: ""
+      operationId: "registerUser"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "user"
+        in: "body"
+        description: "User to register."
+        required: true
+        schema:
+          $ref: "#/definitions/RegisterUserRequest"
+      responses:
+        "200": 
+          description: "User registered."
+          schema:
+            $ref: "#/definitions/SuccessResponse"
+        "400":
+          description: "Request field missing or empty."
+          schema:
+            $ref: "#/definitions/BadRequestResponse"
+        "409":
+          description: "Email already registered."
+          schema:
+            $ref: "#/definitions/DuplicateUserResponse"
+  /swipe/add:
+    post:
+      tags:
+      - "Swipe"
+      summary: "Registers a visit in the system."
+      description: ""
+      operationId: "addSwipe"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "visit"
+        in: "body"
+        description: "Visit to add."
+        required: true
+        schema:
+          $ref: "#/definitions/AddVisitRequest"
+      responses:
+        "200": 
+          description: "Visit added."
+          schema:
+            $ref: "#/definitions/SuccessResponse"
+        "400":
+          description: "Request field missing or empty."
+          schema:
+            $ref: "#/definitions/BadRequestResponse"
+        "404":
+          description: "User not found."
+          schema:
+            $ref: "#/definitions/NotFoundResponse"
+  /print/last:
+    get:
+      tags:
+      - "Print"
+      summary: "Gets the information of the last print of the user for their hashed id."
+      description: ""
+      operationId: "getLastPrint"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "hashedId"
+        in: "query"
+        description: "Hashed id of the user to get the last print of."
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "User found with a last print."
+          schema:
+            $ref: "#/definitions/LastPrint"
+        "400":
+          description: "Missing or empty hashed id."
+          schema:
+            $ref: "#/definitions/BadRequestResponse"
+        "404":
+          description: "User not found or user has no prints."
+          schema:
+            $ref: "#/definitions/NotFoundResponse"
+  /print/add:
+    post:
+      tags:
+      - "Print"
+      summary: "Registers a print in the system."
+      description: ""
+      operationId: "addPrint"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "print"
+        in: "body"
+        description: "Print to add."
+        required: true
+        schema:
+          $ref: "#/definitions/AddPrintRequest"
+      responses:
+        "200": 
+          description: "Print added."
+          schema:
+            $ref: "#/definitions/SuccessResponse"
+        "400":
+          description: "Request field missing or empty."
+          schema:
+            $ref: "#/definitions/BadRequestResponse"
+        "404":
+          description: "User not found."
+          schema:
+            $ref: "#/definitions/NotFoundResponse"
+definitions:
+  User:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "success"
+      hashedId:
+        type: "string"
+        example: "f120bb5698d520c5691b6d603a00bfd662d13bf177a04571f9d10c0745dfa2a5"
+      name:
+        type: "string"
+        example: "John Doe"
+      email:
+        type: "string"
+        format: "email"
+      owedPrintBalance:
+        type: "number"
+        format: "double"
+        example: 1.23
+      permissions:
+        type: "array"
+        items:
+          type: "string"
+        example: ["LabManager","CanLaserCut"]
+  LastPrint:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "success"
+      fileName:
+        type: "string"
+        example: "print.gcode"
+      timeStamp:
+        type: "integer"
+        format: "int64"
+        example: 1637882176
+      weight:
+        type: "number"
+        format: "float"
+        example: 4
+      purpose:
+        type: "string"
+        example: "Personal Project"
+      billTo:
+        type: "string"
+        example: "P12345"
+  RegisterUserRequest:
+    type: "object"
+    properties:
+      hashedId:
+        type: "string"
+        example: "f120bb5698d520c5691b6d603a00bfd662d13bf177a04571f9d10c0745dfa2a5"
+      name:
+        type: "string"
+        example: "John Doe"
+      email:
+        type: "string"
+        format: "email"
+      college:
+        type: "string"
+        example: "College of Software Engineering"
+      year:
+        type: "string"
+        example: "Second Year"
+  AddVisitRequest:
+    type: "object"
+    properties:
+      hashedId:
+        type: "string"
+        example: "f120bb5698d520c5691b6d603a00bfd662d13bf177a04571f9d10c0745dfa2a5"
+      source:
+        type: "string"
+        example: "MainLab"
+  AddPrintRequest:
+    type: "object"
+    properties:
+      hashedId:
+        type: "string"
+        example: "f120bb5698d520c5691b6d603a00bfd662d13bf177a04571f9d10c0745dfa2a5"
+      fileName:
+        type: "string"
+        example: "print.gcode"
+      material:
+        type: "string"
+        example: "PLA"
+      weight:
+        type: "number"
+        format: "float"
+        example: 4
+      purpose:
+        type: "string"
+        example: "Personal Project"
+      billTo:
+        type: "string"
+        example: "P12345"
+      owed:
+        type: "boolean"
+        example: false
+  SuccessResponse:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "success"
+  BadRequestResponse:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        enum:
+        - "missing-hashed-id"
+        - "missing-name"
+        - "missing-email"
+        - "missing-college"
+        - "missing-year"
+        - "missing-source"
+        - "missing-file-name"
+        - "missing-material"
+        - "missing-purpose"
+        - "invalid-email"
+        - "negative-weight"
+  NotFoundResponse:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        enum:
+         - "user-not-found"
+         - "no-prints"
+  DuplicateUserResponse:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "duplicate-user"
+externalDocs:
+  description: "Makerspace Database Server docs"
+  url: "https://github.com/TheConstructRIT/Makerspace-Database-Server/tree/master/docs"
