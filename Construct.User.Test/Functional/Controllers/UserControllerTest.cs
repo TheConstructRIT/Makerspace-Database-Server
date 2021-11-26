@@ -55,6 +55,28 @@ namespace Construct.User.Test.Functional.Controllers
         }
         
         /// <summary>
+        /// Tests the /user/get endpoint with a null hashed id.
+        /// </summary>
+        [Test]
+        public void TestGetNullHashedId()
+        {
+            var response = _userController.Get(null).Result.Value;
+            Assert.AreEqual(400, this._userController.Response.StatusCode);
+            Assert.AreEqual("missing-hashed-id", response.Status);
+        }
+        
+        /// <summary>
+        /// Tests the /user/get endpoint with an empty hashed id.
+        /// </summary>
+        [Test]
+        public void TestGetEmptyHashedId()
+        {
+            var response = _userController.Get("").Result.Value;
+            Assert.AreEqual(400, this._userController.Response.StatusCode);
+            Assert.AreEqual("missing-hashed-id", response.Status);
+        }
+        
+        /// <summary>
         /// Tests the /user/get endpoint with the user not found.
         /// </summary>
         [Test]

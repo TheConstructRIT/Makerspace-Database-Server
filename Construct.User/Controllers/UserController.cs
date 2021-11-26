@@ -50,6 +50,13 @@ namespace Construct.User.Controllers
         [Path("/user/get")]
         public async Task<ActionResult<IResponse>> Get(string hashedId)
         {
+            // Return if the hashed id is null or empty.
+            if (string.IsNullOrEmpty(hashedId))
+            {
+                Response.StatusCode = 400;
+                return new GenericStatusResponse("missing-hashed-id");
+            }
+            
             // Get the user.
             await using var context = new ConstructContext();
             var user = await context.Users.Include(user => user.PrintLogs).Include(user => user.Permissions)
