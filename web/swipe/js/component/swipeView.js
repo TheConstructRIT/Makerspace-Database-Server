@@ -138,7 +138,7 @@ class SwipeView extends React.Component {
         if (this.state.status == "processing") {
             topText = "Please wait...";
         } else if (this.state.status == "error") {
-            topText = "An eror has occured!";
+            topText = "An error has occured!";
             bottomText = "Please try again later.";
         } else if (this.state.status == "displayUser") {
             topText = "Welcome back " + this.state.currentName +"!";
