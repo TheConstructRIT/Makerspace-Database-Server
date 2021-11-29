@@ -34,7 +34,7 @@ namespace Construct.Admin.Controllers
             
             // Check if the user is authorized.
             var labmanager = user?.Permissions.FirstOrDefault(p => p.Name.ToLower() == "labmanager");
-            if (labmanager is not null && labmanager.IsActive()) {
+            if (labmanager != null && labmanager.IsActive()) {
                 // Create and return the session.
                 return new SessionResponse()
                 {
@@ -43,7 +43,7 @@ namespace Construct.Admin.Controllers
             }
             else
             {
-                // Return not found if the user isn't authorized.
+                // Return unauthorized if the user isn't authorized.
                 Response.StatusCode = 401;
                 return new UnauthorizedResponse();
             }
