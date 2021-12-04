@@ -308,13 +308,36 @@ namespace Construct.Print.Test.Functional.Controllers
         }
         
         /// <summary>
-        /// Tests the /print/add endpoint with no BillTo.
+        /// Tests the /print/add endpoint with a null BillTo.
         /// </summary>
         [Test]
         public void TestPostAddPrintNullBillTo()
         {
             // Send the request.
             this._addPrintRequest.BillTo = null;
+            this._printController.PostAdd(this._addPrintRequest).Wait();
+            
+            // Check that the print was added.
+            using var context = new ConstructContext();
+            var newPrint = context.PrintLog.Include(printLog => printLog.Material)
+                .Include(printLog => printLog.User).OrderByDescending(p => p.Time).First();
+            Assert.AreEqual("test_hash_2", newPrint.User.HashedId);
+            Assert.AreEqual("Test1", newPrint.Material.Name);
+            Assert.AreEqual(10, newPrint.WeightGrams);
+            Assert.AreEqual("Test Purpose 3", newPrint.Purpose);
+            Assert.IsNull(newPrint.BillTo);
+            Assert.That(Math.Abs(newPrint.Cost - 0.30f) < 0.001);
+            Assert.IsTrue(newPrint.Owed);
+        }
+        
+        /// <summary>
+        /// Tests the /print/add endpoint with an empty BillTo.
+        /// </summary>
+        [Test]
+        public void TestPostAddPrintEmptyBillTo()
+        {
+            // Send the request.
+            this._addPrintRequest.BillTo = "";
             this._printController.PostAdd(this._addPrintRequest).Wait();
             
             // Check that the print was added.

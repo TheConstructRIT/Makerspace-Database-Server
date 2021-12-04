@@ -115,7 +115,7 @@ namespace Construct.Print.Controllers
                 Material = material,
                 WeightGrams = request.Weight,
                 Purpose = request.Purpose,
-                BillTo = request.BillTo,
+                BillTo = string.IsNullOrEmpty(request.BillTo) ? null : request.BillTo,
                 Cost = material.CostPerGram * request.Weight,
                 Owed = request.Owed ?? true,
             };
