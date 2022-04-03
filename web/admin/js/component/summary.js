@@ -666,7 +666,7 @@ class Summary extends React.Component {
         }
         this.table = $(this.refs.summaryView).DataTable({
            dom: "<\"SummaryDataTableContainer\">",
-           pageLength: MAX_ENTRIES_PER_PAGE,
+           pageLength: this.state.view == "Visits" ? MAX_VISIT_ENTRIES_PER_PAGE : MAX_ENTRIES_PER_PAGE,
            language: {
                "emptyTable": "<span class=\"datatables-empty-message\"></span>"
            },
