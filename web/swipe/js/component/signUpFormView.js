@@ -156,6 +156,7 @@ class SignUpFormView extends React.Component {
                 <option value="COLA">COLA</option>
                 <option value="NTID">NTID</option>
                 <option value="College of Science">College of Science</option>
+                <option value="SOIS">School of Individualized Study</option>
                 <option value="Other">Other</option>
             </select>
             <span class="SignUpFormText" style={{top: "260px", "font-size": "24px"}}>What year are you?</span>
